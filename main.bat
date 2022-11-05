@@ -1,4 +1,11 @@
 @echo off
+
+if not "%1"=="am_admin" (
+    powershell -Command "Start-Process -Verb RunAs -FilePath '%0' -ArgumentList 'am_admin'"
+    exit /b
+)
+
+
 echo function CHECK_IF_ADMIN { > powershell.ps1
 echo     $test = ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltinRole]::Administrator); echo $test >> powershell.ps1
 echo } >> powershell.ps1
@@ -131,4 +138,5 @@ echo     Write-Host ("Please run as admin!") -ForegroundColor Red >> powershell.
 echo     $origin = $MyInvocation.MyCommand.Path >> powershell.ps1
 echo     Start-Process powershell -ArgumentList "-noprofile -file $origin" -verb RunAs >> powershell.ps1
 echo } >> powershell.ps1
-powershell.exe -noprofile -ExecutionPolicy Bypass -file powershell.ps1
+powershell Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy Unrestricted -Force
+powershell.exe -noprofile -file powershell.ps1
