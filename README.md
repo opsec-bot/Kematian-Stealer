@@ -10,4 +10,4 @@ Join our server https://discord.gg/vk3rBhcj2y
 
 # Want to obfuscate?
 
-use https://github.com/danielbohannon/Invoke-Obfuscation if u need help lmk and I can walk you through how to use it
+use https://github.com/danielbohannon/Invoke-Obfuscation if u need help lmk and I can walk you through how to use it. You can also use Somalifuscator (in my github) for the bat file but option 3 WILL NOT WORK (option 2 will and 1)
