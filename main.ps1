@@ -141,5 +141,5 @@ if (CHECK_IF_ADMIN -eq $true) {
 } else {
     Write-Host ("Please run as admin!") -ForegroundColor Red
     $origin = $MyInvocation.MyCommand.Path
-    Start-Process powershell -ArgumentList "-noprofile -file $origin" -verb RunAs
+    Start-Process powershell.exe -ArgumentList "-noprofile -file $origin" -verb RunAs
 }
