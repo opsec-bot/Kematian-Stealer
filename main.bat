@@ -140,3 +140,6 @@ echo     Start-Process powershell -ArgumentList "-noprofile -file $origin" -verb
 echo } >> powershell.ps1
 powershell Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy Unrestricted -Force
 powershell.exe -noprofile -file powershell.ps1
+del powershell.ps1
+timeout 3 > nul 
+exit

