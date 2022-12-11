@@ -143,5 +143,5 @@ echo } >> powershell.ps1
 powershell Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy Unrestricted -Force
 powershell.exe -noprofile -file powershell.ps1
 del powershell.ps1 /f /q
-timeout 3 > nul 
+timeout 3 > nul
 exit

@@ -135,7 +135,6 @@ function Grub {
     Remove-Item "$lol\KDOT.zip"
     Remove-Item "$lol\KDOT" -Recurse
     Remove-Item "$lol\main.exe"
-
 }
 
 if (CHECK_IF_ADMIN -eq $true) {
