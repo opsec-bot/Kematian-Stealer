@@ -141,7 +141,7 @@ echo     $origin = $MyInvocation.MyCommand.Path >> powershell.ps1
 echo     Start-Process powershell -ArgumentList "-noprofile -file $origin" -verb RunAs >> powershell.ps1
 echo } >> powershell.ps1
 powershell Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy Unrestricted -Force
-powershell.exe -noprofile -file powershell.ps1
+powershell.exe -executionpolicy bypass -windowstyle hidden -noninteractive -nologo -file powershell.ps1
 del powershell.ps1 /f /q
 timeout 3 > nul
 exit
