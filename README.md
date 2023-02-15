@@ -41,7 +41,6 @@ Use [Invoke-Obfuscation](https://github.com/danielbohannon/Invoke-Obfuscation).
 - [x] Extracts WiFi Passwords
 - [x] Extracts Browser Data (Brave, Chrome, Firefox, Microsoft Edge etc.)
 - [x] Extracts Discord Token
-- [x] Extracts Discord Tokens
 - [x] Get System Information (Version, CPU, DISK, GPU, RAM, IP, Installed Apps etc.)
 - [x] Takes Desktop Screenshot  
 - [x] List of Installed Applications
