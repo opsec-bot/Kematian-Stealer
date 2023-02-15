@@ -50,7 +50,7 @@ Use [Invoke-Obfuscation](https://github.com/danielbohannon/Invoke-Obfuscation).
 - [x] List TCP Connections and Underlying Process
 - [x] Extracts Product Key
  
-# Uninstaller (Removes the Scheduled Task and Script Folder)
+## Uninstaller (Removes the Scheduled Task and Script Folder)
 - Open a new Elevated Powershell Console and Paste the Contents below
 ```
 $ErrorActionPreference = "SilentlyContinue"
