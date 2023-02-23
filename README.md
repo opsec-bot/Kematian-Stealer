@@ -50,13 +50,15 @@ Use [Invoke-Obfuscation](https://github.com/danielbohannon/Invoke-Obfuscation).
 - [x] List TCP Connections and Underlying Process
 - [x] Extracts Product Key
  
-## Uninstaller (Removes the Scheduled Task and Script Folder)
+## Uninstaller (Removes the Scheduled Task, Script Folder and ExclusionPaths)
 - Open a new Elevated Powershell Console and Paste the Contents below
 ```
 $ErrorActionPreference = "SilentlyContinue"
 function Cleanup {
   Unregister-ScheduledTask -TaskName "KDOT" -Confirm:$False
   Remove-Item -Path "$env:appdata\KDOT" -force -recurse
+  Remove-MpPreference -ExclusionPath "$env:APPDATA\KDOT"
+  Remove-MpPreference -ExclusionPath "$env:LOCALAPPDATA\Temp"
   Write-Host "[~] Successfully Uninstalled !" -ForegroundColor Green
 }
 Cleanup
