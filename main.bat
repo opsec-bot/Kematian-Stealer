@@ -1,4 +1,4 @@
-@echooff
+@echo off
 
 net session >nul 2>&1
 if %errorlevel% == 0 (
