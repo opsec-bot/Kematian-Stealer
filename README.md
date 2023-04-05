@@ -53,7 +53,7 @@ Or use [Somalifuscator](https://github.com/kdot227/somalifuscator) for .bat file
  
 ## Uninstaller (Removes the Scheduled Task and Script Folder)
 - Open a new Elevated Powershell Console and Paste the Contents below
-```
+```ps1
 $ErrorActionPreference = "SilentlyContinue"
 function Cleanup {
   Unregister-ScheduledTask -TaskName "KDOT" -Confirm:$False
