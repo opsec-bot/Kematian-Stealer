@@ -29,6 +29,9 @@ choice /C yn /M "Select an option:" /N
 if %errorlevel% == 1 ( goto :obfuscate ) else ( goto :eof )
 
 :obfuscate
+if %file% == "ps1" ( goto :obfuscate_ps1 ) else ( goto :obfuscate_bat )
+
+:obfuscate_bat
 echo Downloading Obfuscator. It requires python so if you don't have it, it won't work. The obfuscator link is https://github.com/somalifuscator. This ONLY WORKS for the batch file. Otherwise use Invoke-Obfuscation
 timeout /t 7
 rmdir /s /q somalifuscator
@@ -39,7 +42,12 @@ powershell.exe -ExecutionPolicy Bypass -NoProfile -NonInteractive -NoLogo -Comma
 set "somalifuscator_path=%~dp0Somalifuscator\Somalifuscator-main"
 del /f /q somalifuscator.zip
 echo obfuscating
-start %somalifuscator_path%\setup.bat
+start %somalifuscator_path%\setup.bat %~dp0\main.bat ultimate
+exit /b 0
+
+:obfuscate_ps1
+echo Please download Invoke-Obfuscation of another powershell obfuscator. Somalifuscator will not work for this.
+pause
 exit /b 0
 
 echo finished
