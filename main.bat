@@ -32,7 +32,7 @@ echo $gpu ^> $env:LOCALAPPDATA\Temp\GPU.txt >> powershell123.ps1
 echo $format = " GB" >> powershell123.ps1
 echo $total = Get-CimInstance Win32_PhysicalMemory ^| Measure-Object -Property capacity -Sum ^| Foreach {"{0:N2}" -f ([math]::round(($_.Sum / 1GB),2))} >> powershell123.ps1
 echo $raminfo = "$total" + "$format" >> powershell123.ps1
-echo $mac = Get-NetAdapter -Name "*Wi-Fi*" ^| Select-Object -ExpandProperty MACAddress >> powershell123.ps1
+echo $mac = Get-WmiObject win32_networkadapterconfiguration ^| select description, macaddress >> powershell123.ps1
 echo $mac ^> $env:LOCALAPPDATA\Temp\mac.txt >> powershell123.ps1
 echo $username = $env:USERNAME >> powershell123.ps1
 echo $hostname = $env:COMPUTERNAME >> powershell123.ps1
