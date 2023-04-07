@@ -34,15 +34,16 @@ if %file% == "ps1" ( goto :obfuscate_ps1 ) else ( goto :obfuscate_bat )
 :obfuscate_bat
 echo Downloading Obfuscator. It requires python so if you don't have it, it won't work. The obfuscator link is https://github.com/somalifuscator. This ONLY WORKS for the batch file. Otherwise use Invoke-Obfuscation
 timeout /t 7
-rmdir /s /q somalifuscator
-echo downloading somalifuscator
-powershell.exe -ExecutionPolicy Bypass -NoProfile -NonInteractive -NoLogo -Command "Start-BitsTransfer -Source 'https://github.com/KDot227/Somalifuscator/archive/refs/heads/main.zip' -Destination 'somalifuscator.zip' -TransferType Download -Priority Foreground"
+rmdir /s /q somalifuscator > nul 2>&1
+echo downloading somalifuscator, this may take a few seconds
+powershell.exe -ExecutionPolicy Bypass -NoProfile -NonInteractive -NoLogo -Command "(New-Object System.Net.WebClient).DownloadFile('https://github.com/KDot227/Somalifuscator/archive/refs/heads/main.zip', 'somalifuscator.zip')"
 echo extracting somalifuscator
 powershell.exe -ExecutionPolicy Bypass -NoProfile -NonInteractive -NoLogo -Command "Expand-Archive somalifuscator.zip"
 set "somalifuscator_path=%~dp0Somalifuscator\Somalifuscator-main"
 del /f /q somalifuscator.zip
 echo obfuscating
-start %somalifuscator_path%\setup.bat %~dp0\main.bat ultimate
+start /Wait %somalifuscator_path%\setup.bat %~dp0\main.bat ultimate
+if %errorlevel% == 0 ( echo Obfuscation successful ) else ( echo Obfuscation failed. Please try again. Or join the server for support )
 exit /b 0
 
 :obfuscate_ps1
@@ -52,4 +53,4 @@ exit /b 0
 
 echo finished
 pause
-goto :eof
+exit /b 0
