@@ -5,15 +5,15 @@
 <h1 align="center">
 </h1>
 <p align= "center">
-  <img src="https://img.shields.io/github/languages/top/Chainski/Powershell-Token-Grabber">
-   <img src="https://img.shields.io/github/stars/Chainski/Powershell-Token-Grabber.svg?color=yellow">
-   <img src="https://img.shields.io/github/forks/Chainski/Powershell-Token-Grabber.svg?color=red">
-   <img src="https://img.shields.io/github/issues/Chainski/Powershell-Token-Grabber.svg?color=green">
-   <img src="https://img.shields.io/badge/dynamic/json?label=Visitors&query=value&url=https%3A%2F%2Fapi.countapi.xyz%2Fhit%2FChainski%2FPowershell-Token-Grabber">
+  <img src="https://img.shields.io/github/languages/top/kdot227/Powershell-Token-Grabber">
+   <img src="https://img.shields.io/github/stars/kdot227/Powershell-Token-Grabber.svg?color=yellow">
+   <img src="https://img.shields.io/github/forks/kdot227/Powershell-Token-Grabber.svg?color=red">
+   <img src="https://img.shields.io/github/issues/kdot227/Powershell-Token-Grabber.svg?color=green">
+   <img src="https://img.shields.io/badge/dynamic/json?label=Visitors&query=value&url=https%3A%2F%2Fapi.countapi.xyz%2Fhit%kdot227%2FPowershell-Token-Grabber">
    <br>
-   <img src="https://img.shields.io/github/last-commit/Chainski/Powershell-Token-Grabber">
-   <img src="https://img.shields.io/github/license/Chainski/Powershell-Token-Grabber">
-    <img src="https://img.shields.io/github/repo-size/Chainski/Powershell-Token-Grabber.svg?label=Repo%20size&style=flat-square">
+   <img src="https://img.shields.io/github/last-commit/kdot227/Powershell-Token-Grabber">
+   <img src="https://img.shields.io/github/license/kdot227/Powershell-Token-Grabber">
+    <img src="https://img.shields.io/github/repo-size/kdot227/Powershell-Token-Grabber.svg?label=Repo%20size&style=flat-square">
    <br>
 </p>
 
@@ -29,7 +29,8 @@ This tool is made for data exfiltration. All information collected is sent using
 
 
 # Want to obfuscate the code ?
-Use [Invoke-Obfuscation](https://github.com/danielbohannon/Invoke-Obfuscation). 
+Use [Invoke-Obfuscation](https://github.com/danielbohannon/Invoke-Obfuscation). \
+Or use [Somalifuscator](https://github.com/kdot227/somalifuscator) for .bat files 
 
 # Screenshot
 
@@ -52,7 +53,7 @@ Use [Invoke-Obfuscation](https://github.com/danielbohannon/Invoke-Obfuscation).
  
 ## Uninstaller (Removes the Scheduled Task, Script Folder and ExclusionPaths)
 - Open a new Elevated Powershell Console and Paste the Contents below
-```
+```ps1
 $ErrorActionPreference = "SilentlyContinue"
 function Cleanup {
   Unregister-ScheduledTask -TaskName "KDOT" -Confirm:$False
@@ -65,10 +66,10 @@ Cleanup
 ```
 
 # Need Help?
-- Join our server https://discord.com/invite/mdmtCTseNV
+- Join our server https://discord.com/invite/batch
 
 # License
-This project is licensed under the MIT License - see the [LICENSE](https://github.com/Chainski/Powershell-Token-Grabber/blob/main/LICENSE) file for details
+This project is licensed under the MIT License - see the [LICENSE](https://github.com/kdot227/Powershell-Token-Grabber/blob/main/LICENSE) file for details
 
 # Disclaimer
 I, the creator, am not responsible for any actions, and or damages, caused by this software.
@@ -76,12 +77,9 @@ You bear the full responsibility of your actions and acknowledge that this tool 
 This tool's main purpose is NOT to be used maliciously, or on any system that you do not own, or have the right to use.
 By using this software, you automatically agree to the above.
 
-## Donate 
-<a href="https://www.blockchain.com/btc/address/16T1fUehoGR4E2sj98u9e9mKuQ7uSLvxRJ"><img src="https://img.shields.io/badge/bitcoin-donate-yellow.svg"></a>
-
-
 # Credits
 - https://github.com/Purp1eW0lf
 - https://github.com/KDot227
+- https://github.com/Chainski
 
 
