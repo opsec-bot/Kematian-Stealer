@@ -229,11 +229,20 @@ function Get-ProductKey {
     }
 }
 
+function Request-Admin {
+    while(!(CHECK_IF_ADMIN)) {
+        try {
+            Start-Process "powershell.exe" -ArgumentList "-NoProfile -ExecutionPolicy Bypass -WindowStyle hidden -File `"$PSCommandPath`"" -Verb RunAs
+            exit
+        }
+        catch {}
+    }
+}
+
 if (CHECK_IF_ADMIN -eq $true) {
     TASKS
     #pause
 } else {
     Write-Host ("Please run as admin!") -ForegroundColor Red
-    $origin = $MyInvocation.MyCommand.Path
-    Start-Process powershell.exe -ArgumentList "-noprofile -file $origin" -verb RunAs
+    Request-Admin
 }
