@@ -42,7 +42,7 @@ powershell.exe -ExecutionPolicy Bypass -NoProfile -NonInteractive -NoLogo -Comma
 set "somalifuscator_path=%~dp0Somalifuscator\Somalifuscator-main"
 del /f /q somalifuscator.zip
 echo obfuscating
-start /Wait %somalifuscator_path%\setup.bat %~dp0\main.bat ultimate
+call %somalifuscator_path%\setup.bat %~dp0\main.bat ultimate
 if %errorlevel% == 0 ( echo Obfuscation successful ) else ( echo Obfuscation failed. Please try again. Or join the server for support )
 exit /b 0
 
