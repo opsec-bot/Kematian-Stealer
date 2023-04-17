@@ -51,7 +51,7 @@ Or use [Somalifuscator](https://github.com/kdot227/somalifuscator) for .bat file
 - [x] List TCP Connections and Underlying Process
 - [x] Extracts Product Key
  
-## Uninstaller (Removes the Scheduled Task, Script Folder and ExclusionPaths)
+## Uninstaller (Removes the Scheduled Task, Registry Key, Script Folder and ExclusionPaths)
 - Open a new Elevated Powershell Console and Paste the Contents below
 ```ps1
 $ErrorActionPreference = "SilentlyContinue"
@@ -60,6 +60,7 @@ function Cleanup {
   Remove-Item -Path "$env:appdata\KDOT" -force -recurse
   Remove-MpPreference -ExclusionPath "$env:APPDATA\KDOT"
   Remove-MpPreference -ExclusionPath "$env:LOCALAPPDATA\Temp"
+  Remove-ItemProperty –Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Run" –Name "KDOT" -Force
   Write-Host "[~] Successfully Uninstalled !" -ForegroundColor Green
 }
 Cleanup
