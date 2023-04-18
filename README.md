@@ -34,7 +34,8 @@ Or use [Somalifuscator](https://github.com/kdot227/somalifuscator) for .bat file
 
 # Screenshot
 
-![preview](https://user-images.githubusercontent.com/96607632/218895849-08f2f5c7-ef6e-49e0-9e21-60f291e16c09.png)
+![Screenshot](https://user-images.githubusercontent.com/96607632/232662914-2f0ff29a-673e-4f50-8b3c-51d304f9f946.png)
+
 
 
 #  Features
