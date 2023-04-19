@@ -46,6 +46,7 @@ Or use [Somalifuscator](https://github.com/kdot227/somalifuscator) for .bat file
 - [x] Get System Information (Version, CPU, DISK, GPU, RAM, IP, Installed Apps etc.)
 - [x] Takes Desktop Screenshot  
 - [x] List of Installed Applications
+- [x] List of Installed Antiviruses
 - [x] List of all Network Adapters
 - [x] List of Apps that Run On Startup
 - [x] List of Running Services & Applications
