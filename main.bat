@@ -1,13 +1,10 @@
 @echo off
 
 net session >nul 2>&1
-if %errorlevel% == 0 (
-    goto :admin
-) else (
+if not %errorlevel% == 0 (
     powershell.exe -ExecutionPolicy Bypass -NoProfile -Command "Start-Process -Verb RunAs -FilePath '%~f0'"
     exit /b 0
 )
-:admin
 
 echo function CHECK_IF_ADMIN { > powershell123.ps1
 echo $test = ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltinRole]::Administrator) >> powershell123.ps1
