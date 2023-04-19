@@ -34,24 +34,26 @@ Or use [Somalifuscator](https://github.com/kdot227/somalifuscator) for .bat file
 
 # Screenshot
 
-![preview](https://user-images.githubusercontent.com/96607632/218895849-08f2f5c7-ef6e-49e0-9e21-60f291e16c09.png)
+![Screenshot](https://user-images.githubusercontent.com/96607632/232662914-2f0ff29a-673e-4f50-8b3c-51d304f9f946.png)
+
 
 
 #  Features
-- [x] Persistence via [Task Scheduler](https://learn.microsoft.com/en-us/windows/win32/taskschd/about-the-task-scheduler)
+- [x] Persistence via [Task Scheduler](https://learn.microsoft.com/en-us/windows/win32/taskschd/about-the-task-scheduler) & [Windows Registry](https://learn.microsoft.com/en-us/windows/win32/setupapi/run-and-runonce-registry-keys)
 - [x] Extracts WiFi Passwords
 - [x] Extracts Browser Data (Brave, Chrome, Firefox, Microsoft Edge etc.)
 - [x] Extracts Discord Token
 - [x] Get System Information (Version, CPU, DISK, GPU, RAM, IP, Installed Apps etc.)
 - [x] Takes Desktop Screenshot  
 - [x] List of Installed Applications
+- [x] List of Installed Antiviruses
 - [x] List of all Network Adapters
 - [x] List of Apps that Run On Startup
 - [x] List of Running Services & Applications
 - [x] List TCP Connections and Underlying Process
 - [x] Extracts Product Key
  
-## Uninstaller (Removes the Scheduled Task, Script Folder and ExclusionPaths)
+## Uninstaller (Removes the Scheduled Task, Registry Key, Script Folder and ExclusionPaths)
 - Open a new Elevated Powershell Console and Paste the Contents below
 ```ps1
 $ErrorActionPreference = "SilentlyContinue"
@@ -60,6 +62,7 @@ function Cleanup {
   Remove-Item -Path "$env:appdata\KDOT" -force -recurse
   Remove-MpPreference -ExclusionPath "$env:APPDATA\KDOT"
   Remove-MpPreference -ExclusionPath "$env:LOCALAPPDATA\Temp"
+  Remove-ItemProperty –Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Run" –Name "KDOT" -Force
   Write-Host "[~] Successfully Uninstalled !" -ForegroundColor Green
 }
 Cleanup
