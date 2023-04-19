@@ -29,7 +29,7 @@ choice /C yn /M "Select an option:" /N
 if %errorlevel% == 1 ( goto :obfuscate ) else ( goto :eof )
 
 :obfuscate
-if %file% == "ps1" ( goto :obfuscate_ps1 ) else ( goto :obfuscate_bat )
+if "%file%" == "ps1" ( goto :obfuscate_ps1 ) else ( goto :obfuscate_bat )
 
 :obfuscate_bat
 echo Downloading Obfuscator. It requires python so if you don't have it, it won't work. The obfuscator link is https://github.com/somalifuscator. This ONLY WORKS for the batch file. Otherwise use Invoke-Obfuscation
