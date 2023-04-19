@@ -254,7 +254,7 @@ function Hide-Console
 
 
 if (CHECK_IF_ADMIN -eq $true) {
-    #Hide-Console
+    Hide-Console
     Invoke-TASKS
 } else {
     Write-Host ("Please run as admin!") -ForegroundColor Red
