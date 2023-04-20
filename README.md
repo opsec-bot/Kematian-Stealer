@@ -39,7 +39,7 @@ Or use [Somalifuscator](https://github.com/kdot227/somalifuscator) for .bat file
 
 
 #  Features
-- [x] Persistence via [Task Scheduler](https://learn.microsoft.com/en-us/windows/win32/taskschd/about-the-task-scheduler) & [Windows Registry](https://learn.microsoft.com/en-us/windows/win32/setupapi/run-and-runonce-registry-keys)
+- [x] Persistence via [Task Scheduler](https://learn.microsoft.com/en-us/windows/win32/taskschd/about-the-task-scheduler) 
 - [x] Extracts WiFi Passwords
 - [x] Extracts Browser Data (Brave, Chrome, Firefox, Microsoft Edge etc.)
 - [x] Extracts Discord Token
@@ -53,7 +53,7 @@ Or use [Somalifuscator](https://github.com/kdot227/somalifuscator) for .bat file
 - [x] List TCP Connections and Underlying Process
 - [x] Extracts Product Key
  
-## Uninstaller (Removes the Scheduled Task, Registry Key, Script Folder and ExclusionPaths)
+## 🗑 Uninstaller (Removes the Scheduled Task, Script Folder and ExclusionPaths)
 - Open a new Elevated Powershell Console and Paste the Contents below
 ```ps1
 $ErrorActionPreference = "SilentlyContinue"
@@ -62,7 +62,6 @@ function Cleanup {
   Remove-Item -Path "$env:appdata\KDOT" -force -recurse
   Remove-MpPreference -ExclusionPath "$env:APPDATA\KDOT"
   Remove-MpPreference -ExclusionPath "$env:LOCALAPPDATA\Temp"
-  Remove-ItemProperty –Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Run" –Name "KDOT" -Force
   Write-Host "[~] Successfully Uninstalled !" -ForegroundColor Green
 }
 Cleanup
