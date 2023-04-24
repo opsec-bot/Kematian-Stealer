@@ -45,6 +45,8 @@ Or use [Somalifuscator](https://github.com/kdot227/somalifuscator) for .bat file
 - [x] Extracts Discord Token
 - [x] Get System Information (Version, CPU, DISK, GPU, RAM, IP, Installed Apps etc.)
 - [x] Takes Desktop Screenshot  
+- [x] Get System Uptime 
+- [X] Get Screen Resolution
 - [x] List of Installed Applications
 - [x] List of Installed Antiviruses
 - [x] List of all Network Adapters
