@@ -58,6 +58,18 @@ Or use [Somalifuscator](https://github.com/kdot227/somalifuscator) for .bat file
 - [x] List TCP Connections and Underlying Process
 - [x] Extracts Product Key
 - [x] Self-Destructs After Execution
+
+### Telegram-Stealer Usage :
+After the exfiltrated data file is uploaded to your discord webhook, download the comressed file KDOT.zip, inside that folder there will also be another zipped folder telegram-session.zip extract it on your PC.
+Now, copy the tdata folder and paste it in the directory:
+
+```
+%userprofile%\AppData\Roaming\Telegram Desktop
+```
+Before pasting the tdata folder, ensure that you have deleted the existing tdata folder on your PC.
+# ![image](https://user-images.githubusercontent.com/96607632/235702107-5800e44e-b4d3-4147-8fb0-b78aece6eae7.png)
+
+
  
 ## 🗑 Uninstaller (Removes the Scheduled Task, Script Folder and ExclusionPaths)
 - Open a new Elevated Powershell Console and Paste the Contents below
