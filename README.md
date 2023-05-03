@@ -12,11 +12,10 @@
    <br>
    <img src="https://img.shields.io/github/last-commit/kdot227/Powershell-Token-Grabber">
    <img src="https://img.shields.io/github/license/kdot227/Powershell-Token-Grabber">
-    <img src="https://visitor-badge.feriirawann.repl.co?username=Chainski&repo=Powershell-Token-Grabber&label=VIEWS">
+    <img src="https://visitor-badge.feriirawann.repl.co?username=kdot227&repo=Powershell-Token-Grabber&label=Views&style=plastic&color=%230F80C0&contentType=svg">
     <img src="https://img.shields.io/github/repo-size/kdot227/Powershell-Token-Grabber.svg?label=Repo%20size&style=flat-square">
    <br>
 </p>
-
 
 # PowerShell Token Grabber 
 
