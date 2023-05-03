@@ -9,15 +9,17 @@
    <img src="https://img.shields.io/github/stars/kdot227/Powershell-Token-Grabber.svg?color=yellow">
    <img src="https://img.shields.io/github/forks/kdot227/Powershell-Token-Grabber.svg?color=red">
    <img src="https://img.shields.io/github/issues/kdot227/Powershell-Token-Grabber.svg?color=green">
-   <img src="https://img.shields.io/badge/dynamic/json?label=Visitors&query=value&url=https%3A%2F%2Fapi.countapi.xyz%2Fhit%2FKDot227%2FPowerShell-Token-Grabber">
    <br>
    <img src="https://img.shields.io/github/last-commit/kdot227/Powershell-Token-Grabber">
    <img src="https://img.shields.io/github/license/kdot227/Powershell-Token-Grabber">
+  <img src="https://badges.strrl.dev/visits/kdot227/PowerShell-Token-Grabber">
     <img src="https://img.shields.io/github/repo-size/kdot227/Powershell-Token-Grabber.svg?label=Repo%20size&style=flat-square">
    <br>
 </p>
 
 # PowerShell Token Grabber 
+
+
 
 This tool is made for data exfiltration. All information collected is sent using discord webhooks.
 
