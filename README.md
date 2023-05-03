@@ -12,7 +12,7 @@
    <br>
    <img src="https://img.shields.io/github/last-commit/kdot227/Powershell-Token-Grabber">
    <img src="https://img.shields.io/github/license/kdot227/Powershell-Token-Grabber">
-    <img src="https://visitor-badge.feriirawann.repl.co?username=kdot227&repo=Powershell-Token-Grabber&label=Views&style=plastic&color=%230F80C0&contentType=svg">
+    <img src="https://img.shields.io/endpoint?color=green&url=https%3A%2F%2Fhits.dwyl.com%2Fkdot227%2FPowerShell-Token-Grabber.json">
     <img src="https://img.shields.io/github/repo-size/kdot227/Powershell-Token-Grabber.svg?label=Repo%20size&style=flat-square">
    <br>
 </p>
