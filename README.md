@@ -31,10 +31,7 @@ Use [Invoke-Obfuscation](https://github.com/danielbohannon/Invoke-Obfuscation). 
 Or use [Somalifuscator](https://github.com/kdot227/somalifuscator) for .bat files 
 
 # Screenshot
-
-![screenshot](https://user-images.githubusercontent.com/96607632/236484218-02cecb9b-f63d-477b-ae23-669ab683a76d.png)
-
-
+![screenshot](https://user-images.githubusercontent.com/96607632/236490140-201f4987-3569-4542-a769-41cf09574f2d.png)
 
 #  Features
 - [x] GUI Builder
