@@ -31,14 +31,12 @@ Use [Invoke-Obfuscation](https://github.com/danielbohannon/Invoke-Obfuscation). 
 Or use [Somalifuscator](https://github.com/kdot227/somalifuscator) for .bat files 
 
 # Screenshot
-
-![Screenshot](https://user-images.githubusercontent.com/96607632/232662914-2f0ff29a-673e-4f50-8b3c-51d304f9f946.png)
-
-
+![screenshot](https://user-images.githubusercontent.com/96607632/236490140-201f4987-3569-4542-a769-41cf09574f2d.png)
 
 #  Features
 - [x] GUI Builder
 - [x] Force UAC
+- [x] Anti-VM
 - [x] Persistence via [Task Scheduler](https://learn.microsoft.com/en-us/windows/win32/taskschd/about-the-task-scheduler) 
 - [x] Extracts WiFi Passwords
 - [x] Extracts Browser Data (Brave, Chrome, Firefox, Microsoft Edge etc.)
