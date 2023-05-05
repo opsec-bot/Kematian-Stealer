@@ -177,7 +177,7 @@ function Invoke-EXE {
     Move-Item -Path $somalifuscator_dir\main.exe -Destination $current_dir -Force
     $var_OUTPUT_BOX.Text += "Successfully Built EXE`n"
     #Remove-Item -Path $current_dir\main.bat -ErrorAction SilentlyContinue
-    #Remove-Item -Path $current_dir\main.bat.ultimate.bat -ErrorAction SilentlyContinue
+    Remove-Item -Path $current_dir\main.bat.ultimate.bat -ErrorAction SilentlyContinue
 }
 
 try {
