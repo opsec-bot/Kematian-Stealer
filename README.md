@@ -1,6 +1,3 @@
-# IMPORTANT
-THIS IS ALL FOR EDUCATIONAL PURPOSES I AM NOT RESPONSIBLE FOR ANYTHING (I love u github)
-
 <p align="center">
 <img src="https://i.postimg.cc/m2SSKrBt/Logo.gif", width="300", height="300">
 </p>
