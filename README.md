@@ -32,7 +32,7 @@ Or use [Somalifuscator](https://github.com/kdot227/somalifuscator) for .bat file
 
 # Screenshot
 
-![Screenshot](https://user-images.githubusercontent.com/96607632/232662914-2f0ff29a-673e-4f50-8b3c-51d304f9f946.png)
+![screenshot](https://user-images.githubusercontent.com/96607632/236484218-02cecb9b-f63d-477b-ae23-669ab683a76d.png)
 
 
 
