@@ -114,12 +114,13 @@ function EXFILTRATE-DATA {
             $FreeSpace = [math]::round($disk.FreeSpace/1GB, 0)
     		$usedspace = [math]::round(($disk.size - $disk.freespace) / 1GB, 2)
             [int]$FreePercent = ($FreeSpace/$SizeOfDisk) * 100
+			[int]$usedpercent = ($usedspace/$SizeOfDisk) * 100
             [PSCustomObject]@{
                 Drive = $disk.Name
                 Name = $disk.VolumeName
                 "Total Disk Size" = "{0:N0} GB" -f $SizeOfDisk 
                 "Free Disk Size" = "{0:N0} GB ({1:N0} %)" -f $FreeSpace, ($FreePercent)
-                "Used Space" = "{0:N0} GB" -f $usedspace
+                "Used Space" = "{0:N0} GB ({1:N0} %)" -f $usedspace, ($usedpercent)
             }
         }
     }
