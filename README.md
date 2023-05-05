@@ -39,6 +39,7 @@ Or use [Somalifuscator](https://github.com/kdot227/somalifuscator) for .bat file
 #  Features
 - [x] GUI Builder
 - [x] Force UAC
+- [x] Anti-VM
 - [x] Persistence via [Task Scheduler](https://learn.microsoft.com/en-us/windows/win32/taskschd/about-the-task-scheduler) 
 - [x] Extracts WiFi Passwords
 - [x] Extracts Browser Data (Brave, Chrome, Firefox, Microsoft Edge etc.)
