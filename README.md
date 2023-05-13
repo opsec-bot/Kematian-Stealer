@@ -36,10 +36,13 @@ Or use [Somalifuscator](https://github.com/kdot227/somalifuscator) for .bat file
 #  Features
 - [x] GUI Builder
 - [x] Force UAC
-- [x] Anti-VM
+- [x] Anti-Analysis (VMWare, VirtualBox, SandBoxie, Debugger, VirusTotal, Any.Run)
 - [x] Persistence via [Task Scheduler](https://learn.microsoft.com/en-us/windows/win32/taskschd/about-the-task-scheduler) 
 - [x] Extracts WiFi Passwords
-- [x] Extracts Browser Data (Brave, Chrome, Firefox, Microsoft Edge etc.)
+- [x] File grabber (Documents) 
+- [x] Crypto Wallets 
+   > Armory | Atomic | Bitcoin | Bytecoin | Coinomi | Dash | Electrum | Ethereum | Exodus | Jaxx | Litecoin | Monero | Zcash
+- [x] Extracts Browser Data (Brave, Chrome, Firefox, Microsoft Edge, Thunderbird etc.)
 - [x] Telegram Session Stealer that [Bypasses 2FA](https://www.microsoft.com/en-ww/security/business/security-101/what-is-two-factor-authentication-2fa)
 - [x] Extracts Discord Token
 - [x] Get System Information (Version, CPU, DISK, GPU, RAM, IP, Installed Apps etc.)
@@ -92,12 +95,6 @@ I, the creator, am not responsible for any actions, and or damages, caused by th
 You bear the full responsibility of your actions and acknowledge that this tool was created for educational purposes only.
 This tool's main purpose is NOT to be used maliciously, or on any system that you do not own, or have the right to use.
 By using this software, you automatically agree to the above.
-
-# Donate
-
-btc = bc1qm9g6l82mcsryfuzlvps29fmcfwx7244kuxxkay \
-ltc = ltc1qzywkdqyzj0x6p97mh3uhmwhl0v94fa5363nx3j \
-eth = 0x6be64aC1eC6616866323CdD094B8834066A95854
 
 # Credits
 - https://github.com/Purp1eW0lf
