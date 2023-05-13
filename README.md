@@ -101,4 +101,4 @@ By using this software, you automatically agree to the above.
 - https://github.com/KDot227
 - https://github.com/Chainski
 
-
+<p align="center"><a href=#top>Back to Top</a></p>
