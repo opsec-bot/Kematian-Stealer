@@ -30,7 +30,7 @@ This tool is made for data exfiltration. All information collected is sent using
 Use [Invoke-Obfuscation](https://github.com/danielbohannon/Invoke-Obfuscation). \
 Or use [Somalifuscator](https://github.com/kdot227/somalifuscator) for .bat files 
 
-# Screenshsots
+# Screenshots
   ### Builder
 > ![GUI](https://i.postimg.cc/XYGShDPP/builder.png)
 
