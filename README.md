@@ -39,7 +39,7 @@ Or use [Somalifuscator](https://github.com/kdot227/somalifuscator) for .bat file
 - [x] Anti-Analysis (VMWare, VirtualBox, SandBoxie, Debugger, VirusTotal, Any.Run)
 - [x] Persistence via [Task Scheduler](https://learn.microsoft.com/en-us/windows/win32/taskschd/about-the-task-scheduler) 
 - [x] Extracts WiFi Passwords
-- [x] File grabber (Documents) 
+- [x] File grabber (sensitive files: 2fa, backupcodes, seedphrases, passwords, etc.) 
 - [x] Crypto Wallets 
    > Armory | Atomic | Bitcoin | Bytecoin | Coinomi | Dash | Electrum | Ethereum | Exodus | Jaxx | Litecoin | Monero | Zcash
 - [x] Extracts Browser Data (Brave, Chrome, Firefox, Microsoft Edge, Thunderbird etc.)
