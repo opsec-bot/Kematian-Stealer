@@ -37,7 +37,8 @@ Or use [Somalifuscator](https://github.com/kdot227/somalifuscator) for .bat file
 
  ### Webhook Data
 > ![screenshot](https://user-images.githubusercontent.com/96607632/236490140-201f4987-3569-4542-a769-41cf09574f2d.png)
-> ![more data](https://github.com/Chainski/PowerShell-Token-Grabber/assets/96607632/f030c168-eb1c-4ee9-89d2-3551ddc53a7a)
+> ![more data](https://github.com/Chainski/PowerShell-Token-Grabber/assets/96607632/cfceaa6b-16d0-4a53-ad53-01052daccfcc)
+
 
 #  Features
 - [x] GUI Builder
