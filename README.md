@@ -107,11 +107,11 @@ By using this software, you automatically agree to the above.
 
 ```Yaml
 YARA Rule Info
-RULE Hash : eda1df8e3375891644fe9cac90852b0d
-Description :	Detects suspicious PowerShell code that performs reconnaissance tasks
 Name : SUSP_PS1_PowerShell_Recon_Mar23_1
-Author : Florian Roth
+RULE Hash : eda1df8e3375891644fe9cac90852b0d
+Description : Detects suspicious PowerShell code that performs reconnaissance tasks
 Rule Link : https://valhalla.nextron-systems.com/info/rule/SUSP_PS1_PowerShell_Recon_Mar23_1
+Rule Author : Florian Roth
 ```
 
 # Credits
