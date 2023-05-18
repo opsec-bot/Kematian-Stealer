@@ -5,17 +5,22 @@
 <h1 align="center">
 </h1>
 <p align= "center">
-  <img src="https://img.shields.io/github/languages/top/kdot227/Powershell-Token-Grabber">
-   <img src="https://img.shields.io/github/stars/kdot227/Powershell-Token-Grabber.svg?color=yellow">
-   <img src="https://img.shields.io/github/forks/kdot227/Powershell-Token-Grabber.svg?color=red">
-   <img src="https://img.shields.io/github/issues/kdot227/Powershell-Token-Grabber.svg?color=green">
-   <br>
-   <img src="https://img.shields.io/github/last-commit/kdot227/Powershell-Token-Grabber">
-   <img src="https://img.shields.io/github/license/kdot227/Powershell-Token-Grabber">
-    <img src="https://img.shields.io/endpoint?color=green&label=views&url=https%3A%2F%2Fhits.dwyl.com%2Fkdot%2FPowerShell-Token-Grabber.json">
+  <img src="https://img.shields.io/github/languages/top/kdot227/Powershell-Token-Grabber?color=blue">
+   <img src="https://img.shields.io/github/stars/kdot227/Powershell-Token-Grabber.svg?color=blue">
+   <img src="https://img.shields.io/github/forks/kdot227/Powershell-Token-Grabber.svg?color=blue">
+   <img src="https://img.shields.io/github/issues/kdot227/Powershell-Token-Grabber.svg?color=blue">
+  <img src="https://img.shields.io/github/commit-activity/m/kdot227/Powershell-Token-Grabber">
+  <img src="https://img.shields.io/badge/PowerShell-%E2%89%A5%20v3.0-blue">
+  <br>
+   <img src="https://img.shields.io/github/last-commit/kdot227/Powershell-Token-Grabber?color=blue">
+   <img src="https://img.shields.io/github/license/kdot227/Powershell-Token-Grabber?color=blue">
+   <img src="https://img.shields.io/github/contributors/Kdot227/Powershell-Token-Grabber?color=blue">
+    <img src="https://img.shields.io/endpoint?color=blue&label=views&url=https%3A%2F%2Fhits.dwyl.com%2Fkdot%2FPowerShell-Token-Grabber.json">
     <img src="https://img.shields.io/github/repo-size/kdot227/Powershell-Token-Grabber.svg?label=Repo%20size&style=flat-square">
+    <img src="https://img.shields.io/github/downloads/kdot227/PowerShell-Token-Grabber/total?color=blue">
    <br>
 </p>
+
 
 # PowerShell Token Grabber 
 
@@ -95,7 +100,7 @@ Cleanup
 ```
 
 # Need Help?
-- Join our server https://discord.com/invite/batch
+- [Join our discord server](https://discord.gg/eUvXnCAR5Z)
 
 # Bug Reports & Suggestions
 Found a bug? Have an idea? Let me know [here](https://github.com/KDot227/Powershell-Token-Grabber/issues), Please provide a detailed explanation of the expected behavior, actual behavior, and steps to reproduce, or what you want to see and how it could be done. You can be a small part of this project!
