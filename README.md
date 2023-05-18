@@ -28,7 +28,8 @@ This tool is made for data exfiltration. All information collected is sent using
 
 # Usage
 - Create a Webhook on your [Discord Server](https://discord.com). I recommend creating a new server.
-- Replace ```YOUR_WEBHOOK_HERE``` in [line 6](https://github.com/KDOT/Powershell-Token-Grabber/blob/main/main.ps1#L6) with your webhook.
+- Download ```main.ps1``` 
+- Replace ```YOUR_WEBHOOK_HERE``` in line 6 with your webhook.
 
 # Want to obfuscate the code ?
 Use [Invoke-Obfuscation](https://github.com/danielbohannon/Invoke-Obfuscation). \
