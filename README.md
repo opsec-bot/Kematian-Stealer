@@ -55,10 +55,10 @@ Or use [Somalifuscator](https://github.com/kdot227/somalifuscator) for .bat file
 - [x] Crypto Wallets 
    > Armory | Atomic | Bitcoin | Bytecoin | Coinomi | Dash | Electrum | Ethereum | Exodus | Guarda | Jaxx | Litecoin | Monero | Zcash
 - [x] Extracts Browser Data (Brave, Chrome, Firefox, Microsoft Edge, Thunderbird etc.)
-- [x] Telegram Session Stealer 
-- [x] Element Session Stealer 
-- [x] Signal Session Stealer 
-- [x] Steam Session Stealer 
+- [x] [Telegram](https://telegram.org) Session Stealer 
+- [x] [Element](https://element.io) Session Stealer 
+- [x] [Signal](https://signal.org) Session Stealer 
+- [x] [Steam](https://store.steampowered.com) Session Stealer 
 - [x] Extracts Discord Token
 - [x] Get System Information (Version, CPU, DISK, GPU, RAM, IP, Installed Apps etc.)
 - [x] Takes Desktop Screenshot  
