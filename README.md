@@ -59,7 +59,7 @@ Or use [Somalifuscator](https://github.com/kdot227/somalifuscator) for .bat file
 - [x] [Element](https://element.io) Session Stealer 
 - [x] [Signal](https://signal.org) Session Stealer 
 - [x] [Steam](https://store.steampowered.com) Session Stealer 
-- [x] Extracts Discord Token
+- [x] Extracts [Discord](https://discord.com) Token
 - [x] Get System Information (Version, CPU, DISK, GPU, RAM, IP, Installed Apps etc.)
 - [x] Takes Desktop Screenshot  
 - [x] Get System Uptime 
