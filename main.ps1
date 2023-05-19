@@ -1,4 +1,4 @@
-﻿$ErrorActionPreference = 'SilentlyContinue' # Igonore all warnings
+﻿$ErrorActionPreference = 'SilentlyContinue' # Ignore all warnings
 $ProgressPreference = 'SilentlyContinue' # Hide all Progresses
 
 function CHECK_IF_ADMIN {
