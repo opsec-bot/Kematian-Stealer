@@ -187,7 +187,7 @@ function Auto-Update {
     $current_file_content = Get-Content -Path $PSCommandPath
     if ($current_file_content -ne $downloaded) {
         $downloaded | Out-File -FilePath "$PSScriptRoot\builder.ps1"
-        & "$PSScriptRoot\builder.ps1"
+        Powershell.exe -NoProfile -ExecutionPolicy Bypass -File "$PSScriptRoot\builder.ps1"
         Exit
     } else {
         Write-Host "No update found"
