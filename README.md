@@ -21,7 +21,6 @@
    <br>
 </p>
 
-
 # PowerShell Token Grabber 
 
 This tool is made for data exfiltration. All information collected is sent using discord webhooks.
@@ -44,21 +43,21 @@ Or use [Somalifuscator](https://github.com/kdot227/somalifuscator) for .bat file
 > ![screenshot](https://user-images.githubusercontent.com/96607632/236490140-201f4987-3569-4542-a769-41cf09574f2d.png)
 > ![data](https://github.com/Chainski/PowerShell-Token-Grabber/assets/96607632/8a15c7d4-8d70-4d17-81c2-f9f602ccd81a)
 
-
 #  Features
 - [x] GUI Builder
-- [x] Force UAC
-- [x] Anti-Analysis (VMWare, VirtualBox, SandBoxie, Debugger, VirusTotal, Any.Run)
+- [x] Force [UAC](https://learn.microsoft.com/en-us/windows/security/identity-protection/user-account-control/how-user-account-control-works)
+- [x] Anti-Analysis ```VMWare, VirtualBox, Sandboxes, Emulators, Debuggers, Virustotal, Any.run```
 - [x] Persistence via [Task Scheduler](https://learn.microsoft.com/en-us/windows/win32/taskschd/about-the-task-scheduler) 
 - [x] Extracts WiFi Passwords
-- [x] File grabber (sensitive files: ```2fa, backupcodes, seedphrases, passwords, etc.```) 
+- [x] File grabber ```2fa, backupcodes, seedphrases, passwords, etc.``` 
+- [x] Session Stealers
+  - [Telegram](https://telegram.org) 
+  - [Element](https://element.io) 
+  - [Signal](https://signal.org) 
+  - [Steam](https://store.steampowered.com) 
 - [x] Crypto Wallets 
    > Armory | Atomic | Bitcoin | Bytecoin | Coinomi | Dash | Electrum | Ethereum | Exodus | Guarda | Jaxx | Litecoin | Monero | Zcash
 - [x] Extracts Browser Data (Brave, Chrome, Firefox, Microsoft Edge, Thunderbird etc.)
-- [x] [Telegram](https://telegram.org) Session Stealer 
-- [x] [Element](https://element.io) Session Stealer 
-- [x] [Signal](https://signal.org) Session Stealer 
-- [x] [Steam](https://store.steampowered.com) Session Stealer 
 - [x] Extracts [Discord](https://discord.com) Token
 - [x] Get System Information (Version, CPU, DISK, GPU, RAM, IP, Installed Apps etc.)
 - [x] Takes Desktop Screenshot  

