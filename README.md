@@ -43,7 +43,6 @@ Or use [Somalifuscator](https://github.com/kdot227/somalifuscator) for .bat file
 > ![screenshot](https://user-images.githubusercontent.com/96607632/236490140-201f4987-3569-4542-a769-41cf09574f2d.png)
 > ![data](https://github.com/Chainski/PowerShell-Token-Grabber/assets/96607632/8a15c7d4-8d70-4d17-81c2-f9f602ccd81a)
 
-
 #  Features
 - [x] GUI Builder
 - [x] Force [UAC](https://learn.microsoft.com/en-us/windows/security/identity-protection/user-account-control/how-user-account-control-works)
