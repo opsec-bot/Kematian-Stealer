@@ -1,4 +1,4 @@
-﻿Add-Type -AssemblyName PresentationFramework
+Add-Type -AssemblyName PresentationFramework
 Add-Type -AssemblyName System.Windows.Forms
 Add-Type -Name Window -Namespace Console -MemberDefinition '
 [DllImport("Kernel32.dll")]
@@ -180,22 +180,6 @@ function Invoke-EXE {
     Remove-Item -Path $current_dir\main.bat.ultimate.bat -ErrorAction SilentlyContinue
 }
 
-function Auto-Update {
-    $url = "https://raw.githubusercontent.com/KDot227/Powershell-Token-Grabber/main/builder.ps1"
-    $downloaded = Invoke-WebRequest -Uri $url -UseBasicParsing
-    $downloaded = $downloaded.Content
-    $current_file_content = Get-Content -Path $PSCommandPath
-    if ($current_file_content -ne $downloaded) {
-        Set-Content -Path $PSCommandPath -Value $downloaded -Force
-        powershell.exe -NoProfile -ExecutionPolicy Bypass -File $PSCommandPath
-        Exit
-    } else {
-        Write-Host "No update found"
-    }
-}
-
-Auto-Update
-
 try {
     $current_dir = Get-Location
     $somalifuscator_dir = $current_dir.ToString() + "\somalifuscator\Somalifuscator-main"
@@ -205,4 +189,3 @@ try {
 }
 
 Invoke-UI
-
