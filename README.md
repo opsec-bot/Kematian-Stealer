@@ -21,7 +21,6 @@
    <br>
 </p>
 
-
 # PowerShell Token Grabber 
 
 This tool is made for data exfiltration. All information collected is sent using discord webhooks.
