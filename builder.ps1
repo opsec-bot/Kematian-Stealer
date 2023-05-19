@@ -186,7 +186,7 @@ function Auto-Update {
     $downloaded = $downloaded.Content
     $current_file_content = Get-Content -Path $PSCommandPath
     if ($current_file_content -ne $downloaded) {
-        $downloaded | Out-File -FilePath "$PSScriptRoot\builder.ps1"
+        $downloaded | Out-File -FilePath "$PSScriptRoot\builder.ps1" -Encoding UTF8
         Powershell.exe -NoProfile -ExecutionPolicy Bypass -File "$PSScriptRoot\builder.ps1"
         Exit
     } else {
