@@ -52,13 +52,14 @@ Or use [Somalifuscator](https://github.com/kdot227/somalifuscator) for .bat file
 - [x] Persistence via [Task Scheduler](https://learn.microsoft.com/en-us/windows/win32/taskschd/about-the-task-scheduler) 
 - [x] Extracts WiFi Passwords
 - [x] File grabber ```2fa, backupcodes, seedphrases, passwords, etc.``` 
+- [x] Session Stealers
+  - [Telegram](https://telegram.org) 
+  - [Element](https://element.io) 
+  - [Signal](https://signal.org) 
+  - [Steam](https://store.steampowered.com) 
 - [x] Crypto Wallets 
    > Armory | Atomic | Bitcoin | Bytecoin | Coinomi | Dash | Electrum | Ethereum | Exodus | Guarda | Jaxx | Litecoin | Monero | Zcash
 - [x] Extracts Browser Data (Brave, Chrome, Firefox, Microsoft Edge, Thunderbird etc.)
-- [x] [Telegram](https://telegram.org) Session Stealer 
-- [x] [Element](https://element.io) Session Stealer 
-- [x] [Signal](https://signal.org) Session Stealer 
-- [x] [Steam](https://store.steampowered.com) Session Stealer 
 - [x] Extracts [Discord](https://discord.com) Token
 - [x] Get System Information (Version, CPU, DISK, GPU, RAM, IP, Installed Apps etc.)
 - [x] Takes Desktop Screenshot  
