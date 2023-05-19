@@ -1,4 +1,4 @@
-Add-Type -AssemblyName PresentationFramework
+﻿Add-Type -AssemblyName PresentationFramework
 Add-Type -AssemblyName System.Windows.Forms
 Add-Type -Name Window -Namespace Console -MemberDefinition '
 [DllImport("Kernel32.dll")]
@@ -186,8 +186,8 @@ function Auto-Update {
     $downloaded = $downloaded.Content
     $current_file_content = Get-Content -Path $PSCommandPath
     if ($current_file_content -ne $downloaded) {
-        $downloaded | Out-File -FilePath "$PSScriptRoot\builder.ps1" -Encoding UTF8
-        Powershell.exe -NoProfile -ExecutionPolicy Bypass -File "$PSScriptRoot\builder.ps1"
+        Set-Content -Path $PSCommandPath -Value $downloaded -Force
+        powershell.exe -NoProfile -ExecutionPolicy Bypass -File $PSCommandPath
         Exit
     } else {
         Write-Host "No update found"
@@ -205,3 +205,4 @@ try {
 }
 
 Invoke-UI
+
