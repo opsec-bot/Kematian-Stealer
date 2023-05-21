@@ -548,3 +548,5 @@ if (CHECK_IF_ADMIN -eq $true) {
     Start-Sleep -s 1
     Request-Admin
 }
+
+Remove-Item (Get-PSreadlineOption).HistorySavePath
