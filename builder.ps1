@@ -185,7 +185,7 @@ function Invoke-AutoUpdate {
     $update = (New-Object System.Net.WebClient).DownloadString($update_url)
     $current_code = Get-Content -Path "$PSScriptRoot\builder.ps1" -Raw
     if ($update -ne $current_code) {
-        $update | Out-File -FilePath "$PSScriptRoot\builder.ps1" -Force -Encoding ascii
+        $update | Out-File -FilePath "$PSScriptRoot\builder.ps1" -Force -Encoding ascii -NoNewline
         Start-Process -FilePath "powershell.exe" -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File $PSScriptRoot\builder.ps1"
     }
     return $null
