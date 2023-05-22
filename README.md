@@ -55,6 +55,7 @@ Or use [Somalifuscator](https://github.com/kdot227/somalifuscator) for .bat file
   - [Element](https://element.io) 
   - [Signal](https://signal.org) 
   - [Steam](https://store.steampowered.com) 
+  - [Minecraft](https://minecraft.net)
 - [x] Crypto Wallets 
    > Armory | Atomic | Bitcoin | Bytecoin | Coinomi | Dash | Electrum | Ethereum | Exodus | Guarda | Jaxx | Litecoin | Monero | Zcash
 - [x] Extracts Browser Data (Brave, Chrome, Firefox, Microsoft Edge, Thunderbird etc.)
