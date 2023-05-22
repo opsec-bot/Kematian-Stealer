@@ -16,7 +16,7 @@ $wpf_code = @'
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
-        Title="Powershell Token Grabber | K.Dot#4044" Height="500" Width="818" WindowStyle="ThreeDBorderWindow" ResizeMode="NoResize">
+        Title="Powershell Token Grabber | K.Dot#4044" Height="500" Width="850" WindowStyle="ThreeDBorderWindow" ResizeMode="NoResize">
     <Window.Resources>
         <ResourceDictionary>
             <Style x:Key="CustomButtonStyle" TargetType="{x:Type Button}">
@@ -38,27 +38,35 @@ $wpf_code = @'
     </Window.Resources>
     <Grid x:Name="Name_Thing" Background="#846DCF">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="68*"/>
-            <ColumnDefinition Width="341*"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition/>
         </Grid.ColumnDefinitions>
-        <TextBox HorizontalAlignment="Left" Height="94" Margin="10,5,0,0" TextWrapping="Wrap" Text="Powershell Token Grabber Builder" VerticalAlignment="Top" Width="783" IsReadOnly="True" FontSize="18" BorderThickness="4,4,4,4" Background="Black" Foreground="White" IsHitTestVisible="False" Grid.ColumnSpan="2">
+        <TextBox HorizontalAlignment="Center" Height="94" Margin="0,5,0,0" TextWrapping="Wrap" Text="Powershell Token Grabber Builder" VerticalAlignment="Top" Width="798" IsReadOnly="True" FontSize="18" BorderThickness="4,4,4,4" Background="Black" Foreground="White" IsHitTestVisible="False" Grid.Column="1">
             <TextBox.BorderBrush>
                 <SolidColorBrush Color="#FF1AFB00" Opacity="1"/>
             </TextBox.BorderBrush>
         </TextBox>
         <TextBox x:Name="OUTPUT_BOX" VerticalScrollBarVisibility="Auto" HorizontalAlignment="Left" Height="203" Margin="10,152,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="410" Background="Black" Foreground="White" BorderBrush="#FF1AFB00" BorderThickness="4,4,4,4" Grid.ColumnSpan="2"/>
-        <Label Content="OUTPUT" HorizontalAlignment="Left" Height="28" Margin="47,119,0,0" VerticalAlignment="Top" Width="64" FontFamily="Impact" FontSize="18" Grid.Column="1"/>
-        <Button x:Name="Ps1_Button" Content="Build PS1" Style="{StaticResource CustomButtonStyle}" HorizontalAlignment="Left" Height="88" Margin="311,152,0,0" VerticalAlignment="Top" Width="346" FontFamily="Sitka Text Semibold" FontSize="20" Background="Black" Foreground="White" BorderBrush="#FF1AFB00" BorderThickness="4,4,4,4" Grid.Column="1"/>
-        <Button x:Name="Bat_Button" Content="Build BAT" Style="{StaticResource CustomButtonStyle}" HorizontalAlignment="Left" Height="87" Margin="311,247,0,0" VerticalAlignment="Top" Width="346" FontFamily="Sitka Small Semibold" FontSize="20" Background="Black" Foreground="White" BorderBrush="#FF1AFB00" BorderThickness="4,4,4,4" Grid.Column="1"/>
-        <Button x:Name="Exe_Button" Content="Build Exe" Style="{StaticResource CustomButtonStyle}" HorizontalAlignment="Left" Height="102" Margin="311,342,0,0" VerticalAlignment="Top" Width="346" FontFamily="Sitka Small Semibold" FontSize="20" Background="Black" Foreground="White" BorderBrush="#FF1AFB00" BorderThickness="4,4,4,4" Grid.Column="1"/>
+        <Label Content="OUTPUT" HorizontalAlignment="Left" Height="28" Margin="152,119,0,0" VerticalAlignment="Top" Width="64" FontFamily="Impact" FontSize="18" Grid.Column="1"/>
+        <Button x:Name="Ps1_Button" Content="Build PS1" Style="{StaticResource CustomButtonStyle}" HorizontalAlignment="Left" Height="48" Margin="462,282,0,0" VerticalAlignment="Top" Width="346" FontFamily="Sitka Text Semibold" FontSize="20" Background="Black" Foreground="White" BorderBrush="#FF1AFB00" BorderThickness="4,4,4,4" Grid.Column="1"/>
+        <Button x:Name="Bat_Button" Content="Build BAT" Style="{StaticResource CustomButtonStyle}" HorizontalAlignment="Left" Height="48" Margin="462,335,0,0" VerticalAlignment="Top" Width="346" FontFamily="Sitka Small Semibold" FontSize="20" Background="Black" Foreground="White" BorderBrush="#FF1AFB00" BorderThickness="4,4,4,4" Grid.Column="1"/>
+        <Button x:Name="Exe_Button" Content="Build Exe" Style="{StaticResource CustomButtonStyle}" HorizontalAlignment="Left" Height="48" Margin="462,388,0,0" VerticalAlignment="Top" Width="346" FontFamily="Sitka Small Semibold" FontSize="20" Background="Black" Foreground="White" BorderBrush="#FF1AFB00" BorderThickness="4,4,4,4" Grid.Column="1"/>
         <TextBox x:Name="WEBHOOK_BOX" VerticalScrollBarVisibility="Auto" HorizontalAlignment="Left" Height="53" Margin="10,391,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="348" Background="Black" Foreground="White" BorderBrush="#FF1AFB00" BorderThickness="4,4,4,4" Grid.ColumnSpan="2"/>
         <Label Content="ENTER WEBHOOK&#xD;&#xA;" HorizontalAlignment="Left" Height="28" Margin="121,358,0,0" VerticalAlignment="Top" Width="126" FontFamily="Impact" FontSize="18" Grid.ColumnSpan="2"/>
-        <Button x:Name="CHECK_BUTTON" Grid.Column="1" Content="Check" HorizontalAlignment="Left" Height="53" Margin="227,391,0,0" VerticalAlignment="Top" Width="57" FontFamily="Impact" FontSize="18" Background="Black" Foreground="White"/>
+        <Button x:Name="CHECK_BUTTON" Grid.Column="1" Content="Check" HorizontalAlignment="Left" Height="53" Margin="363,391,0,0" VerticalAlignment="Top" Width="58" FontFamily="Impact" FontSize="18" Background="Black" Foreground="White"/>
+        <Image Grid.Column="1" Height="NaN" Margin="478,70,26,149" Source="https://i.postimg.cc/m2SSKrBt/Logo.gif" Stretch="Fill" Width="NaN"/>
     </Grid>
 </Window>
 '@
 
 function Invoke-UI {
+    if (Invoke-CheckUpdate) {
+        $update_box = [System.Windows.MessageBox]::Show("There is an update available, do you want to update?", "Update?", [System.Windows.MessageBoxButton]::YesNo, [System.Windows.MessageBoxImage]::Question)
+        if ($update_box -eq "Yes") {
+            Invoke-AutoUpdate
+        }
+    }
+
     $inputXML = $wpf_code -replace 'mc:Ignorable="d"', '' -replace "x:N", 'N' -replace '^<Win.*', '<Window' -replace 'comethazine.png', $image_name_path -replace 'logo.ico', $icon_name_path
     [XML]$XAML = $inputXML
 
@@ -75,11 +83,7 @@ function Invoke-UI {
     })
 
     $xaml.SelectNodes("//*[@Name]") | ForEach-Object {
-        try {
-            Set-Variable -Name "var_$($_.Name)" -Value $window.FindName($_.Name) -ErrorAction SilentlyContinue
-        } catch {
-            $null
-        }
+        Set-Variable -Name "var_$($_.Name)" -Value $window.FindName($_.Name) -ErrorAction SilentlyContinue
     }
     Get-Variable var_* > $null
     
@@ -183,16 +187,21 @@ function Invoke-EXE {
 function Invoke-AutoUpdate {
     $update_url = "https://raw.githubusercontent.com/KDot227/Powershell-Token-Grabber/main/builder.ps1"
     $update = (New-Object System.Net.WebClient).DownloadString($update_url)
-    $current_code = Get-Content -Path "$PSScriptRoot\builder.ps1" -Raw
-    if ($update -ne $current_code) {
-        $update | Out-File -FilePath "$PSScriptRoot\builder.ps1" -Force -Encoding ascii -NoNewline
-        Start-Process -FilePath "powershell.exe" -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File $PSScriptRoot\builder.ps1"
-        Stop-Process -Id $PID
-    }
+    $update | Out-File -FilePath "$PSScriptRoot\builder.ps1" -Force -Encoding ascii -NoNewline
+    Start-Process -FilePath "powershell.exe" -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File $PSScriptRoot\builder.ps1"
+    Stop-Process -Id $PID
     return $null
 }
 
-Invoke-AutoUpdate
+function Invoke-CheckUpdate {
+    $update_url = "https://raw.githubusercontent.com/KDot227/Powershell-Token-Grabber/main/builder.ps1"
+    $update = (New-Object System.Net.WebClient).DownloadString($update_url)
+    $current_code = Get-Content -Path "$PSScriptRoot\builder.ps1" -Raw
+    if ($update -ne $current_code) {
+        return $True
+    }
+    return $False
+}
 
 try {
     $current_dir = Get-Location
