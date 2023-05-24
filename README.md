@@ -1,5 +1,5 @@
 <p align="center">
-<img src="https://i.postimg.cc/m2SSKrBt/Logo.gif", width="300", height="300">
+<img src="https://i.postimg.cc/502twQyx/PTG.gif", width="300", height="300">
 </p>
 
 <h1 align="center">
@@ -23,12 +23,14 @@
 
 # PowerShell Token Grabber 
 
-This tool is made for data exfiltration. All information collected is sent using discord webhooks.
+This tool is made for data exfiltration. All information collected is sent using [Discord webhooks](https://support.discord.com/hc/en-us/articles/228383668-Intro-to-Webhooks).
 
 # Usage
 - Create a Webhook on your [Discord Server](https://discord.com). I recommend creating a new server.
+- After creating a server go to ```Edit channel``` > ```Integrations``` > ```Webhooks``` > ```Create Webhook```
+- Copy the ```Webhook URL```
 - Download ```main.ps1``` 
-- Open ```main.ps1``` and replace ```YOUR_WEBHOOK_HERE``` in line 448 with your webhook or use the [builder](https://github.com/KDot227/Powershell-Token-Grabber/blob/main/builder.ps1).
+- Open ```main.ps1``` and replace ```YOUR_WEBHOOK_HERE``` in line 461 with your webhook or use the [builder](https://github.com/KDot227/Powershell-Token-Grabber/blob/main/builder.ps1).
 
 # Want to obfuscate the code ?
 Use [Invoke-Obfuscation](https://github.com/danielbohannon/Invoke-Obfuscation). \
@@ -38,13 +40,13 @@ Or use [Somalifuscator](https://github.com/kdot227/somalifuscator) for .bat file
   ### Builder
 > ![GUI](https://i.postimg.cc/XYGShDPP/builder.png)
 
-
  ### Webhook Data
 > ![screenshot](https://user-images.githubusercontent.com/96607632/236490140-201f4987-3569-4542-a769-41cf09574f2d.png)
 > ![data](https://github.com/Chainski/PowerShell-Token-Grabber/assets/96607632/8a15c7d4-8d70-4d17-81c2-f9f602ccd81a)
 
 #  Features
 - [x] GUI Builder
+- [x] [Mutex](https://learn.microsoft.com/en-us/dotnet/api/system.threading.mutex?view=net-7.0) (single instance)
 - [x] Force [UAC](https://learn.microsoft.com/en-us/windows/security/identity-protection/user-account-control/how-user-account-control-works)
 - [x] Anti-Analysis ```VMWare, VirtualBox, Sandboxes, Emulators, Debuggers, Virustotal, Any.run```
 - [x] Persistence via [Task Scheduler](https://learn.microsoft.com/en-us/windows/win32/taskschd/about-the-task-scheduler) 
