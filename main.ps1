@@ -502,7 +502,7 @@ function Invoke-ANTIVM {
             "autoruns",
             "autorunsc",
             "dumpcap",
-            "Fiddler",
+            "fiddler",
             "fakenet",
             "hookexplorer",
             "immunitydebugger",
