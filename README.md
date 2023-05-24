@@ -23,7 +23,7 @@
 
 # PowerShell Token Grabber 
 
-This tool is made for data exfiltration. All information collected is sent using discord webhooks.
+This tool is made for data exfiltration. All information collected is sent using [Discord webhooks](https://support.discord.com/hc/en-us/articles/228383668-Intro-to-Webhooks).
 
 # Usage
 - Create a Webhook on your [Discord Server](https://discord.com). I recommend creating a new server.
