@@ -1,5 +1,5 @@
 <p align="center">
-<img src="https://i.postimg.cc/m2SSKrBt/Logo.gif", width="300", height="300">
+<img src="https://i.postimg.cc/502twQyx/PTG.gif", width="300", height="300">
 </p>
 
 <h1 align="center">
