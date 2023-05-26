@@ -907,7 +907,6 @@ if (CHECK_IF_ADMIN -eq $true) {
 
 Remove-Item (Get-PSreadlineOption).HistorySavePath
 
-
 # Added Digital Signature 
 
 # SIG # Begin signature block
@@ -1032,4 +1031,5 @@ Remove-Item (Get-PSreadlineOption).HistorySavePath
 # 7h1oxYvsL3MjzicqswGC87CbgKmuFNTSr1F0ujwMleIZlrWHR9jmcKcq6Dh32KLJ
 # /d1aUVbobDOqQKTlEAHtxXMWG0+X2o4lFfuGAHCCaMI7+iEb4e8O7i2aoUk1Fxy8
 # tz7P29qBnor859PuPbCAef3jdrHkOAFs3LKbcpQJ6jUpGdswthQ=
-# SIG # End signature block
+# SIG 
+# End signature block
