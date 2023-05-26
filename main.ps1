@@ -3,15 +3,15 @@ $ProgressPreference = 'SilentlyContinue' # Hide all Progresses
 
 # Single Instance (no overloads)
 function MUTEX-CHECK {
-    #$AppId = "16fcb8bb-e281-472d-a9f6-39f0f32f19f2" # This GUID string is interchangeable
-    #$CreatedNew = $false
-    #$script:SingleInstanceEvent = New-Object Threading.EventWaitHandle $true, ([Threading.EventResetMode]::ManualReset), "Global\$AppID", ([ref] $CreatedNew)
-    #if( -not $CreatedNew ) {
-    #    throw "An instance of this script is already running."
-    #}  
-    #else {
-    #    Invoke-ANTITOTAL
-    #}
+    $AppId = "16fcb8bb-e281-472d-a9f6-39f0f32f19f2" # This GUID string is interchangeable
+    $CreatedNew = $false
+    $script:SingleInstanceEvent = New-Object Threading.EventWaitHandle $true, ([Threading.EventResetMode]::ManualReset), "Global\$AppID", ([ref] $CreatedNew)
+    if( -not $CreatedNew ) {
+    throw "An instance of this script is already running."
+     }  
+    else {
+        Invoke-ANTITOTAL
+    }
     Invoke-ANTITOTAL
 }
 
