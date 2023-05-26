@@ -90,7 +90,7 @@ Or use [Somalifuscator](https://github.com/kdot227/somalifuscator) for .bat file
 
 ### Telegram Session Stealer Usage :
 After the exfiltrated data is uploaded to your discord webhook, download the compressed file ```KDOT.zip```, extract it on your PC, inside that folder there will also be another subfolder ```Messaging Sessions``` , inside this subfolder you will find the ```Telegram``` folder.
-Now, copy the tdata folder and paste it in the directory below:
+Now, copy the tdata folder from ```Telegram``` folder and paste it in the directory below:
 
 ```
 %userprofile%\AppData\Roaming\Telegram Desktop
