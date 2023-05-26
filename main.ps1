@@ -667,8 +667,6 @@ function Get-WebCamImage {
     Where-Object { $_.FormatDescription -eq "JPEG" }  
         
     Add-Type -TypeDefinition $source -ReferencedAssemblies System.Windows.Forms, System.Data, System.Drawing  | Out-Null
-
-
     try {
         #region Import the Assemblies 
         [reflection.assembly]::loadwithpartialname("System.Windows.Forms") | Out-Null 
