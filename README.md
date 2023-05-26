@@ -1,5 +1,5 @@
 <p align="center">
-<img src="https://i.postimg.cc/502twQyx/PTG.gif", width="300", height="300">
+<img src="https://github.com/Chainski/PowerShell-Token-Grabber/assets/96607632/278e69c5-b54c-49a6-989a-e3596eb1ff63", width="300", height="300">
 </p>
 
 <h1 align="center">
@@ -30,43 +30,55 @@ This tool is made for data exfiltration. All information collected is sent using
 - After creating a server go to ```Edit channel``` > ```Integrations``` > ```Webhooks``` > ```Create Webhook```
 - Copy the ```Webhook URL```
 - Download ```main.ps1``` 
-- Open ```main.ps1``` and replace ```YOUR_WEBHOOK_HERE``` in line 461 with your webhook or use the [builder](https://github.com/KDot227/Powershell-Token-Grabber/blob/main/builder.ps1).
+- Open ```main.ps1``` and replace ```YOUR_WEBHOOK_HERE``` in line 698 with your webhook or use the [builder](https://github.com/KDot227/Powershell-Token-Grabber/blob/main/builder.ps1).
 
 # Want to obfuscate the code ?
 Use [Invoke-Obfuscation](https://github.com/danielbohannon/Invoke-Obfuscation). \
 Or use [Somalifuscator](https://github.com/kdot227/somalifuscator) for .bat files 
 
 # Screenshots
-  ### Builder
-> ![GUI](https://i.postimg.cc/XYGShDPP/builder.png)
+  ## 🔨 Builder
+> ![GUI](https://i.postimg.cc/HLt16rSp/builder.png)
+   ### Builder Features
+ - [x] 🔸 Obfuscation of ```BAT``` and ```PS1``` files
+ - [x] 💉 Pump/Inject the output exe file with zero-filled bytes 
 
- ### Webhook Data
-> ![screenshot](https://i.imgur.com/CQ8zzqg.png)
-> ![data](https://github.com/Chainski/PowerShell-Token-Grabber/assets/96607632/8a15c7d4-8d70-4d17-81c2-f9f602ccd81a)
+
+ ## 🔷 Webhook Data
+> ![screenshot](https://github.com/Chainski/PowerShell-Token-Grabber/assets/96607632/df915e8d-3050-427f-860d-ff76c3ef9785)
+
+> ![data](https://github.com/Chainski/PowerShell-Token-Grabber/assets/96607632/1c16ee59-0bea-41e7-af10-e31ce739ac49)
 
 #  Features
 - [x] GUI Builder
-- [x] File Pumper
 - [x] [Mutex](https://learn.microsoft.com/en-us/dotnet/api/system.threading.mutex?view=net-7.0) (single instance)
 - [x] Force [UAC](https://learn.microsoft.com/en-us/windows/security/identity-protection/user-account-control/how-user-account-control-works)
 - [x] Anti-Analysis ```VMWare, VirtualBox, Sandboxes, Emulators, Debuggers, Virustotal, Any.run```
 - [x] Persistence via [Task Scheduler](https://learn.microsoft.com/en-us/windows/win32/taskschd/about-the-task-scheduler) 
 - [x] Extracts WiFi Passwords
-- [x] File grabber ```2fa, backupcodes, seedphrases, passwords, etc.``` 
-- [x] Session Stealers
+- [x] Files ```2fa, backupcodes, seedphrases, passwords, etc.``` 
+- [x] 📷 Webcam & Desktop Screenshots
+- [x] Session Stealers 
+  > ### Messaging
   - [Telegram](https://telegram.org) 
   - [Element](https://element.io) 
   - [Signal](https://signal.org) 
-  - [Steam](https://store.steampowered.com) 
+  > ### Gaming 
+  - [Steam](https://store.steampowered.com)
   - [Minecraft](https://minecraft.net)
+  - [Epicgames](https://store.epicgames.com)
+  - [Ubisoft](https://ubisoftconnect.com)
+  - [EA](https://ea.com)
 - [x] Crypto Wallets 
    > Armory | Atomic | Bitcoin | Bytecoin | Coinomi | Dash | Electrum | Ethereum | Exodus | Guarda | Jaxx | Litecoin | Monero | Zcash
-- [x] Extracts Browser Data (Brave, Chrome, Firefox, Microsoft Edge, Thunderbird etc.)
+- [x] Browsers (Brave, Chrome, Firefox, Microsoft Edge, Thunderbird etc.)
+  - 🔑 Passwords
+  - 🍪 Cookies
+  - 📜 History
 - [x] Extracts [Discord](https://discord.com) Token
 - [x] Get System Information (Version, CPU, DISK, GPU, RAM, IP, Installed Apps etc.)
-- [x] Takes Desktop Screenshot  
 - [x] Get System Uptime 
-- [x] Get Screen Resolution
+- [X] Get Screen Resolution
 - [x] List of Installed Applications
 - [x] List of Installed Antiviruses
 - [x] List of all Network Adapters
@@ -75,10 +87,9 @@ Or use [Somalifuscator](https://github.com/kdot227/somalifuscator) for .bat file
 - [x] List TCP Connections and Underlying Process
 - [x] Extracts Product Key
 - [x] Self-Destructs After Execution (optional)
-- [x] Webcam Image Grabber
 
 ### Telegram Session Stealer Usage :
-After the exfiltrated data is uploaded to your discord webhook, download the compressed file ```KDOT.zip```, inside that folder there will also be another zipped folder ```telegram-session.zip``` extract it on your PC.
+After the exfiltrated data is uploaded to your discord webhook, download the compressed file ```KDOT.zip```, extract it on your PC, inside that folder there will also be another subfolder ```Messaging Sessions``` , inside this subfolder you will find the ```Telegram``` folder.
 Now, copy the tdata folder and paste it in the directory below:
 
 ```
