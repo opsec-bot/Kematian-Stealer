@@ -49,7 +49,6 @@ Or use [Somalifuscator](https://github.com/kdot227/somalifuscator) for .bat file
 
 > ![data](https://github.com/Chainski/PowerShell-Token-Grabber/assets/96607632/1c16ee59-0bea-41e7-af10-e31ce739ac49)
 
-
 #  Features
 - [x] GUI Builder
 - [x] [Mutex](https://learn.microsoft.com/en-us/dotnet/api/system.threading.mutex?view=net-7.0) (single instance)
@@ -59,12 +58,12 @@ Or use [Somalifuscator](https://github.com/kdot227/somalifuscator) for .bat file
 - [x] Extracts WiFi Passwords
 - [x] Files ```2fa, backupcodes, seedphrases, passwords, etc.``` 
 - [x] 📷 Webcam & Desktop Screenshots
-## Session Stealers
-  ### Messaging
+- [x] Session Stealers 
+  > ### Messaging
   - [Telegram](https://telegram.org) 
   - [Element](https://element.io) 
   - [Signal](https://signal.org) 
-  ### Gaming 
+  > ### Gaming 
   - [Steam](https://store.steampowered.com)
   - [Minecraft](https://minecraft.net)
   - [Epicgames](https://store.epicgames.com)
