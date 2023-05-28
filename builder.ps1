@@ -224,46 +224,6 @@ function Invoke-CheckUpdate {
     return $False
 }
 
-function Create-Var() {
-    $set = "abcdefghijkmnopqrstuvwxyz1234567890"
-    (1..(10 + (Get-Random -Maximum 7)) | %{ $set[(Get-Random -Minimum 5 -Maximum $set.Length)] } ) -join ''
-}
-
-function xorEnc {
-Param (
-    [Parameter(Mandatory,ValueFromPipeline,ValueFromPipelineByPropertyName)]
-    [string] $string = $(Throw("Error !")),
-    [Parameter(Mandatory,ValueFromPipeline,ValueFromPipelineByPropertyName)]
-    [string] $method = $(Throw("Error !")),
-    [Parameter(Mandatory,ValueFromPipeline,ValueFromPipelineByPropertyName)]
-    [string] $key = $(Throw("Error !"))
-)
-$xorkey = [System.Text.Encoding]::UTF8.GetBytes($key)
-
-if ($method -eq "decrypt"){
-    $string = [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String($string))
-}
-
-$byteString = [System.Text.Encoding]::UTF8.GetBytes($string)
-$xordData = $(for ($i = 0; $i -lt $byteString.length; ) {
-    for ($j = 0; $j -lt $xorkey.length; $j++) {
-        $byteString[$i] -bxor $xorkey[$j]
-        $i++
-        if ($i -ge $byteString.Length) {
-            $j = $xorkey.length
-        }
-    }
-})
-
-if ($method -eq "encrypt") {
-    $xordData = [System.Convert]::ToBase64String($xordData)
-} else {
-    $xordData = [System.Text.Encoding]::UTF8.GetString($xordData)
-}
-
-return $xordData
-}
-
 try {
     $current_dir = Get-Location
     $somalifuscator_dir = $current_dir.ToString() + "\somalifuscator\Somalifuscator-main"

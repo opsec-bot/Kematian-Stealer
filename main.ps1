@@ -686,6 +686,7 @@ function Get-WebCamImage {
             $bitmap.Save($imagePath, $jpegCodec, $ep)
             $bitmap.dispose()
             $count++
+            [Windows.Forms.Clipboard]::Clear()
         }
 
     } catch {
