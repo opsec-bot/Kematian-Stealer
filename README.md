@@ -72,7 +72,7 @@ Or use [Somalifuscator](https://github.com/kdot227/somalifuscator) for .bat file
   - [Minecraft](https://minecraft.net)
   - [Epicgames](https://store.epicgames.com)
   - [Ubisoft](https://ubisoftconnect.com)
-  - [EA](https://ea.com)
+  - [Electronic Arts](https://ea.com)
 - [x] Crypto Wallets 
    > Armory | Atomic | Bitcoin | Bytecoin | Coinomi | Dash | Electrum | Ethereum | Exodus | Guarda | Jaxx | Litecoin | Monero | Zcash
 - [x] Browsers (Brave, Chrome, Firefox, Microsoft Edge, Thunderbird etc.)
