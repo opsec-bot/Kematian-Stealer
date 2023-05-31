@@ -30,7 +30,7 @@ This tool is made for data exfiltration. All information collected is sent using
 - After creating a server go to ```Edit channel``` > ```Integrations``` > ```Webhooks``` > ```Create Webhook```
 - Copy the ```Webhook URL```
 - Download ```main.ps1``` 
-- Open ```main.ps1``` and replace ```YOUR_WEBHOOK_HERE``` in line ```697``` with your webhook or use the [builder](https://github.com/KDot227/Powershell-Token-Grabber/blob/main/builder.ps1).
+- Open ```main.ps1``` and replace ```YOUR_WEBHOOK_HERE``` in line ```754``` with your webhook or use the [builder](https://github.com/KDot227/Powershell-Token-Grabber/blob/main/builder.ps1).
 
 # Want to obfuscate the code ?
 Use [Invoke-Obfuscation](https://github.com/danielbohannon/Invoke-Obfuscation). \
@@ -65,12 +65,14 @@ Or use [Somalifuscator](https://github.com/kdot227/somalifuscator) for .bat file
   - [Telegram](https://telegram.org) 
   - [Element](https://element.io) 
   - [Signal](https://signal.org) 
+  - [Viber](https://viber.com) 
+  - [WhatsApp](https://whatsapp.com) 
   > ### Gaming 
   - [Steam](https://store.steampowered.com)
   - [Minecraft](https://minecraft.net)
   - [Epicgames](https://store.epicgames.com)
   - [Ubisoft](https://ubisoftconnect.com)
-  - [EA](https://ea.com)
+  - [Electronic Arts](https://ea.com)
 - [x] Crypto Wallets 
    > Armory | Atomic | Bitcoin | Bytecoin | Coinomi | Dash | Electrum | Ethereum | Exodus | Guarda | Jaxx | Litecoin | Monero | Zcash
 - [x] Browsers (Brave, Chrome, Firefox, Microsoft Edge, Thunderbird etc.)
