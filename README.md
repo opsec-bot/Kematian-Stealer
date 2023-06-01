@@ -43,7 +43,6 @@ Or use [Somalifuscator](https://github.com/kdot227/somalifuscator) for .bat file
  - [x] 🔸 Obfuscation of ```BAT``` and ```PS1``` files
  - [x] 💉 Pump/Inject the output exe file with zero-filled bytes 
 
-
  ## 🔷 Webhook Data
 > ![screenshot](https://github.com/Chainski/PowerShell-Token-Grabber/assets/96607632/93c10b55-5a48-4851-a452-dabec704ae7e)
 
