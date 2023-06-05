@@ -71,6 +71,7 @@ Or use [Somalifuscator](https://github.com/kdot227/somalifuscator) for .bat file
   > ### Gaming 
     - [Electronic Arts](https://ea.com)
     - [Epicgames](https://store.epicgames.com)
+    - [Growtopia](https://growtopiagame.com)
     - [Minecraft](https://minecraft.net)
     - [Ubisoft](https://ubisoftconnect.com)
     - [Steam](https://store.steampowered.com)
