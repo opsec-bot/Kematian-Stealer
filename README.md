@@ -44,7 +44,8 @@ Or use [Somalifuscator](https://github.com/kdot227/somalifuscator) for .bat file
  - [x] 💉 Pump/Inject the output exe file with zero-filled bytes 
 
  ## 🔷 Webhook Data
-> ![screenshot](https://github.com/Chainski/PowerShell-Token-Grabber/assets/96607632/93c10b55-5a48-4851-a452-dabec704ae7e)
+> ![screenshot](https://github.com/Chainski/PowerShell-Token-Grabber/assets/96607632/7830653b-1fbb-46e6-8c49-26883a3eb34f)
+
 
 
 > ![data](https://github.com/Chainski/PowerShell-Token-Grabber/assets/96607632/630ba5ab-09e4-4427-826a-f5461623cd54)
