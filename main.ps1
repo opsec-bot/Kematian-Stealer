@@ -3,6 +3,9 @@ Add-Type -AssemblyName PresentationCore,PresentationFramework
 
 $webhook = "YOUR_WEBHOOK_HERE"
 
+#fix for weird network stuff (chocolatey and other services use this exact line of code too (im just as cool))
+[System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072
+
 function Invoke-Admin_Check {
     $test = ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltinRole]::Administrator)
     return $test
