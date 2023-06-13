@@ -198,11 +198,10 @@ function Invoke-EXE {
     Remove-Item -Path $current_dir\main.bat -ErrorAction SilentlyContinue
     Remove-Item -Path $current_dir\main.bat.ultimate.bat -ErrorAction SilentlyContinue
     $pump_box = [System.Windows.MessageBox]::Show("Do you want to pump the exe?", "Imagine?", [System.Windows.MessageBoxButton]::YesNo, [System.Windows.MessageBoxImage]::Question)
-    if ($pump_box -ne "Yes") {
-        return
+    if (!($pump_box -ne "Yes")) {
+        Invoke-SPEECH "Pumping EXE"
+        Invoke-Pumper $current_dir\main.exe 7 $current_dir\main.exe 
     }
-    Invoke-SPEECH "Pumping EXE"
-    Invoke-Pumper $current_dir\main.exe 7 $current_dir\main.exe 
 }
 
 function Invoke-AutoUpdate {
