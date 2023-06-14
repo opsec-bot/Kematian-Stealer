@@ -63,6 +63,10 @@ function Invoke-SPEECH ($text) {
     $var_OUTPUT_BOX.Text += $text + "`n"
 }
 
+function Invoke-Obfuscation ($script_name) {
+    python.exe  $PSScriptRoot\util\chameleon\chameleon.py -l 0 -o $script_name -v -s -d -n -c -f -r -i -x --decimal --safe $PSScriptRoot\$script_name
+}
+
 function Invoke-UI {
     if (Invoke-CheckUpdate) {
         $update_box = [System.Windows.MessageBox]::Show("There is an update available, do you want to update?", "Update?", [System.Windows.MessageBoxButton]::YesNo, [System.Windows.MessageBoxImage]::Question)
@@ -146,9 +150,7 @@ function Invoke-PS1 {
     if ($obfuscate_ps1 -ne "Yes") {
         return
     }
-    #Invoke-Obfuscator -infile "main.ps1" -outfile "main.ps1" -iterations 12
-    Invoke-SPEECH "Obfuscation isn't supported for ps1 yet."
-    #Invoke-SPEECH "Obfuscated PS1"
+    Invoke-Obfuscation "main.ps1"
 
 }
 
@@ -228,6 +230,7 @@ try {
     $somalifuscator_dir = $current_dir.ToString() + "\somalifuscator\Somalifuscator-main"
     Remove-Item -Path $somalifuscator_dir -Recurse -Force -ErrorAction SilentlyContinue
     . "$PSScriptRoot\util\functions.ps1"
+    . "$PSScriptRoot\util\psobfuscator.ps1"
 } catch {
     $null
 }
