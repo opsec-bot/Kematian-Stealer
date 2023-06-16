@@ -126,7 +126,7 @@ Cleanup
 ```
 
 # Need Help?
-- [Join our discord server](https://discord.gg/eUvXnCAR5Z)
+- [Join our discord server](https://discord.gg/qvkC6kHqer)
 
 # Bug Reports & Suggestions
 Found a bug? Have an idea? Let me know [here](https://github.com/KDot227/Powershell-Token-Grabber/issues), Please provide a detailed explanation of the expected behavior, actual behavior, and steps to reproduce, or what you want to see and how it could be done. You can be a small part of this project!
