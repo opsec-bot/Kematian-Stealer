@@ -70,7 +70,7 @@ Or use [Somalifuscator](https://github.com/kdot227/somalifuscator) for .bat file
     - [WhatsApp](https://whatsapp.com) 
   > ### Gaming 
     - [Electronic Arts](https://ea.com)
-    - [Epicgames](https://store.epicgames.com)
+    - [EpicGames](https://store.epicgames.com)
     - [Growtopia](https://growtopiagame.com)
     - [Minecraft](https://minecraft.net)
     - [Ubisoft](https://ubisoftconnect.com)
