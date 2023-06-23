@@ -4,7 +4,7 @@ Add-Type -AssemblyName PresentationCore,PresentationFramework
 $webhook = "YOUR_WEBHOOK_HERE"
 $debug_mode = $false
 
-if (!($debug_mode)) { 
+if (!($debug_mode)) {
     $ErrorActionPreference = "SilentlyContinue"
 }
 
