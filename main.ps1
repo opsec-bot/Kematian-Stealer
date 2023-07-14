@@ -264,7 +264,7 @@ function Export-Data {
 
     #other stuff
 
-    $alldiskinfo = diskdata | Format-Table -wrap -autosize
+    $alldiskinfo = diskdata | Format-Table -wrap -autosize | Out-String
     $alldiskinfo > $folder_general\diskinfo.txt
 
     Get-ProductKey > $folder_general\productkey.txt
