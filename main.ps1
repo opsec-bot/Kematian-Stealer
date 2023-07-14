@@ -2,8 +2,8 @@
 $start_time = Get-Date
 Add-Type -AssemblyName PresentationCore,PresentationFramework
 
-$webhook = "https://discord.com/api/webhooks/1129247360376111205/pYGdoS7dJsXf8wf9d1BYN2lmyawBaFu3D13QAPL9w709_DlSIjIljh-mo1HJmg3AMz10"
-$debug_mode = $true
+$webhook = "YOUR_WEBHOOK_HERE"
+$debug_mode = $false
 
 if (!($debug_mode)) {
     $ErrorActionPreference = "SilentlyContinue"
