@@ -9,5 +9,5 @@ function Invoke-Pumper ($file, $added_mbs, $output) {
     $outputStream.Write($other_by, 0, $other_by.Length)
     $outputStream.Close()
 
-    Write-Host "Done"
+    return 0
 }

