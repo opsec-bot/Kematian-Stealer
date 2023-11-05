@@ -166,15 +166,13 @@ function Invoke-BAT {
     }
     Invoke-SPEECH "Obfuscating BAT"
     (New-Object System.Net.WebClient).DownloadFile('https://github.com/KDot227/Somalifuscator/archive/refs/heads/main.zip', 'somalifuscator.zip')
-    Remove-Item -Path $somalifuscator_dir -Recurse -Force -ErrorAction SilentlyContinue
+    Remove-Item -Path .\somalifuscator -Recurse -Force -ErrorAction SilentlyContinue
     Expand-Archive -Path "somalifuscator.zip" -DestinationPath "somalifuscator"
     Remove-Item -Path "somalifuscator.zip"
     Invoke-SPEECH "Successfully Downloaded Somalifuscator"
     $current_dir = Get-Location
     $somalifuscator_dir = $current_dir.ToString() + "\somalifuscator\SomalifuscatorV2-main"
-    #call setup.bat
     & $somalifuscator_dir\setup.bat $current_dir\main.bat
-    Move-Item -Path "$somalfuscator_dir\main_obf.bat" -Destination "$current_dir\main_obf.bat"
     Invoke-SPEECH "Successfully Obfuscated BAT"
     Remove-Item -Path $somalifuscator_dir -Recurse -Force -ErrorAction SilentlyContinue
 }
