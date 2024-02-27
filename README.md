@@ -5,19 +5,19 @@
 <h1 align="center">
 </h1>
 <p align= "center">
-  <img src="https://img.shields.io/github/languages/top/kdot227/Powershell-Token-Grabber?color=blue">
-   <img src="https://img.shields.io/github/stars/kdot227/Powershell-Token-Grabber.svg?color=blue">
-   <img src="https://img.shields.io/github/forks/kdot227/Powershell-Token-Grabber.svg?color=blue">
-   <img src="https://img.shields.io/github/issues/kdot227/Powershell-Token-Grabber.svg?color=blue">
-  <img src="https://img.shields.io/github/commit-activity/m/kdot227/Powershell-Token-Grabber">
+  <img src="https://img.shields.io/github/languages/top/ChildrenOfYahweh/Powershell-Token-Grabber?color=blue">
+   <img src="https://img.shields.io/github/stars/ChildrenOfYahweh/Powershell-Token-Grabber.svg?color=blue">
+   <img src="https://img.shields.io/github/forks/ChildrenOfYahweh/Powershell-Token-Grabber.svg?color=blue">
+   <img src="https://img.shields.io/github/issues/ChildrenOfYahweh/Powershell-Token-Grabber.svg?color=blue">
+  <img src="https://img.shields.io/github/commit-activity/m/ChildrenOfYahweh/Powershell-Token-Grabber">
   <img src="https://img.shields.io/badge/PowerShell-%E2%89%A5%20v3.0-blue">
   <br>
-   <img src="https://img.shields.io/github/last-commit/kdot227/Powershell-Token-Grabber?color=blue">
-   <img src="https://img.shields.io/github/license/kdot227/Powershell-Token-Grabber?color=blue">
-   <img src="https://img.shields.io/github/contributors/Kdot227/Powershell-Token-Grabber?color=blue">
-    <img src="https://img.shields.io/endpoint?color=blue&label=views&url=https%3A%2F%2Fhits.dwyl.com%2Fkdot%2FPowerShell-Token-Grabber.json">
-    <img src="https://img.shields.io/github/repo-size/kdot227/Powershell-Token-Grabber.svg?label=Repo%20size&style=flat-square">
-    <img src="https://img.shields.io/github/downloads/kdot227/PowerShell-Token-Grabber/total?color=blue">
+   <img src="https://img.shields.io/github/last-commit/ChildrenOfYahweh/Powershell-Token-Grabber?color=blue">
+   <img src="https://img.shields.io/github/license/ChildrenOfYahweh/Powershell-Token-Grabber?color=blue">
+   <img src="https://img.shields.io/github/contributors/ChildrenOfYahweh/Powershell-Token-Grabber?color=blue">
+    <img src="https://hits.sh/github.com/ChildrenOfYahweh/Powershell-Token-Grabber.svg?label=views&color=1183c3">
+    <img src="https://img.shields.io/github/repo-size/ChildrenOfYahweh/Powershell-Token-Grabber.svg?label=Repo%20size&style=flat-square">
+    <img src="https://img.shields.io/github/downloads/ChildrenOfYahweh/PowerShell-Token-Grabber/total?color=blue">
    <br>
 </p>
 
