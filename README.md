@@ -155,7 +155,6 @@ Rule Author : Florian Roth
 ```
 
 # Credits
-- https://github.com/Purp1eW0lf
 - https://github.com/KDot227
 - https://github.com/Chainski
 
