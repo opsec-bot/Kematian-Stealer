@@ -116,7 +116,7 @@ Before pasting the tdata folder, ensure that you have deleted the existing tdata
   ***The other session stealers can be utilized by applying the technique above***
  
 ## 🗑 Uninstaller (Removes the Scheduled Task, Script Folder, ExclusionPaths and Resets Hosts File)
-- Open a new Elevated Powershell Console and Paste the Contents below
+- Open a new Elevated Powershell Console then copy & paste the contents below
 ```ps1
 $ErrorActionPreference = "SilentlyContinue"
 function Cleanup {
