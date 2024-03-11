@@ -113,8 +113,8 @@ Now, copy the tdata folder from ```Telegram``` folder and paste it in the direct
 Before pasting the tdata folder, ensure that you have deleted the existing tdata folder on your PC.
 # ![image](https://user-images.githubusercontent.com/96607632/235702107-5800e44e-b4d3-4147-8fb0-b78aece6eae7.png)
 
-### NOTE 
-  ***The other session stealers can be utilized by applying the technique above***
+ > [!NOTE]   
+ > ***The other session stealers can be utilized by applying the technique above***
  
 ## 🗑 Uninstaller (Removes the Scheduled Task, Script Folder, ExclusionPaths and Resets Hosts File)
 - Open a new Elevated Powershell Console then copy & paste the contents below
