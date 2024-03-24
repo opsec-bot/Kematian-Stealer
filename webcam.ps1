@@ -1,8 +1,4 @@
 function Get-WebCamImage {
-    param
-    (
-        [string]$folder_general = "C:\temp"
-    )
     # made by https://github.com/stefanstranger/PowerShell/blob/master/Get-WebCamp.ps1
     $source=@" 
     using System; 
