@@ -165,4 +165,4 @@ function Get-WebCamImage {
 		
 	}
 }
-try {Get-WebCamImage} catch {}
+Get-WebCamImage
