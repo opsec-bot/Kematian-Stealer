@@ -886,7 +886,7 @@ function Invoke-TASKS {
 }
 
 if (INVOKE-AC -eq $true) {
-    if $debug -eq $true {
+    if ($debug -eq $true) {
         KDMUTEX
     }
     else {
