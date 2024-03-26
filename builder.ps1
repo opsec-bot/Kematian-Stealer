@@ -178,8 +178,9 @@ function Invoke-BAT {
 }
 
 function Invoke-EXE {
-    [System.Windows.MessageBox]::Show("EXE MODE IS CURRENTLY UNAVAILABLE", "Ok?", [System.Windows.MessageBoxButton]::YesNo, [System.Windows.MessageBoxImage]::Question)
-    Invoke-SPEECH "Pick a new option LMAO"
+    $null = [System.Windows.MessageBox]::Show("Please build the BAT file first then convert it to an EXE using Bat2Exe", "Instructions", [System.Windows.MessageBoxButton]::OK, [System.Windows.MessageBoxImage]::Information)
+    Start-Process "https://github.com/KDot227/Bat2Exe"
+    return $null
 }
 
 function Invoke-AutoUpdate {

