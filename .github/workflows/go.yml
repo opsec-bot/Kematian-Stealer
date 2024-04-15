@@ -24,8 +24,8 @@ jobs:
     - name: Download Obfuscation Needed
       run: go install mvdan.cc/garble@latest
 
-    - name: Install modules needed
-      run: go install github.com/mattn/go-sqlite3@latest github.com/zavla/dpapi@latest
+    #- name: Install modules needed
+    #  run: go install github.com/mattn/go-sqlite3@latest github.com/zavla/dpapi@latest
 
     
     - name: Build
