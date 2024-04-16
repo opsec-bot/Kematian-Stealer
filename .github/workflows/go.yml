@@ -40,6 +40,9 @@ jobs:
     - name: Build
       run: garble -tiny build .
 
+    - name: DEBUG
+      run : dir
+
     # Delete-tag-and-release new
     - name: Delete-tag-and-release
       uses: dev-drprasad/delete-tag-and-release@v1.1
