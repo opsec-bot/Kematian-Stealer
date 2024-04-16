@@ -10,6 +10,7 @@ del cookies.json
 del cards.json
 del downloads.json
 del autofill.json
+del discord.json
 
 pause
 exit

