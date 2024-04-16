@@ -8,6 +8,10 @@ on:
 
 jobs:
   build:
+    defaults:
+      run:
+        working-directory: grabber-src
+
     strategy:
       matrix:
         configuration: [Release]
@@ -24,8 +28,8 @@ jobs:
     - name: Download Obfuscation Needed
       run: go install mvdan.cc/garble@latest
 
-    #- name: Install modules needed
-    #  run: go install github.com/mattn/go-sqlite3@latest github.com/zavla/dpapi@latest
+    - name: Install modules needed
+      run: go get github.com/mattn/go-sqlite3 github.com/zavla/dpapi
 
     
     - name: Build
