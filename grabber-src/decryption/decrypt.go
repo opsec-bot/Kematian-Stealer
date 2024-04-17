@@ -1,4 +1,3 @@
-// decrypt.go
 package decryption
 
 import (
@@ -8,9 +7,48 @@ import (
 	"encoding/json"
 	"errors"
 	"os"
-
-	"github.com/zavla/dpapi"
+	"unsafe"
+	"syscall"
 )
+
+///////////////////////////// Custom DPAPI Implementation /////////////////////////////////
+var (
+	dllcrypt32   = syscall.NewLazyDLL("Crypt32.dll")
+	dllkernel32  = syscall.NewLazyDLL("Kernel32.dll")
+	pdd          = dllcrypt32.NewProc("CryptUnprotectData")
+	pll          = dllkernel32.NewProc("LocalFree")
+)
+type DATA_BLOB struct {
+	cbData uint32
+	pbData *byte
+}
+
+func NewBlob(d []byte) *DATA_BLOB {
+	if len(d) == 0 {
+		return &DATA_BLOB{}
+	}
+	return &DATA_BLOB{
+		pbData: &d[0],
+		cbData: uint32(len(d)),
+	}
+}
+
+func (b *DATA_BLOB) ToByteArray() []byte {
+	d := make([]byte, b.cbData)
+	copy(d, (*[1 << 30]byte)(unsafe.Pointer(b.pbData))[:])
+	return d
+}
+
+func DecryptWithDPAPI(data []byte) ([]byte, error) {
+	var outblob DATA_BLOB
+	r, _, err := pdd.Call(uintptr(unsafe.Pointer(NewBlob(data))), 0, 0, 0, 0, 0, uintptr(unsafe.Pointer(&outblob)))
+	if r == 0 {
+		return nil, err
+	}
+	defer pll.Call(uintptr(unsafe.Pointer(outblob.pbData)))
+	return outblob.ToByteArray(), nil
+}
+//////////////////////////////////////////////////////////////////////////////////////////////
 
 func GetMasterKey(path string) []byte {
 	data, _ := os.ReadFile(path)
@@ -26,7 +64,7 @@ func GetMasterKey(path string) []byte {
 	EncryptedSecretKey, _ := base64.StdEncoding.DecodeString(LocalStateJson.OsCrypt.EncryptedKey)
 
 	secretKey := EncryptedSecretKey[5:]
-	DecryptedSecretKey, _ := dpapi.Decrypt(secretKey)
+	DecryptedSecretKey, _ := DecryptWithDPAPI(secretKey)
 
 	return DecryptedSecretKey
 }
