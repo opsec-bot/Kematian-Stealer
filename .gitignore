@@ -1,3 +1,6 @@
 \somalifuscator
 build_exe.bat
 removal
+grabber.exe
+*.json
+screenshot.png

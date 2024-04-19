@@ -43,10 +43,10 @@ func TakeScreenshot() {
 	for i := 0; i < len(pixels); i++ {
 		cr := pixels[i]
 		img.Set(i%eat, i/eat, color.RGBA{
-			R: uint8(cr & 0xFF),
-			G: uint8((cr >> 8) & 0xFF),
-			B: uint8((cr >> 16) & 0xFF),
-			A: 255,
+			R: uint8(cr >> 16), // Red channel
+			G: uint8(cr >> 8),  // Green channel
+			B: uint8(cr),       // Blue channel
+			A: 255,             // Alpha channel, set to 255 for full opacity
 		})
 	}
 
