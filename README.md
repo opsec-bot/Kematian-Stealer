@@ -182,5 +182,6 @@ Rule Author : Florian Roth
 # Credits
 - https://github.com/KDot227
 - https://github.com/Chainski
+- https://github.com/EvilBytecode
 
 <p align="center"><a href=#top>Back to Top</a></p>
