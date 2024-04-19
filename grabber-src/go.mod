@@ -1,4 +1,4 @@
-module example.com/grabber
+module kdot/grabber
 
 go 1.22.1
 

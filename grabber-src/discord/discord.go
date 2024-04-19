@@ -10,7 +10,7 @@ import (
 
 	"net/http"
 
-	"example.com/grabber/decryption"
+	"kdot/grabber/decryption"
 )
 
 //var ids []int64

