@@ -36,7 +36,8 @@ jobs:
 
     
     - name: Build
-      run: garble -tiny build grabber-src\.
+      working-directory: ./grabber-src
+      run: garble -tiny build .
 
     # Delete-tag-and-release new
     - name: Delete-tag-and-release
