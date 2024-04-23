@@ -100,7 +100,7 @@ jobs:
         release_name: Builder
         body: ${{ steps.changelog.outputs.changelog }}
         draft: false
-        prerelease: true
+        prerelease: false
         
     # Upload Release Asset
     - name: Upload Release Asset
