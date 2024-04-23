@@ -79,8 +79,7 @@ jobs:
       working-directory: ./builder-src
       run: |
         go mod tidy
-        mkdir dist 2>nul
-        fyne package --os windows --exe dist\Builder.exe --appID com.builder.app --release
+        fyne package --os windows --exe Builder.exe --appID com.builder.app --release
 
     # Delete-tag-and-release new
     - name: Delete-tag-and-release
@@ -111,6 +110,6 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.github_token }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: builder-src\dist\Builder.exe
+        asset_path: builder-src\Builder.exe
         asset_name: Builder.exe
         asset_content_type: application/zip
