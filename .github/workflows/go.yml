@@ -74,10 +74,11 @@ jobs:
 
 
     - name: Build Builder
+      working-directory: ./builder-src
       run: |
-        cd builder-src
-        go mod install
-        build.bat
+        go mod tidy
+        mkdir dist 2>nul
+        fyne package --os windows --exe dist\Builder.exe --appID com.builder.app --release
 
     # Delete-tag-and-release new
     - name: Delete-tag-and-release
