@@ -72,6 +72,8 @@ jobs:
         asset_name: grabber.exe
         asset_content_type: application/zip
 
+    - name: Install Fyne
+      run: go install fyne.io/fyne/v2/cmd/fyne@latest
 
     - name: Build Builder
       working-directory: ./builder-src
