@@ -31,7 +31,8 @@ jobs:
       run: go install mvdan.cc/garble@latest
 
     - name: Install modules needed
-      run: cd grabber-src & go get github.com/mattn/go-sqlite3
+      working-directory: ./grabber-src
+      run: go get github.com/mattn/go-sqlite3
 
     
     - name: Build
