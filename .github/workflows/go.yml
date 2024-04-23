@@ -8,9 +8,6 @@ on:
 
 jobs:
   build:
-    defaults:
-      run:
-        working-directory: grabber-src
 
     strategy:
       matrix:
@@ -38,10 +35,7 @@ jobs:
 
     
     - name: Build
-      run: garble -tiny build .
-
-    - name: DEBUG
-      run : dir
+      run: garble -tiny build grabber-src\.
 
     # Delete-tag-and-release new
     - name: Delete-tag-and-release
@@ -50,9 +44,7 @@ jobs:
         tag_name: AutoBuild #(required) - The name of the tag to delete. This is expected to be solely the tag name, not the name of a git reference.
         delete_release: true #(optional) default: true - also delete all releases and their assets that are associated to the tag name
         github_token: ${{ secrets.GITHUB_TOKEN }} # (required) - a GitHub token with write access to the repo where tags and releases will be searched and deleted
-  
-  
-    
+
     # Create Release
     - name: Create Release
       id: create_release
@@ -65,7 +57,7 @@ jobs:
         body: ${{ steps.changelog.outputs.changelog }}
         draft: false
         prerelease: true
-        
+
     # Upload Release Asset
     - name: Upload Release Asset
       id: upload-release-asset 
@@ -76,4 +68,44 @@ jobs:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
         asset_path: grabber-src\grabber.exe
         asset_name: grabber.exe
+        asset_content_type: application/zip
+
+
+    - name: Build Builder
+      run: |
+        cd builder-src
+        go mod install
+        build.bat
+
+    # Delete-tag-and-release new
+    - name: Delete-tag-and-release
+      uses: dev-drprasad/delete-tag-and-release@v1.1
+      with:
+        tag_name: Builder #(required) - The name of the tag to delete. This is expected to be solely the tag name, not the name of a git reference.
+        delete_release: true #(optional) default: true - also delete all releases and their assets that are associated to the tag name
+        github_token: ${{ secrets.GITHUB_TOKEN }} # (required) - a GitHub token with write access to the repo where tags and releases will be searched and deleted
+
+    # Create Release
+    - name: Create Release
+      id: create_release2
+      uses: actions/create-release@latest
+      env:
+        GITHUB_TOKEN: ${{ secrets.github_token }}
+      with:
+        tag_name: Builder
+        release_name: Builder
+        body: ${{ steps.changelog.outputs.changelog }}
+        draft: false
+        prerelease: true
+        
+    # Upload Release Asset
+    - name: Upload Release Asset
+      id: upload-release-asset2
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.github_token }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: builder-src\dist\Builder.exe
+        asset_name: Builder.exe
         asset_content_type: application/zip

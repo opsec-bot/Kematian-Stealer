@@ -2,5 +2,24 @@
 
 cd /d %~dp0
 
-powershell.exe -ExecutionPolicy Bypass -File .\builder.ps1 %*
+go version
+if %errorlevel% neq 0 (
+    echo "Go is not installed or not in PATH. Either install it or use the prebuilt builder image."
+    start "https://golang.org/dl/"
+    pause
+    exit /b 1
+)
+
+cd builder-src
+go mod tidy
+call build.bat
+cd ..
+
+timeout /t 3 /nobreak >nul
+
+move /y builder-src\dist\builder.exe builder.exe
+
+start builder.exe
+
+pause
 exit /b %errorlevel%
