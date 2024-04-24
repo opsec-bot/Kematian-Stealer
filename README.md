@@ -42,7 +42,8 @@ Or use [Somalifuscator](https://github.com/kdot227/somalifuscator) for .bat file
 
 # Screenshots
   ## 🔨 Builder
-> ![GUI](https://i.postimg.cc/HLt16rSp/builder.png)
+> ![GUI](https://github.com/Chainski/PowerShell-Token-Grabber/assets/96607632/29f443d1-ed54-4926-babc-33b87b570592)
+
    ### Builder Features
  - [x] 🔸 Obfuscation of ```BAT``` and ```PS1``` files
  - [x] 💉 Pump/Inject the output exe file with zero-filled bytes 
