@@ -46,6 +46,7 @@ Or use [Somalifuscator](https://github.com/kdot227/somalifuscator) for .bat file
 
    ### Builder Features
  - [x] 🔸 Obfuscation of ```BAT``` and ```PS1``` files
+ - [x] 🔩 Compilation of Exe Files (currently unstable)
  - [x] 💉 Pump/Inject the output exe file with zero-filled bytes 
 
  ## 🔷 Webhook Data
