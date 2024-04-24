@@ -71,7 +71,7 @@ func main() {
 			if err != nil {
 				fmt.Println(err)
 			} else {
-				makeSuccessMessage(a, "Compiled PS1 file successfully! Location is at "+cwd+"\\output.bat")
+				makeSuccessMessage(a, "Compiled BAT file successfully! Location is at "+cwd+"\\output.bat")
 				fmt.Println()
 			}
 		}
