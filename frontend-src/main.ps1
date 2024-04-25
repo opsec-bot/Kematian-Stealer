@@ -17,7 +17,11 @@ function KDMUTEX {
         throw "An instance of this script is already running."
     }
     else {
-        VMBYPASSER
+        if $debug {
+            Invoke-TASKS
+        } else {
+            VMBYPASSER
+        }
     }
 }
 

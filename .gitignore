@@ -5,3 +5,5 @@ grabber.exe
 *.json
 screenshot.png
 testing
+FyneApp.toml
+output.*
