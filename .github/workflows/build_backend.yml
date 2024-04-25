@@ -56,7 +56,7 @@ jobs:
       with:
         tag_name: AutoBuild
         release_name: AutoBuild
-        body: ${{ steps.changelog.outputs.changelog }}
+        body: "AutoBuild"
         draft: false
         prerelease: true
 

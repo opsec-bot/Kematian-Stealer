@@ -11,6 +11,7 @@ import (
 
 	"builder/modules/cursed"
 	"builder/modules/static"
+	"builder/modules/static/batch"
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/app"
@@ -71,8 +72,15 @@ func main() {
 			if err != nil {
 				fmt.Println(err)
 			} else {
+				if obfuscateCheckBox.Checked {
+					makeSuccessMessage(a, "test")
+					err = batch.ObfuscateCode("output.bat")
+					if err != nil {
+						makeErrorMessage(a, "An error occured while obfuscating the code"+err.Error())
+						return
+					}
+				}
 				makeSuccessMessage(a, "Compiled BAT file successfully! Location is at "+cwd+"\\output.bat")
-				fmt.Println()
 			}
 		}
 	})
