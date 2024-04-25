@@ -10,7 +10,9 @@ fyne package --os windows --exe dist\Builder.exe --appID com.builder.app --relea
 
 timeout /t 1 /nobreak >nul
 
-start dist\Builder.exe
+dist\Builder.exe
+
+echo %errorlevel%
 
 pause
 exit
