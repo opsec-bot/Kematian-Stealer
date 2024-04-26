@@ -4,8 +4,9 @@ import (
 	"time"
 
 	"builder/modules/cursed"
-
-	"builder/ui-tabs/builder"
+	"builder/ui-tabs/batchTab"
+	"builder/ui-tabs/exeTab"
+	"builder/ui-tabs/powershellTab"
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/app"
@@ -21,7 +22,10 @@ func main() {
 
 	tabs := container.NewAppTabs(
 		container.NewTabItem("Home", widget.NewCard("test", "test", widget.NewLabel("test"))),
-		container.NewTabItem("Build", builder.GetBuilder(a)),
+		container.NewTabItem("Powershell", powershellTab.GetBuilderPowershell(a)),
+		container.NewTabItem("Batch", batchTab.GetBatchBuilder(a)),
+		container.NewTabItem("EXE", exeTab.GetExeBuilder(a)),
+		container.NewTabItem("Credits", widget.NewLabel("Made by KDot227, Chainski and EvilByteCode")),
 	)
 
 	win.SetContent(tabs)

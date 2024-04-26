@@ -13,7 +13,7 @@ import (
 	"fyne.io/fyne/v2"
 )
 
-func CompilePowershellFile(a fyne.App, webhook string, obfuscate bool) {
+func CompilePowershellFile(a fyne.App, webhook string) {
 	cwd, err := os.Getwd()
 	if err != nil {
 		fmt.Println(err)

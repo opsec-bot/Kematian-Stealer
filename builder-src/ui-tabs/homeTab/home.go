@@ -1,4 +1,4 @@
-package home
+package homeTab
 
 import "fyne.io/fyne/v2"
 
