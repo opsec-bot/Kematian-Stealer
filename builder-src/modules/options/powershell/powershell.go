@@ -28,7 +28,6 @@ func CompilePowershellFile(a fyne.App, webhook string, obfuscate bool) {
 		fmt.Println(err)
 	} else {
 		//if obfuscate {
-		//	utils.MakeSuccessMessage(a, "test")
 		//	err = obfuscateCode("output.ps1")
 		//	if err != nil {
 		//		utils.MakeErrorMessage(a, "An error occured while obfuscating the code"+err.Error())
