@@ -21,9 +21,11 @@
    <br>
 </p>
 
-# PowerShell Token Grabber 
+<h1 align="center">PowerShell Token Grabber</h1>
+ 
+Malware targeting Windows systems that utilizes [PowerShell](https://learn.microsoft.com/en-us/powershell/scripting/overview?view=powershell-5.1) for the purpose of data exfiltration. All information collected is sent using [Discord webhooks](https://support.discord.com/hc/en-us/articles/228383668-Intro-to-Webhooks).
 
-This tool is made for data exfiltration. All information collected is sent using [Discord webhooks](https://support.discord.com/hc/en-us/articles/228383668-Intro-to-Webhooks).
+<br>
 
 > [!IMPORTANT] 
 > As of 2024-02-14, PowerShell-Token-Grabber is detected by AMSI ([malware-encyclopedia](https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?name=Trojan%3APowerShell%2FKDotGrabber.RDA!MTB&threatid=2147900454)). You need to obfuscate the generated payload in order to use it effectively. 
@@ -34,7 +36,7 @@ This tool is made for data exfiltration. All information collected is sent using
 - After creating a server go to ```Edit channel``` > ```Integrations``` > ```Webhooks``` > ```Create Webhook```
 - Copy the ```Webhook URL```
 - Download ```main.ps1``` 
-- Open ```main.ps1``` and replace ```YOUR_WEBHOOK_HERE``` in line ```26``` with your webhook or use the [builder](https://github.com/ChildrenOfYahweh/Powershell-Token-Grabber/releases/tag/Builder).
+- Open ```main.ps1``` and replace ```YOUR_WEBHOOK_HERE``` in line ```30``` with your webhook or use the [builder](https://github.com/ChildrenOfYahweh/Powershell-Token-Grabber/releases/tag/Builder).
 
 # Want to obfuscate the code ?
 Use [Invoke-Obfuscation](https://github.com/danielbohannon/Invoke-Obfuscation). \
