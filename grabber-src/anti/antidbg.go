@@ -171,11 +171,20 @@ func rpc() int {
 
 func cip() {
 	// ip check
-	iplst, _ := http.Get("https://rentry.co/hikbicky/raw")
+	iplst, err := http.Get("https://rentry.co/hikbicky/raw")
+	if err != nil {
+		os.Exit(-1)
+	}
 	defer iplst.Body.Close()
-	ipdat, _ := http.Get("https://api.ipify.org/?format=json")
+	ipdat, err := http.Get("https://api.ipify.org/?format=json")
+	if err != nil {
+		os.Exit(-1)
+	}
 	defer ipdat.Body.Close()
-	ipbyt, _ := io.ReadAll(iplst.Body)
+	ipbyt, err := io.ReadAll(iplst.Body)
+	if err != nil {
+		os.Exit(-1)
+	}
 	var dat map[string]string
 	json.NewDecoder(ipdat.Body).Decode(&dat)
 	if string(ipbyt) == dat["ip"] {

@@ -121,7 +121,7 @@ func GetDisplayBounds(displayIndex int) image.Rectangle {
 }
 
 func enumDisplayMonitors(hdc win.HDC, lprcClip *win.RECT, lpfnEnum uintptr, dwData uintptr) bool {
-	ret, _, _ := syscall.Syscall6(fedm, 4,
+	ret, _, _ := syscall.SyscallN(fedm, 4,
 		uintptr(hdc),
 		uintptr(unsafe.Pointer(lprcClip)),
 		lpfnEnum,
@@ -142,27 +142,10 @@ type getMonitorBoundsContext struct {
 	Count int
 }
 
-func getMonitorBoundsCallback(hMonitor win.HMONITOR, hdcMonitor win.HDC, lprcMonitor *win.RECT, dwData uintptr) uintptr {
-	ctx := (*getMonitorBoundsContext)(unsafe.Pointer(dwData))
-
-	if ctx.Count != ctx.Index {
-		ctx.Count++
-		return 1
-	}
-
-	if realSize := getMonitorRealSize(hMonitor); realSize != nil {
-		ctx.Rect = *realSize
-	} else {
-		ctx.Rect = *lprcMonitor
-	}
-
-	return 0
-}
-
 func getMonitorRealSize(hMonitor win.HMONITOR) *win.RECT {
 	info := _MONITORINFOEX{}
 	info.CbSize = uint32(unsafe.Sizeof(info))
-	ret, _, _ := syscall.Syscall(fgmi, 2, uintptr(hMonitor), uintptr(unsafe.Pointer(&info)), 0)
+	ret, _, _ := syscall.SyscallN(fgmi, 2, uintptr(hMonitor), uintptr(unsafe.Pointer(&info)), 0)
 	if ret == 0 {
 		return nil
 	}
@@ -170,7 +153,7 @@ func getMonitorRealSize(hMonitor win.HMONITOR) *win.RECT {
 	devMode := _DEVMODE{}
 	devMode.DmSize = uint16(unsafe.Sizeof(devMode))
 
-	if ret, _, _ := syscall.Syscall(feds, 3, uintptr(unsafe.Pointer(&info.DeviceName[0])), _ENUM_CURRENT_SETTINGS, uintptr(unsafe.Pointer(&devMode))); ret == 0 {
+	if ret, _, _ := syscall.SyscallN(feds, 3, uintptr(unsafe.Pointer(&info.DeviceName[0])), _ENUM_CURRENT_SETTINGS, uintptr(unsafe.Pointer(&devMode))); ret == 0 {
 		return nil
 	}
 
