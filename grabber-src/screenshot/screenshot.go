@@ -2,6 +2,7 @@ package screenshot
 
 // a bit rewritten ver of the lib of : github.com/kbinani/screenshot
 // this ver is wayy faster and takes less than 1s -> old one like 5 / 6s
+// Made by EvilByteCode (very cool man) and included by KDot227
 import (
 	"fmt"
 	"image"

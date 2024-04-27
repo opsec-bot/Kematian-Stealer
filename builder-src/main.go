@@ -6,6 +6,7 @@ import (
 	"builder/modules/cursed"
 	"builder/ui-tabs/batchTab"
 	"builder/ui-tabs/exeTab"
+	"builder/ui-tabs/homeTab"
 	"builder/ui-tabs/powershellTab"
 	"builder/ui-tabs/removeTab"
 
@@ -22,7 +23,7 @@ func main() {
 	win.CenterOnScreen()
 
 	tabs := container.NewAppTabs(
-		container.NewTabItem("Home", widget.NewCard("test", "test", widget.NewLabel("test"))),
+		container.NewTabItem("Home", homeTab.GetHomeTab(a)),
 		container.NewTabItem("Powershell", powershellTab.GetBuilderPowershell(a)),
 		container.NewTabItem("Batch", batchTab.GetBatchBuilder(a)),
 		container.NewTabItem("EXE", exeTab.GetExeBuilder(a)),
