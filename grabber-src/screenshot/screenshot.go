@@ -200,8 +200,7 @@ type _DEVMODE struct {
 }
 
 func TakeScreenshot() {
-	rect := GetDisplayBounds(0)
-	//rect = (0,0)-(2560,1440)
+	rect := GetDisplayBounds(0) //rect = (0,0)-(2560,1440)
 	he, err := Capture(rect.Min.X, rect.Min.Y, rect.Dx(), rect.Dy())
 	if err != nil {
 		fmt.Println(err)
