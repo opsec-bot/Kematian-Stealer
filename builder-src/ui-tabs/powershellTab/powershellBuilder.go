@@ -23,17 +23,21 @@ func GetBuilderPowershell(a fyne.App) *fyne.Container {
 	webhookEntry := widget.NewEntry()
 	webhookEntry.SetPlaceHolder("Webhook URL")
 
+	debugCheckBox := widget.NewCheck("Debug", func(_ bool) {})
+	debugCheckBox.SetChecked(false)
+
 	//basically just do nothing when the checkbox is checked
 	//obfuscateCheckBox := widget.NewCheck("Obfuscate", func(_ bool) {})
 	//obfuscateCheckBox.SetChecked(false)
 
 	compileButtonPS1 := widget.NewButton("Compile PS1", func() {
-		powershell.CompilePowershellFile(a, webhookEntry.Text)
+		powershell.CompilePowershellFile(a, webhookEntry.Text, debugCheckBox.Checked)
 	})
 
 	entryLayout := container.New(layout.NewVBoxLayout(),
 		mainTitle,
 		webhookEntry,
+		debugCheckBox,
 		//obfuscateCheckBox,
 		layout.NewSpacer(),
 		compileButtonPS1,

