@@ -7,6 +7,7 @@ import (
 	"builder/ui-tabs/batchTab"
 	"builder/ui-tabs/exeTab"
 	"builder/ui-tabs/powershellTab"
+	"builder/ui-tabs/removeTab"
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/app"
@@ -25,6 +26,7 @@ func main() {
 		container.NewTabItem("Powershell", powershellTab.GetBuilderPowershell(a)),
 		container.NewTabItem("Batch", batchTab.GetBatchBuilder(a)),
 		container.NewTabItem("EXE", exeTab.GetExeBuilder(a)),
+		container.NewTabItem("Remove", removeTab.GetRemoveTab(a)),
 		container.NewTabItem("Credits", widget.NewLabel("Made by KDot227, Chainski and EvilByteCode")),
 	)
 
