@@ -3,6 +3,7 @@ package exeTab
 import (
 	"builder/modules/options/utils"
 	"image/color"
+	"os/exec"
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/canvas"
@@ -32,7 +33,10 @@ func GetExeBuilder(a fyne.App) *fyne.Container {
 			return
 		} else {
 			//make a success message
-			utils.MakeSuccessMessage(a, "THIS OPTION IS NOT ADDED YET")
+			url := "https://github.com/KDot227/Bat2Exe"
+
+			exec.Command("start", url).Run()
+			utils.MakeSuccessMessage(a, "Please use BAT option then conver it to an exe USING this tool: "+url)
 			//fmt.Println(obfuscateCheckBox.Checked)
 		}
 	})
