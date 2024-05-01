@@ -8,5 +8,5 @@ testing
 FyneApp.toml
 output.*
 go.sum
-cookies_netscape.txt
+cookies_netscape_*.txt
 FyneApp.toml

