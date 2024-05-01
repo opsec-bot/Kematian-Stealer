@@ -22,7 +22,6 @@ if %debug%==0 (
     del downloads.json || echo "downloads.json not found"
     del autofill.json || echo "autofill.json not found"
     del discord.json || echo "discord.json not found"
-    del screenshot.png || echo "screenshot.png not found"
 
 ) else (
     go build .

