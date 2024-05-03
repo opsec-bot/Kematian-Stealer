@@ -5,8 +5,7 @@ grabber.exe
 *.json
 screenshot.png
 testing
-FyneApp.toml
 output.*
 go.sum
 cookies_netscape_*.txt
-FyneApp.toml
+AutoUpdate.exe
