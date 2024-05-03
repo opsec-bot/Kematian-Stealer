@@ -1,8 +1,10 @@
 package main
 
 import (
+	"os"
 	"time"
 
+	"builder/modules/autoUpdate"
 	"builder/modules/cursed"
 	"builder/ui-tabs/batchTab"
 	"builder/ui-tabs/exeTab"
@@ -17,6 +19,10 @@ import (
 )
 
 func main() {
+	if !(autoUpdate.AutoUpdate()) {
+		os.Exit(1)
+	}
+
 	a := app.New()
 	win := a.NewWindow(cursed.Generate("Powershell Token Grabber Builder", "normal", true, true, true))
 	win.Resize(fyne.NewSize(500, 400))
@@ -28,7 +34,7 @@ func main() {
 		container.NewTabItem("Batch", batchTab.GetBatchBuilder(a)),
 		container.NewTabItem("EXE", exeTab.GetExeBuilder(a)),
 		container.NewTabItem("Remove", removeTab.GetRemoveTab(a)),
-		container.NewTabItem("Credits", widget.NewLabel("Made by KDot227, Chainski and EvilByteCode")),
+		container.NewTabItem("Credits", widget.NewLabel("Made by KDot227, Chainski and EvilByteCode AODIWJAWODIJAWODIJAWDOIJAWDOIJ")),
 	)
 
 	win.SetContent(tabs)
