@@ -18,12 +18,12 @@ func AutoUpdate() bool {
 
 	defer resp.Body.Close()
 
-	currentVersion := fyne.CurrentApp().Metadata().Version
-	//currentVersion := "1.0.0"
-
-	// the url leads to raw data of a toml file and we need to get the 5th line of code
-	// which is the version of the app
-
+	var currentVersion string
+	if fyne.CurrentApp() != nil {
+		currentVersion = fyne.CurrentApp().Metadata().Version
+	} else {
+		currentVersion = "1.0.0"
+	}
 	tomlVersion := getTomlVersion(resp.Body)
 
 	// if the current version is equal to the toml version then return true
