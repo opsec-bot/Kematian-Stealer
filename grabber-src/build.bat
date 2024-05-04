@@ -24,7 +24,7 @@ if %debug%==0 (
     del discord.json || echo "discord.json not found"
 
     REM delete all files that start with cookies_netscape
-    REM for /f "delims=" %%i in ('dir /b cookies_netscape*') do del "%%i"
+    for /f "delims=" %%i in ('dir /b cookies_netscape*') do del "%%i"
 
 ) else (
     go build .
