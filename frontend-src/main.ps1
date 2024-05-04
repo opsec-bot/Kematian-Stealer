@@ -28,7 +28,7 @@ function KDMUTEX {
 
 Add-Type -AssemblyName PresentationCore, PresentationFramework
 
-$webhook = "https://discord.com/api/webhooks/1227449757845159997/yF8mX-lM3516Ow9eIMBTTZo0D1qRa92HUpRKuGgGo0Adh7mlIdOPXHzw1JLB0vQ88HqW"
+$webhook = "YOUR_WEBHOOK_HERE"
 $avatar = "https://i.postimg.cc/k58gQ03t/PTG.gif"
 
 
