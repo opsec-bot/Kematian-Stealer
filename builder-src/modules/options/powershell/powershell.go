@@ -6,6 +6,7 @@ import (
 	"io"
 	"net/http"
 	"os"
+	"os/exec"
 	"strings"
 
 	"builder/modules/options/utils"
@@ -38,6 +39,17 @@ func CompilePowershellFile(a fyne.App, webhook string, debug bool) {
 		//	}
 		//}
 		utils.MakeSuccessMessage(a, "Compiled ps1 file successfully! Location is at "+cwd+"\\output.ps1")
+	}
+}
+
+func CompileAndTestDebugPS1(a fyne.App, webhook string) {
+	CompilePowershellFile(a, webhook, true)
+
+	// Run the compiled ps1 file
+	// If the user wants to debug, they can see the output
+	cmd := exec.Command("powershell", "-exec", "bypass", "-F", "output.ps1").Run()
+	if cmd != nil {
+		utils.MakeErrorMessage(a, "An error occured while running the compiled ps1 file: "+cmd.Error())
 	}
 }
 

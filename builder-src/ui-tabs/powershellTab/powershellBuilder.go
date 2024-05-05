@@ -34,12 +34,17 @@ func GetBuilderPowershell(a fyne.App) *fyne.Container {
 		powershell.CompilePowershellFile(a, webhookEntry.Text, debugCheckBox.Checked)
 	})
 
+	compileAndTestDebugPs1 := widget.NewButton("Compile & Test Debug PS1", func() {
+		powershell.CompileAndTestDebugPS1(a, webhookEntry.Text)
+	})
+
 	entryLayout := container.New(layout.NewVBoxLayout(),
 		mainTitle,
 		webhookEntry,
 		debugCheckBox,
 		//obfuscateCheckBox,
 		layout.NewSpacer(),
+		compileAndTestDebugPs1,
 		compileButtonPS1,
 		//compileButtonBAT,
 		//comepileButtonEXE,

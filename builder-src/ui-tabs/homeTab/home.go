@@ -18,6 +18,10 @@ func GetHomeTab(a fyne.App) *fyne.Container {
 	mainTitle.Alignment = fyne.TextAlignCenter
 	mainTitle.TextSize = 18
 
+	textBox := canvas.NewText("If the Grabber ever doesn't work, go into the powershell tab and press on debug build & exec\n\nFind the error then post it on the Github.", blue)
+	textBox.Alignment = fyne.TextAlignCenter
+	textBox.TextSize = 12
+
 	//basically just do nothing when the checkbox is checked
 	//obfuscateCheckBox := widget.NewCheck("Obfuscate", func(_ bool) {})
 	//obfuscateCheckBox.SetChecked(false)
@@ -25,6 +29,7 @@ func GetHomeTab(a fyne.App) *fyne.Container {
 		mainTitle,
 		//webhookEntry,
 		//obfuscateCheckBox,
+		textBox,
 		layout.NewSpacer(),
 		//compileButtonPS1,
 		//compileButtonBAT,
