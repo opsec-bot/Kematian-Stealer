@@ -14,3 +14,8 @@ type Profiles struct {
 	History   string `json:"history"`
 	LoginData string `json:"logindata"`
 }
+
+type CookiesOutput struct {
+	BrowserName string
+	Cookies     string
+}

