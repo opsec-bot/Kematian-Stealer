@@ -20,7 +20,7 @@ func CompilePowershellFile(a fyne.App, webhook string, debug bool) {
 		fmt.Println(err)
 	}
 	if !(utils.TestWebhook(a, webhook)) {
-		return
+		utils.MakeErrorMessage(a, "Invalid webhook!")
 	}
 	ps1Code := utils.GetPowershellCode()
 	ps1Code = strings.Replace(ps1Code, "YOUR_WEBHOOK_HERE", webhook, -1)

