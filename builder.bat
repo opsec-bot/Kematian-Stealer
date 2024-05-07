@@ -12,6 +12,7 @@ if %errorlevel% neq 0 (
 
 cd builder-src
 go mod tidy
+go install fyne.io/fyne/v2/cmd/fyne@latest
 call build.bat
 cd ..
 
