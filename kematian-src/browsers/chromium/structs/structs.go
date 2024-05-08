@@ -9,10 +9,11 @@ type Browser struct {
 }
 
 type Profiles struct {
-	WebData   string `json:"webdata"`
-	Cookies   string `json:"cookies"`
-	History   string `json:"history"`
-	LoginData string `json:"logindata"`
+	NameAndPath string `json:"nameandpath"`
+	WebData     string `json:"webdata"`
+	Cookies     string `json:"cookies"`
+	History     string `json:"history"`
+	LoginData   string `json:"logindata"`
 }
 
 type CookiesOutput struct {

