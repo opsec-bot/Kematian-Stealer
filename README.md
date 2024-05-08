@@ -1,5 +1,5 @@
 <p align="center">
-<img src="https://github.com/Chainski/Kematian-Stealer/assets/96607632/1732913e-f9b8-4555-91e8-450806bb35cf", width="400", height="400">
+<img src="https://github.com/Chainski/Kematian-Stealer/assets/96607632/b122c6d8-713c-4ccb-9567-d24d6c0672b5", width="400", height="400">
 </p>
 
 <h1 align="center">
@@ -50,8 +50,7 @@ Moreover, the tool has robust `persistence mechanisms` to remain active on the m
 
 # Screenshots
   ## 🔨 Builder
-> ![builder](https://github.com/Chainski/Kematian-Stealer/assets/96607632/576aa2c3-1480-4d23-9027-d52d8973c780)
-
+> ![builder](https://github.com/Chainski/Kematian-Stealer/assets/96607632/00bd1db9-1186-408a-a399-c5911bcd447f)
 
    ### Builder Features
  - [x] 🔸 Obfuscation of `BAT` and `PS1` files
@@ -59,11 +58,9 @@ Moreover, the tool has robust `persistence mechanisms` to remain active on the m
  - [x] 💉 Pump/Inject the output exe file with zero-filled bytes 
 
  ## 🔷 Webhook Data
-> ![screenshot](https://github.com/Chainski/Kematian-Stealer/assets/96607632/a241421a-eeb1-4bc7-aa75-0595745f6ffd)
+> ![screenshot](https://github.com/Chainski/Kematian-Stealer/assets/96607632/e09d0673-c224-492a-be00-2b147e2f6c35)
 
-
-> ![webhook](https://github.com/Chainski/Kematian-Stealer/assets/96607632/751f99e8-e03f-4dfa-b346-2b88d7a874eb)
-
+> ![webhook](https://github.com/Chainski/Kematian-Stealer/assets/96607632/dd4a79c0-4c97-47d1-af35-ada6f249b0d1)
 
 #  Features
 - [x] GUI Builder
@@ -97,6 +94,7 @@ Moreover, the tool has robust `persistence mechanisms` to remain active on the m
     - [Nord](https://nordvpn.com) 
     - [Proton](https://protonvpn.com)
     - [Surfshark](https://surfshark.com)
+- [x] FileZilla Hosts
 - [x] Crypto Wallets 
    > Armory | Atomic | Bitcoin | Bytecoin | Coinomi | Dash | Electrum | Ethereum | Exodus | Guarda | Jaxx | Litecoin | Monero | Zcash
 - [x] Browsers (Brave, Chrome, Firefox, Microsoft Edge, Thunderbird etc.)
@@ -121,8 +119,7 @@ Now, copy the `tdata` folder from `Telegram` folder and paste it in the director
 %userprofile%\AppData\Roaming\Telegram Desktop
 `
 Before pasting the tdata folder, ensure that you have deleted the existing tdata folder on your PC.
-# ![telegram](https://github.com/Chainski/Kematian-Stealer/assets/96607632/8951b0d5-9ff1-491a-8589-614db5aefd6f)
-
+# ![telegram](https://github.com/Chainski/Kematian-Stealer/assets/96607632/1990c822-ff08-4a9f-b0a7-2997fc4dc345)
 
  > [!NOTE]   
  > ***The other session stealers can be utilized by applying the technique above***
