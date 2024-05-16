@@ -1,6 +1,9 @@
 function ShowError {
+    param (
+        [string]$errorName
+    )
 
-    Add-Type -AssemblyName System.Windows.Forms;[System.Windows.Forms.MessageBox]::Show('VM/VPS/SANDBOXES ARE NOT ALLOWED !','','OK','Error')
+    Add-Type -AssemblyName System.Windows.Forms;[System.Windows.Forms.MessageBox]::Show("VM/VPS/SANDBOXES ARE NOT ALLOWED ! $errorName",'','OK','Error')
 
 }
 
@@ -50,7 +53,7 @@ function Invoke-ANTITOTAL {
         if ($blacklist -ne $null) {
             foreach ($item in $blacklist -split "`n") {
                 if ($data -contains $item) {
-                    ShowError
+                    ShowError $item
                     exit
                 }
             }
