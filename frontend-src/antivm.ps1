@@ -16,10 +16,12 @@ function Search-IP {
 }
 
 function Wifi-Check {
-    $url = "https://google.com"
-    #try to make connection to google
     try {
-        $request = Invoke-WebRequest -Uri $url -UseBasicParsing
+        $pingResult = Test-Connection -ComputerName google.com -Count 1 -ErrorAction Stop
+        if ($pingResult.StatusCode -ne 0) {
+            Add-Type -AssemblyName System.Windows.Forms; [System.Windows.Forms.MessageBox]::Show('WIFI CHECK FAILED !', '', 'OK', 'Error')
+            Stop-Process $pid -Force
+        }
     } catch {
         Add-Type -AssemblyName System.Windows.Forms; [System.Windows.Forms.MessageBox]::Show('WIFI CHECK FAILED !', '', 'OK', 'Error')
         Stop-Process $pid -Force
