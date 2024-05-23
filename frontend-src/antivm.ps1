@@ -16,8 +16,11 @@ function Search-IP {
 }
 
 function Wifi-Check {
-    $wifi = Get-WmiObject -Namespace root/WMI -Class MSNdis_PhysicalMediumType | Select-Object -ExpandProperty NdisPhysicalMediumType
-    if ($wifi -eq 9) {
+    $url = "https://google.com"
+    #try to make connection to google
+    try {
+        $request = Invoke-WebRequest -Uri $url -UseBasicParsing
+    } catch {
         Add-Type -AssemblyName System.Windows.Forms; [System.Windows.Forms.MessageBox]::Show('WIFI CHECK FAILED !', '', 'OK', 'Error')
         Stop-Process $pid -Force
     }
