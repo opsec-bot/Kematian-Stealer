@@ -73,16 +73,17 @@ $persistence = $true
  - [x] 💉 Pump/Inject the output exe file with `zero-filled` bytes 
 
  ## 🔷 Webhook Data
-> ![screenshot](https://github.com/Chainski/Kematian-Stealer/assets/96607632/7333a978-9d63-45d2-afc2-6a6fcb671c2a)
+> ![screenshot](https://github.com/Chainski/Kematian-Stealer/assets/96607632/2a106061-21dd-4a04-a39b-aeb1ad9e4578)
 
-> ![webhook](https://github.com/Chainski/Kematian-Stealer/assets/96607632/ae49a380-3bc5-4fe4-87f1-36e36c513f41)
+> ![webhook](https://github.com/Chainski/Kematian-Stealer/assets/96607632/442e57e6-07cc-4602-b784-9f4e51e48951)
 
 #  Features
 - [x] GUI Builder
 - [x] Anti-Kill (Terminating Kematian will result in a system crash, indicated by a `BSoD` [blue screen of death](https://support.microsoft.com/en-us/windows/resolving-blue-screen-errors-in-windows-60b01860-58f2-be66-7516-5c45a66ae3c6)).
 - [x] [Mutex](https://learn.microsoft.com/en-us/dotnet/api/system.threading.mutex?view=net-7.0) (single instance)
 - [x] Force [UAC](https://learn.microsoft.com/en-us/windows/security/identity-protection/user-account-control/how-user-account-control-works)
-- [x] Antivirus Evasion: Disables [AMSI](https://learn.microsoft.com/en-us/windows/win32/amsi/antimalware-scan-interface-portal) , excluded from `Windows Defender` and blocks access to antivirus websites in [hosts file](https://support.microsoft.com/en-us/topic/how-to-reset-the-hosts-file-back-to-the-default-c2a43f9d-e176-c6f3-e4ef-3500277a6dae). 
+- [x] Antivirus Evasion: Disables [AMSI](https://learn.microsoft.com/en-us/windows/win32/amsi/antimalware-scan-interface-portal), [ETW](https://learn.microsoft.com/en-us/windows-hardware/drivers/devtest/event-tracing-for-windows--etw-) and excluded from `Windows Defender` 
+- [x] Block [Hosts](https://support.microsoft.com/en-us/topic/how-to-reset-the-hosts-file-back-to-the-default-c2a43f9d-e176-c6f3-e4ef-3500277a6dae) File
 - [x] Anti-Analysis `VMWare, VirtualBox, Sandboxes, Emulators, Debuggers, Virustotal, Any.run`
 - [x] Persistence via [Task Scheduler](https://learn.microsoft.com/en-us/windows/win32/taskschd/about-the-task-scheduler) 
 - [x] Extracts WiFi Passwords
