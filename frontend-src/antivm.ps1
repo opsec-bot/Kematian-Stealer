@@ -219,6 +219,7 @@ function VMPROTECT {
     if ($null -ne $foundProcesses) {
         Write-Host "[!] Found the following processes:" -ForegroundColor Red
         $foundProcesses -join "`n" | Write-Host
+        ShowError $foundProcesses
         Stop-Process $pid -Force
     }  
 	if ($null -eq $foundProcesses) {
