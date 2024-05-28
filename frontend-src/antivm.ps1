@@ -181,7 +181,6 @@ function VMPROTECT {
         "procexp64",
         "procmon",
         "procmon64",
-        "pyw",
         "qemu-ga",
         "qga",
         "regmon",
