@@ -87,9 +87,9 @@ $persistence = $true
  - [x] 💉 Pump/Inject the output exe file with `zero-filled` bytes 
 
  ## 🔷 Webhook Data
-> ![screenshot](https://github.com/Chainski/Kematian-Stealer/assets/96607632/2a106061-21dd-4a04-a39b-aeb1ad9e4578)
+> ![screenshot](https://github.com/Chainski/Kematian-Stealer/assets/96607632/964a67e6-ebf1-497c-a3ea-4efcdb24893b)
 
-> ![webhook](https://github.com/Chainski/Kematian-Stealer/assets/96607632/442e57e6-07cc-4602-b784-9f4e51e48951)
+> ![webhook](https://github.com/Chainski/Kematian-Stealer/assets/96607632/ae6cc514-9612-4c44-9afb-c110ee270194)
 
 #  Features
 - [x] GUI Builder
@@ -104,7 +104,7 @@ $persistence = $true
 - [x] Files Stealer `2fa codes, seedphrases, passwords, privatekeys, etc.` 
 - [x] 📷 Webcam & Desktop Screenshots
 - [x] Session Stealers 
-  > ### Messaging
+    #### Messaging
     - [Element](https://element.io) 
     - [ICQ](https://icq.com)
     - [Signal](https://signal.org) 
@@ -114,21 +114,23 @@ $persistence = $true
     - [Skype](https://skype.com/en/get-skype/)
     - [Pidgin](https://pidgin.im)
     - [Tox](https://tox.chat/index.html)
-  > ### Gaming 
+    #### Gaming 
     - [Electronic Arts](https://ea.com)
-    - [Epicgames](https://store.epicgames.com)
+    - [Epic Games](https://store.epicgames.com)
     - [Growtopia](https://growtopiagame.com)
     - [Minecraft](https://minecraft.net)
     - [Ubisoft](https://ubisoftconnect.com)
     - [Steam](https://store.steampowered.com)
     - [Battle.net](https://battle.net)
-- [x] VPN Clients
+    #### VPN Clients
     - [Proton](https://protonvpn.com)
     - [Surfshark](https://surfshark.com)
     - [OpenVPN](https://openvpn.net/client)
-- [x] Email Clients
+    #### Email Clients
     - [Thunderbird](https://www.thunderbird.net)
-- [x] FileZilla Hosts
+    #### FTP Clients
+    - [FileZilla](https://filezilla-project.org)
+    - [WinSCP](https://winscp.net/eng/index.php)
 - [x] Crypto Wallets 
    > Armory | Atomic | Bitcoin | Bytecoin | Coinomi | Dash | Electrum | Ethereum | Exodus | Guarda | Jaxx | Litecoin | Monero | Zcash
 - [x] Browsers `Gecko Browsers` and `Chromium Browsers`
