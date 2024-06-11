@@ -269,6 +269,8 @@ func getBilling(token string) string {
 			paymentMethods = append(paymentMethods, "Card")
 		} else if methodType == 2 {
 			paymentMethods = append(paymentMethods, "PayPal")
+		} else if methodType == 17 {
+			paymentMethods = append(paymentMethods, "Cashapp")
 		} else {
 			paymentMethods = append(paymentMethods, "Idk Lmao")
 		}
