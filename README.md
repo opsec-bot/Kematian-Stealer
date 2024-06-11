@@ -215,5 +215,6 @@ By using this software, you automatically agree to the above.
 - https://github.com/KDot227
 - https://github.com/Chainski
 - https://github.com/EvilBytecode
+- [Credit](https://t.me/ebthit)
 
 <p align="center"><a href=#top>Back to Top</a></p>
